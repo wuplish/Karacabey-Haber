@@ -1,0 +1,121 @@
+/* Animasyon */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 1rem 0;
+  font-family: 'Segoe UI', sans-serif;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* Logo solda ama biraz sağa kaydırıldı */
+.logo {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 1px;
+  flex: 1;
+  text-align: left;
+  margin-left: 20px;
+}
+
+/* Arama çubuğu ortada */
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  flex: 1;
+}
+
+/* Arama input */
+.search-input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  width: 240px;
+  transition: 0.3s ease;
+  color: #333;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+}
+
+/* Ara butonu */
+.search-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.search-button:hover {
+  background-color: #e2e2e2;
+  border-color: #bbb;
+}
+
+/* Kategoriler sağa hizalanmış ama kenardan biraz içeri alındı */
+.nav-links {
+  display: flex;
+  gap: 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex: 1;
+  justify-content: flex-end;
+  margin-right: 20px;
+}
+
+.nav-links a {
+  color: #444;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #1e90ff;
+}
+
+/* Mobil uyumluluk */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo, .search-form, .nav-links {
+    flex: unset;
+    text-align: center;
+    justify-content: center;
+    margin: 0;
+  }
+}
