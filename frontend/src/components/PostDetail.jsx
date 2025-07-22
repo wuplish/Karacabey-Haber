@@ -6,87 +6,148 @@ import { getOrCreateUserId } from '../utils/userId';
 const PostDetail = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [relatedPosts, setRelatedPosts] = useState([]);
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchData = async () => {
       const userId = getOrCreateUserId();
       try {
-        const res = await fetch(`http://localhost:5000/posts/${id}`, {
+        // Ana gönderiyi al
+        const postRes = await fetch(`http://localhost:5000/posts/${id}`, {
           headers: {
             'gelmisgecmiseniyiuserid': userId,
           },
         });
 
-        const data = await res.json();
-
-        if (!res.ok) {
-          if (res.status === 429 && data.detail?.includes('Çok fazla istek')) {
-            setError('Yavaş biraz 😅 Sunucuya çok fazla istek gönderdin.');
-          } else {
-            setError('Gönderi alınırken bir hata oluştu.');
-          }
-          return;
+        if (!postRes.ok) {
+          const errorData = await postRes.json();
+          throw new Error(errorData.message || 'Gönderi alınamadı');
         }
 
-        setPost(data);
+        const postData = await postRes.json();
+        setPost(postData);
+
+        // İlgili gönderileri al
+        const relatedRes = await fetch(`http://localhost:5000/posts?category=${postData.category}&limit=3`);
+        const relatedData = await relatedRes.json();
+        setRelatedPosts(relatedData.filter(p => p.id !== postData.id));
+
       } catch (err) {
-        setError('Bağlantı hatası oluştu.');
+        setError(err.message.includes('Çok fazla istek') 
+          ? 'Yavaş biraz 😅 Sunucuya çok fazla istek gönderdin.' 
+          : 'Bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchPost();
+    fetchData();
   }, [id]);
-  const splitIntoParagraphs = (text, sentenceCount = 2) => {
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text]; // Noktalara göre ayır
-    const paragraphs = [];
 
-    for (let i = 0; i < sentences.length; i += sentenceCount) {
-      const group = sentences.slice(i, i + sentenceCount).join(' ').trim();
-      if (group.length > 0) paragraphs.push(group);
-    }
-
-    return paragraphs;
+  const formatContent = (content) => {
+    return content.split('\n').map((para, i) => (
+      <p key={i} className="content-para">
+        {para.trim() || <br />}
+      </p>
+    ));
   };
 
-  if (error) return <p className="error">{error}</p>;
-  if (!post) return <p className="loading">Yükleniyor...</p>;
+  if (loading) return (
+    <div className="loading-container">
+      <div className="loading-spinner"></div>
+      <p>İçerik yükleniyor...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="error-container">
+      <div className="error-icon">⚠️</div>
+      <h3>Hata oluştu</h3>
+      <p>{error}</p>
+      <button onClick={() => window.location.reload()} className="retry-button">
+        Yeniden Dene
+      </button>
+    </div>
+  );
 
   return (
-    <article className="post-detail">
-      <h1 className="post-title">{post.title}</h1>
-
-      {post.image && (
-        <img
-          src={post.image}
-          alt={post.title}
-          className="post-image"
-          loading="lazy"
-        />
-      )}
-
-      <div className="post-content">
-        {splitIntoParagraphs(post.content).map((para, index) => (
-          <p key={index}>{para}</p>
-        ))}
-      </div>
-
-
-      <div className="post-meta">
-        <span>📅 {new Date(post.publish_date).toLocaleString('tr-TR')}</span>
-        <span>📁 Kategori: <strong>{post.category}</strong></span>
-        <span>👁️ {post.view_count} görüntülenme</span>
-      </div>
-
-      {post.tags?.length > 0 && (
-        <div className="post-tags">
-          🏷️ Etiketler:{" "}
-          {post.tags.map(tag => (
-            <span key={tag} className="tag">{tag}</span>
-          ))}
+    <div className="post-detail-container">
+      <article className="post-article">
+        {/* Kategori ve Tarih */}
+        <div className="post-header-meta">
+          <span className="category-badge">{post.category}</span>
+          <time className="publish-date">
+            {new Date(post.publish_date).toLocaleDateString('tr-TR', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </time>
         </div>
-      )}
-    </article>
+
+        {/* Başlık */}
+        <h1 className="post-title">{post.title}</h1>
+
+        {/* Öne Çıkan Görsel */}
+        {post.image && (
+          <div className="featured-image-container">
+            <img
+              src={post.image}
+              alt={post.title}
+              className="featured-image"
+              loading="lazy"
+            />
+            {post.image_caption && (
+              <figcaption className="image-caption">{post.image_caption}</figcaption>
+            )}
+          </div>
+        )}
+
+        {/* İçerik */}
+        <div className="post-content">
+          {formatContent(post.content)}
+        </div>
+
+        {/* Meta Bilgiler */}
+        <div className="post-footer-meta">
+          <div className="view-count">
+            <span>👁️ {post.view_count} görüntülenme</span>
+          </div>
+          
+          {post.tags?.length > 0 && (
+            <div className="tags-container">
+              <h4>Etiketler:</h4>
+              <div className="tags-list">
+                {post.tags.map(tag => (
+                  <span key={tag} className="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </article>
+
+      {/* İlgili Gönderiler */}
+      {relatedPosts.length > 0 && (
+        <aside className="related-posts">
+          <h3 className="related-title">İlgili Haberler</h3>
+          <div className="related-grid">
+            {relatedPosts.map(related => (
+              <a href={`/post/${related.id}`} key={related.id} className="related-card">
+                {related.image && (
+                  <img src={related.image} alt={related.title} className="related-image" />
+                )}
+                <h4>{related.title}</h4>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}     
+    </div>
   );
 };
 

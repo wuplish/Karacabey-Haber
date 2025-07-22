@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './HomePage.css'; // kendin oluşturabilirsin
+import './HomePage.css';
 
-const HomePage = () => {
+const Home = () => {
   const [breaking, setBreaking] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,48 +20,55 @@ const HomePage = () => {
       });
   }, []);
 
-  const grouped = [];
-  for (let i = 0; i < posts.length; i += 3) {
-    grouped.push(posts.slice(i, i + 3));
-  }
-
   return (
     <div className="home-container">
-        {breaking ? (
-        breaking.title ? (
-            <Link to={`/haber/${breaking.id}`}>
-            <img src={breaking.image} alt={breaking.title} />
-            <div>
-                <h2>SON DAKİKA: {breaking.title}</h2>
-                <p>{breaking.content?.slice(0, 120)}...</p>
-            </div>
-            </Link>
-        ) : (
-            <div></div>
-        )
-        ) : (
-        <p>Yükleniyor...</p>
-        )}
+      {/* Breaking News */}
+      {breaking && breaking.title && (
+        <Link to={`/haber/${breaking.id}`} className="breaking-news-card">
+          <div className="breaking-overlay">
+            <span className="breaking-badge">SON DAKİKA</span>
+            <h2>{breaking.title}</h2>
+            <p>{breaking.content?.slice(0, 150)}...</p>
+          </div>
+          <img src={breaking.image} alt={breaking.title} className="breaking-image" />
+        </Link>
+      )}
 
-      <h2 className="section-title">Tüm Haberler</h2>
-      {loading ? (
-        <p>Yükleniyor...</p>
-      ) : (
-        grouped.map((group, index) => (
-          <div className="news-row" key={index}>
-            {group.map(post => (
+      {/* Main Content */}
+      <div className="content-wrapper">
+        <h2 className="section-title">
+          <span>Tüm Haberler</span>
+        </h2>
+
+        {loading ? (
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+          </div>
+        ) : (
+          <div className="posts-grid">
+            {posts.map(post => (
               <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
-                <img src={post.image} alt={post.title} />
-                <h3>{post.title}</h3>
-                <p>{post.content.slice(0, 100)}...</p>
-                <span className="category">{post.category}</span>
+                <div className="card-image-container">
+                  <img src={post.image} alt={post.title} className="post-image" />
+                  <span className="category-tag">{post.category}</span>
+                </div>
+                <div className="card-content">
+                  <h3 className="post-title">{post.title}</h3>
+                  <p className="post-excerpt">{post.content.slice(0, 100)}...</p>
+                  <div className="post-meta">
+                    <span className="read-time">2 dk okuma</span>
+                    <span className="publish-date">
+                      {new Date(post.publish_date).toLocaleDateString('tr-TR')}
+                    </span>
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
-        ))
-      )}
+        )}
+      </div>
     </div>
   );
 };
 
-export default HomePage;
+export default Home;
