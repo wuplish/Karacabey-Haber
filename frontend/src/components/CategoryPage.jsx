@@ -14,7 +14,16 @@ const CategoryPage = ({ category }) => {
   }, [category])
 
   return (
-    <section className="category">
+    <section
+      className="category"
+      style={{
+        backgroundColor: '#f8f9fa', // beyazımsı gri
+        padding: '24px',
+        borderRadius: '12px',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+        marginBottom: '32px',
+      }}
+    >
       <h2>{category} Haberleri</h2>
       {posts.length === 0 ? (
         <p>Henüz haber bulunamadı.</p>
@@ -22,7 +31,7 @@ const CategoryPage = ({ category }) => {
         posts.map(post => <PostCard key={post.id} post={post} />)
       )}
     </section>
-  )
+  );
 }
 
 export default CategoryPage

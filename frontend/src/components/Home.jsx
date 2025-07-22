@@ -37,9 +37,7 @@ const HomePage = () => {
             </div>
             </Link>
         ) : (
-            <div>
-                
-            </div>
+            <div></div>
         )
         ) : (
         <p>Yükleniyor...</p>
