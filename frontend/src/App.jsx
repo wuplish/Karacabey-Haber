@@ -10,6 +10,7 @@ import Instagram from './components/socialmedia/Instagram'
 import Twitter from './components/socialmedia/Twitter'
 import Facebook from './components/socialmedia/Facebook'
 import SearchResults from './components/SearchResults'
+import Home from './components/Home'
 function App() {
   return (
     <>
@@ -26,7 +27,7 @@ function App() {
           <Route path="/gundem" element={<CategoryPage category="Gündem" />} />
           <Route path="/spor" element={<CategoryPage category="Spor" />} />
           <Route path="/magazin" element={<CategoryPage category="Magazin" />} />
-          <Route path="/ekonomi" element={<CategoryPage category="Ekonomi" />} />,
+          <Route path="/ekonomi" element={<CategoryPage category="Ekonomi" />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -34,12 +35,5 @@ function App() {
     </>
   )
 }
-
-const Home = () => (
-  <section className="home">
-    <h2>Son Haberler</h2>
-    <p>En güncel gelişmeler burada yer alacak.</p>
-  </section>
-)
 
 export default App

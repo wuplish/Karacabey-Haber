@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 
-const SearchResults = () => {
+const   SearchResults = () => {
   const { query } = useParams()
   const [posts, setPosts] = useState([])
   const [filtered, setFiltered] = useState([])

@@ -85,7 +85,7 @@ def is_admin(data: LoginData):
     return data.username == "admin" and data.password == "admin1234"
 from fastapi import Request
 @app.post("/login")
-@limiter.limit("5/5seconds")
+@limiter.limit("1/5seconds")
 def login(request: Request,data: LoginData):
     if is_admin(data):
         return {"success": True}
@@ -93,7 +93,9 @@ def login(request: Request,data: LoginData):
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4", ".mp3"}
 def allowed_file(filename):
     return os.path.splitext(filename)[1].lower() in ALLOWED_EXTENSIONS
- 
+
+
+# --- File Upload System ---
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     if not allowed_file(file.filename):
