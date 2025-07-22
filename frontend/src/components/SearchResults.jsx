@@ -88,7 +88,6 @@ const SearchResults = () => {
         </div>
       ) : (
         <div className="no-results">
-          <img src="/no-results.svg" alt="Sonuç yok" className="no-results-img" />
           <h3>"{query}" ile ilgili sonuç bulunamadı</h3>
           <p>Farklı anahtar kelimelerle tekrar deneyin</p>
           <Link to="/" className="home-link">Ana Sayfaya Dön</Link>
