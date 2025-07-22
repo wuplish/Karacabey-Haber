@@ -11,6 +11,7 @@ import Twitter from './components/socialmedia/Twitter'
 import Facebook from './components/socialmedia/Facebook'
 import SearchResults from './components/SearchResults'
 import Home from './components/Home'
+import DigerPage from './components/OtherCategories'
 function App() {
   return (
     <>
@@ -26,8 +27,18 @@ function App() {
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/gundem" element={<CategoryPage category="Gündem" />} />
           <Route path="/spor" element={<CategoryPage category="Spor" />} />
-          <Route path="/magazin" element={<CategoryPage category="Magazin" />} />
           <Route path="/ekonomi" element={<CategoryPage category="Ekonomi" />} />
+          <Route path="/magazin" element={<CategoryPage category="Magazin" />} />
+          <Route path="/siyaset" element={<CategoryPage category="Siyaset" />} />
+          <Route path="/egitim" element={<CategoryPage category="Eğitim" />} />
+          <Route path="/saglik" element={<CategoryPage category="Sağlik" />} />
+          <Route path="/teknoloji" element={<CategoryPage category="Teknoloji" />} />
+          <Route path="/kultur-sanat" element={<CategoryPage category="Kültür ve Sanat" />} />
+          <Route path="/yasam" element={<CategoryPage category="Yaşam" />} />
+          <Route path="/asayis" element={<CategoryPage category="Asayiş" />} />
+          <Route path="/tarim" element={<CategoryPage category="Tarim" />} />
+          <Route path="/belediye" element={<CategoryPage category="Belediye" />} />
+          <Route path="/diger" element={<DigerPage/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

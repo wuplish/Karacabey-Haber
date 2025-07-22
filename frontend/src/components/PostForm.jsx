@@ -2,6 +2,22 @@ import React, { useState, useEffect } from 'react';
 import './PostForm.css';
 
 function PostForm({ onPostSaved, editPost }) {
+  const categories = [
+    "Gündem",
+    "Spor",
+    "Magazin",
+    "Ekonomi",
+    "Siyaset",
+    "Eğitim",
+    "Sağlık",
+    "Teknoloji",
+    "Kültür-Sanat",
+    "Yaşam",
+    "Asayiş",
+    "Tarım",
+    "Belediye"
+  ];
+
   const [form, setForm] = useState({
     title: '', content: '', image: '', category: '',
     tags: '', status: 'draft', publish_date: ''
@@ -77,22 +93,27 @@ function PostForm({ onPostSaved, editPost }) {
 
       <div className="form-group">
         <label>Başlık</label>
-        <input name="title" value={form.title} onChange={handleChange} placeholder="Başlık" />
+        <input name="title" value={form.title} onChange={handleChange} placeholder="Başlık" required />
       </div>
 
       <div className="form-group">
         <label>İçerik</label>
-        <textarea name="content" value={form.content} onChange={handleChange} placeholder="İçerik" />
+        <textarea name="content" value={form.content} onChange={handleChange} placeholder="İçerik" required />
       </div>
 
       <div className="form-group">
         <label>Kategori</label>
-        <input name="category" value={form.category} onChange={handleChange} placeholder="Kategori" />
+        <select name="category" value={form.category} onChange={handleChange} required>
+          <option value="">Kategori Seçin</option>
+          {categories.map((category, index) => (
+            <option key={index} value={category}>{category}</option>
+          ))}
+        </select>
       </div>
 
       <div className="form-group">
-        <label>Etiketler (virgülle)</label>
-        <input name="tags" value={form.tags} onChange={handleChange} placeholder="Etiketler" />
+        <label>Etiketler (virgülle ayırın)</label>
+        <input name="tags" value={form.tags} onChange={handleChange} placeholder="etiket1, etiket2" />
       </div>
 
       <div className="form-group">
@@ -111,6 +132,7 @@ function PostForm({ onPostSaved, editPost }) {
       <div className="form-group">
         <label>Görsel</label>
         <input type="file" accept="image/*" onChange={handleFile} />
+        {file && <span className="file-info">{file.name}</span>}
       </div>
 
       {uploading && <p className="info-text">Yükleniyor...</p>}
