@@ -1,3 +1,4 @@
+/* OtherCategories.css */
 .other-categories-container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -8,9 +9,10 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 2rem;
-  color: #2c3e50;
+  color: var(--dark);
   position: relative;
   padding-bottom: 1rem;
+  font-weight: 700;
 }
 
 .page-title::after {
@@ -20,8 +22,9 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100px;
-  height: 3px;
-  background: linear-gradient(to right, #3498db, #2ecc71);
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
 }
 
 .categories-grid {
@@ -31,21 +34,22 @@
 }
 
 .category-card {
-  background: white;
-  border-radius: 10px;
+  background: var(--white);
+  border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: var(--transition);
   text-decoration: none;
-  color: #333;
-  border: 1px solid #e0e0e0;
+  color: var(--dark);
+  border: 1px solid rgba(217, 35, 46, 0.1);
   position: relative;
   overflow: hidden;
 }
 
 .category-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(217, 35, 46, 0.15);
+  border-color: rgba(217, 35, 46, 0.3);
 }
 
 .category-card::before {
@@ -55,38 +59,59 @@
   left: 0;
   width: 5px;
   height: 100%;
-  background: linear-gradient(to bottom, #3498db, #2ecc71);
+  background: var(--primary);
 }
 
 .category-title {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  color: var(--dark);
+  font-weight: 600;
+  position: relative;
+  padding-left: 10px;
+}
+
+.category-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  height: 70%;
+  width: 3px;
+  background: var(--primary);
 }
 
 .category-description {
-  color: #7f8c8d;
+  color: var(--gray);
   margin-bottom: 1.5rem;
   line-height: 1.5;
+  font-size: 0.95rem;
 }
 
 .read-more {
-  color: #3498db;
+  color: var(--primary);
   font-weight: 600;
   display: inline-block;
-  transition: transform 0.3s ease;
+  transition: var(--transition);
+  font-size: 0.9rem;
 }
 
 .category-card:hover .read-more {
   transform: translateX(5px);
+  color: var(--primary-dark);
 }
 
 @media (max-width: 768px) {
   .categories-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
   .page-title {
     font-size: 2rem;
+  }
+  
+  .category-card {
+    padding: 1.2rem;
   }
 }

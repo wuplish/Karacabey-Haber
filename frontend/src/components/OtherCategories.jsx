@@ -1,3 +1,4 @@
+// OtherCategories.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './OtherCategories.css';
@@ -50,16 +51,15 @@ const OtherCategories = () => {
       description: "Belediye hizmetleri, projeler ve duyurular"
     }
   ];
-
   return (
     <div className="other-categories-container">
-      <h1 className="page-title">Diğer Tüm Kategoriler</h1>
+      <h1 className="page-title">Diğer Kategoriler</h1>
       <div className="categories-grid">
         {categories.map((category, index) => (
           <Link to={category.path} key={index} className="category-card">
             <h3 className="category-title">{category.name}</h3>
             <p className="category-description">{category.description}</p>
-            <span className="read-more">Haberleri Gör →</span>
+            <span className="read-more">Haberleri Gör &rarr;</span>
           </Link>
         ))}
       </div>
