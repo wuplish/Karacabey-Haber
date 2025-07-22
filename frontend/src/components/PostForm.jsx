@@ -3,19 +3,9 @@ import './PostForm.css';
 
 function PostForm({ onPostSaved, editPost }) {
   const categories = [
-    "Gündem",
-    "Spor",
-    "Magazin",
-    "Ekonomi",
-    "Siyaset",
-    "Eğitim",
-    "Sağlık",
-    "Teknoloji",
-    "Kültür-Sanat",
-    "Yaşam",
-    "Asayiş",
-    "Tarım",
-    "Belediye"
+    "Gündem", "Spor", "Magazin", "Ekonomi",
+    "Siyaset", "Eğitim", "Sağlık", "Teknoloji",
+    "Kültür-Sanat", "Yaşam", "Asayiş", "Tarım", "Belediye"
   ];
 
   const [form, setForm] = useState({
@@ -24,127 +14,240 @@ function PostForm({ onPostSaved, editPost }) {
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState('');
 
   useEffect(() => {
     if (editPost) {
       setForm({
         ...editPost,
-        tags: editPost.tags.join(','),
+        tags: editPost.tags?.join(',') || '',
         publish_date: editPost.publish_date?.slice(0, 16) || ''
       });
-      setFile(null);
+      if (editPost.image) setPreview(editPost.image);
     }
   }, [editPost]);
+
+  useEffect(() => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [file]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleFile = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
   };
 
   const uploadImage = async () => {
     if (!file) return form.image;
+    
     const data = new FormData();
     data.append('file', file);
     setUploading(true);
-    const res = await fetch('http://localhost:5000/upload', {
-      method: 'POST',
-      body: data
-    });
-    const json = await res.json();
-    setUploading(false);
-    return json.url;
+    
+    try {
+      const res = await fetch('http://localhost:5000/upload', {
+        method: 'POST',
+        body: data
+      });
+      const json = await res.json();
+      return json.url;
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const imageUrl = await uploadImage();
-    const payload = {
-      ...form,
-      image: imageUrl,
-      tags: form.tags.split(',').map(t => t.trim()),
-      username: 'admin',
-      password: 'admin1234'
-    };
-    const method = editPost ? 'PUT' : 'POST';
-    const url = editPost
-      ? `http://localhost:5000/posts/${editPost.id}`
-      : 'http://localhost:5000/posts';
+    try {
+      const imageUrl = await uploadImage();
+      const payload = {
+        ...form,
+        image: imageUrl,
+        tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
+        username: 'admin',
+        password: 'admin1234'
+      };
+      
+      const method = editPost ? 'PUT' : 'POST';
+      const url = editPost 
+        ? `http://localhost:5000/posts/${editPost.id}`
+        : 'http://localhost:5000/posts';
 
-    await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-    setForm({
-      title: '', content: '', image: '', category: '',
-      tags: '', status: 'draft', publish_date: ''
-    });
-    setFile(null);
-    onPostSaved();
+      if (!response.ok) throw new Error('Kayıt başarısız');
+
+      setForm({
+        title: '', content: '', image: '', category: '',
+        tags: '', status: 'draft', publish_date: ''
+      });
+      setFile(null);
+      setPreview('');
+      onPostSaved();
+    } catch (error) {
+      alert('Hata oluştu: ' + error.message);
+    }
   };
 
   return (
-    <form className="post-form" onSubmit={handleSubmit}>
-      <h3>{editPost ? 'Haberi Düzenle' : 'Yeni Haber Ekle'}</h3>
+    <div className="post-form-container">
+      <form className="post-form" onSubmit={handleSubmit}>
+        <div className="form-header">
+          <h2>{editPost ? 'Haber Düzenle' : 'Yeni Haber Ekle'}</h2>
+          <div className="form-actions">
+            <button type="button" className="secondary-btn" onClick={() => window.history.back()}>
+              İptal
+            </button>
+            <button type="submit" className="primary-btn" disabled={uploading}>
+              {uploading ? (
+                <>
+                  <span className="spinner"></span>
+                  {editPost ? 'Güncelleniyor...' : 'Kaydediliyor...'}
+                </>
+              ) : (
+                editPost ? 'Güncelle' : 'Kaydet'
+              )}
+            </button>
+          </div>
+        </div>
 
-      <div className="form-group">
-        <label>Başlık</label>
-        <input name="title" value={form.title} onChange={handleChange} placeholder="Başlık" required />
-      </div>
+        <div className="form-grid">
+          {/* Sol Kolon */}
+          <div className="form-column">
+            <div className="form-group">
+              <label className="form-label">Başlık*</label>
+              <input
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                placeholder="Haber başlığını yazın"
+                className="form-input"
+                required
+              />
+            </div>
 
-      <div className="form-group">
-        <label>İçerik</label>
-        <textarea name="content" value={form.content} onChange={handleChange} placeholder="İçerik" required />
-      </div>
+            <div className="form-group">
+              <label className="form-label">İçerik*</label>
+              <textarea
+                name="content"
+                value={form.content}
+                onChange={handleChange}
+                placeholder="Haber içeriğini yazın"
+                className="form-textarea"
+                required
+              />
+            </div>
 
-      <div className="form-group">
-        <label>Kategori</label>
-        <select name="category" value={form.category} onChange={handleChange} required>
-          <option value="">Kategori Seçin</option>
-          {categories.map((category, index) => (
-            <option key={index} value={category}>{category}</option>
-          ))}
-        </select>
-      </div>
+            <div className="form-group">
+              <label className="form-label">Etiketler</label>
+              <input
+                type="text"
+                name="tags"
+                value={form.tags}
+                onChange={handleChange}
+                placeholder="etiket1, etiket2, etiket3"
+                className="form-input"
+              />
+              <span className="input-hint">Virgülle ayırarak birden fazla etiket ekleyebilirsiniz</span>
+            </div>
+          </div>
 
-      <div className="form-group">
-        <label>Etiketler (virgülle ayırın)</label>
-        <input name="tags" value={form.tags} onChange={handleChange} placeholder="etiket1, etiket2" />
-      </div>
+          {/* Sağ Kolon */}
+          <div className="form-column">
+            <div className="form-group">
+              <label className="form-label">Kategori*</label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="form-select"
+                required
+              >
+                <option value="">Kategori seçin</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
 
-      <div className="form-group">
-        <label>Yayın Tarihi</label>
-        <input name="publish_date" type="datetime-local" value={form.publish_date} onChange={handleChange} />
-      </div>
+            <div className="form-group">
+              <label className="form-label">Yayın Tarihi</label>
+              <input
+                type="datetime-local"
+                name="publish_date"
+                value={form.publish_date}
+                onChange={handleChange}
+                className="form-input"
+              />
+            </div>
 
-      <div className="form-group">
-        <label>Durum</label>
-        <select name="status" value={form.status} onChange={handleChange}>
-          <option value="draft">Taslak</option>
-          <option value="published">Yayınlandı</option>
-        </select>
-      </div>
+            <div className="form-group">
+              <label className="form-label">Durum</label>
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleChange}
+                className="form-select"
+              >
+                <option value="draft">Taslak</option>
+                <option value="published">Yayınlandı</option>
+              </select>
+            </div>
 
-      <div className="form-group">
-        <label>Görsel</label>
-        <input type="file" accept="image/*" onChange={handleFile} />
-        {file && <span className="file-info">{file.name}</span>}
-      </div>
-
-      {uploading && <p className="info-text">Yükleniyor...</p>}
-
-      {form.image && !file && (
-        <img src={form.image} alt="Preview" className="image-preview" />
-      )}
-
-      <button type="submit" className="submit-btn">
-        {editPost ? 'Güncelle' : 'Kaydet'}
-      </button>
-    </form>
+            <div className="form-group">
+              <label className="form-label">Görsel</label>
+              <div className="file-upload">
+                <label className="file-upload-label">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFile}
+                    className="file-input"
+                  />
+                  <span className="file-upload-button">Dosya Seç</span>
+                  <span className="file-name">
+                    {file ? file.name : form.image ? 'Mevcut görsel kullanılacak' : 'Dosya seçilmedi'}
+                  </span>
+                </label>
+              </div>
+              
+              {preview && (
+                <div className="image-preview-container">
+                  <img src={preview} alt="Önizleme" className="image-preview" />
+                  <button 
+                    type="button" 
+                    className="remove-image-btn"
+                    onClick={() => {
+                      setFile(null);
+                      setPreview('');
+                      setForm({...form, image: ''});
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }
 
