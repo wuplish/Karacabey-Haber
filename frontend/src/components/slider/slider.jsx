@@ -6,7 +6,7 @@ const Slider = () => {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:5000/slides") // API endpoint'in
+    fetch("http://localhost:5000/slides")
       .then((res) => res.json())
       .then((data) => setSlides(data));
   }, []);
@@ -14,9 +14,17 @@ const Slider = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
-    }, 4000); // 4 saniyede bir geçiş
+    }, 5000);
     return () => clearInterval(interval);
   }, [slides]);
+
+  const goToNext = () => {
+    setCurrent((prev) => (prev + 1) % slides.length);
+  };
+
+  const goToPrev = () => {
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+  };
 
   if (slides.length === 0) return null;
 
@@ -34,6 +42,14 @@ const Slider = () => {
           </div>
         </div>
       ))}
+
+      {/* Kırmızı Oklar */}
+      <button className="arrow left" onClick={goToPrev}>
+        &#10094;
+      </button>
+      <button className="arrow right" onClick={goToNext}>
+        &#10095;
+      </button>
 
       <div className="dots">
         {slides.map((_, index) => (

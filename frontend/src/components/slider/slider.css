@@ -67,3 +67,31 @@
 .dot:hover {
   opacity: 1;
 }
+
+/* --- Oklar (kırmızı) --- */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 36px;
+  color: red;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 30%;
+  z-index: 2;
+  transition: background 0.3s;
+}
+
+.arrow:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.arrow.left {
+  left: 20px;
+}
+
+.arrow.right {
+  right: 20px;
+}
