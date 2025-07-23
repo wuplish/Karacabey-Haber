@@ -53,7 +53,6 @@ def init_db():
         )
         """)
         
-        # Subheadings tablosunu ekleyelim
         conn.execute("""
         CREATE TABLE IF NOT EXISTS subheadings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
