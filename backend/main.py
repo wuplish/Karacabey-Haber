@@ -281,5 +281,27 @@ def get_breaking():
         "breaking_news": row[10]
     }
 
+# --- Slider ---
+@app.get("/slides")
+def get_slider_posts():
+    rows = query_db("""
+        SELECT id, title, image, publish_date 
+        FROM posts 
+        WHERE status = 'published'
+        ORDER BY publish_date DESC 
+        LIMIT 5
+    """)
+
+    return [
+        {
+            "id": row[0],
+            "title": row[1],
+            "image": row[2],
+            "publish_date": row[3]
+        }
+        for row in rows
+    ]
+
+
 # --- Start DB ---
 init_db()

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './HomePage.css';
-
+import './HomePage.css'; 
+import Slider from './slider/slider';
 const Home = () => {
   const [breaking, setBreaking] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -21,6 +21,7 @@ const Home = () => {
   }, []);
 
   return (
+    <><Slider />
     <div className="home-container">
       {/* Breaking News */}
       {breaking && breaking.title && (
@@ -67,7 +68,7 @@ const Home = () => {
           </div>
         )}
       </div>
-    </div>
+    </div></>
   );
 };
 
