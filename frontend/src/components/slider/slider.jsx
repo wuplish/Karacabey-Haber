@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "./slider.css";
 
 const Slider = () => {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:5000/slides")
@@ -26,6 +28,10 @@ const Slider = () => {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
+  const handleSlideClick = (slide) => {
+    navigate(`/post/${slide.id}`); 
+  };
+
   if (slides.length === 0) return null;
 
   return (
@@ -35,6 +41,7 @@ const Slider = () => {
           key={slide.id}
           className={`slide ${index === current ? "active" : ""}`}
           style={{ backgroundImage: `url(${slide.image})` }}
+          onClick={() => handleSlideClick(slide)} 
         >
           <div className="slide-content">
             <h2>{slide.title}</h2>

@@ -12,7 +12,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from utils.filename_util import save_uploaded_file
-
+from utils.slug import create_slug
 app = FastAPI()
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -49,10 +49,10 @@ def init_db():
             publish_date TEXT,
             created_at TEXT,
             view_count INTEGER DEFAULT 0,
-            breaking_news INTEGER DEFAULT 0
+            breaking_news INTEGER DEFAULT 0,
+            slug TEXT UNIQUE 
         )
         """)
-        
         conn.execute("""
         CREATE TABLE IF NOT EXISTS subheadings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,7 +89,8 @@ class PostData(LoginData):
     status: str
     publish_date: Optional[str] = None
     breaking_news: Optional[int] = 0
-    subheadings: Optional[List[Subheading]] = None  # Yeni alan
+    subheadings: Optional[List[Subheading]] = None  
+    slug: Optional[str] = None
 
 class UpdatePostData(PostData):
     pass
@@ -175,14 +176,20 @@ def get_post(request: Request, post_id: int):
 
 @app.post("/posts")
 @limiter.limit("5/5seconds")
+@app.post("/posts")
 def create_post(request: Request, data: PostData):
     if not is_admin(data):
         raise HTTPException(status_code=401, detail="Unauthorized")
+    slug = data.slug or create_slug(data.title)
+    counter = 1
+    original_slug = slug
+    while query_db("SELECT id FROM posts WHERE slug = ?", (slug,), one=True):
+        slug = f"{original_slug}-{counter}"
+        counter += 1
 
-    # Post'u oluştur
     cursor = query_db("""
-    INSERT INTO posts (title, content, image, category, tags, status, publish_date, created_at, breaking_news)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO posts (title, content, image, category, tags, status, publish_date, created_at, breaking_news, slug)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     RETURNING id
     """, (
         data.title,
@@ -193,12 +200,12 @@ def create_post(request: Request, data: PostData):
         data.status,
         data.publish_date or datetime.now().isoformat(),
         datetime.now().isoformat(),
-        data.breaking_news
+        data.breaking_news,
+        slug  
     ), one=True)
 
     post_id = cursor[0]
 
-    # Subheadings ekle
     if data.subheadings:
         for subheading in data.subheadings:
             query_db("""
@@ -302,6 +309,32 @@ def get_slider_posts():
         for row in rows
     ]
 
+
+# --- Slug ---
+# Yeni endpoint ekleyin (mevcut /posts/{id} yanına)
+@app.get("/posts/by-slug/{slug}")
+def get_post_by_slug(slug: str):
+    post = query_db("SELECT * FROM posts WHERE slug = ?", (slug,), one=True)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    
+    subheadings = query_db("SELECT title, content FROM subheadings WHERE post_id = ?", (post[0],))
+    
+    return {
+        "id": post[0],
+        "title": post[1],
+        "content": post[2],
+        "image": post[3],
+        "category": post[4],
+        "tags": post[5].split(',') if post[5] else [],
+        "status": post[6],
+        "publish_date": post[7],
+        "created_at": post[8],
+        "view_count": post[9],
+        "breaking_news": post[10],
+        "slug": post[11],  
+        "subheadings": [{"title": s[0], "content": s[1]} for s in subheadings]
+    }
 
 # --- Start DB ---
 init_db()

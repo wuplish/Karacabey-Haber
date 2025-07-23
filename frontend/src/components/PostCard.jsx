@@ -22,7 +22,7 @@ const PostCard = ({ post }) => (
           })}
         </time>
         <span className="read-more">
-          Devamını Oku <span className="arrow">→</span>
+          Devamını Oku 
         </span>
       </div>
     </div>
