@@ -11,7 +11,8 @@ import Twitter from './components/socialmedia/Twitter'
 import Facebook from './components/socialmedia/Facebook'
 import SearchResults from './components/SearchResults'
 import Home from './components/Home'
-import DigerPage from './components/OtherCategories'
+import OtherCategories from './components/OtherCategories'
+import AdminPanel from './AdminPanel.jsx'
 function App() {
   return (
     <>
@@ -38,10 +39,11 @@ function App() {
           <Route path="/asayis" element={<CategoryPage category="Asayiş" />} />
           <Route path="/tarim" element={<CategoryPage category="Tarim" />} />
           <Route path="/belediye" element={<CategoryPage category="Belediye" />} />
-          <Route path="/diger" element={<DigerPage/>} />
+          <Route path="/diger" element={<OtherCategories/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      <AdminPanel />
       <Footer />
     </>
   )

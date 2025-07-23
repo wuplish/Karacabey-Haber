@@ -112,6 +112,16 @@ const PostDetail = () => {
           {formatContent(post.content)}
         </div>
 
+        {post.subheadings && post.subheadings.length > 0 && (
+          <div className="subheadings">
+            {post.subheadings.map((sub, i) => (
+              <div key={i}>
+                <h3>{sub.title}</h3>
+                <p>{sub.content}</p>
+              </div>
+            ))}
+          </div>
+        )}
         {/* Meta Bilgiler */}
         <div className="post-footer-meta">
           <div className="view-count">

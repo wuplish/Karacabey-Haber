@@ -1,39 +1,100 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './AdminLogin.css';
 
 function AdminLogin({ onLogin }) {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState(null)
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const res = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    })
-
-    if (res.ok) {
-      onLogin(true)
-    } else {
-      setError("Kullanıcı adı veya şifre hatalı")
+  // Önbellekten kullanıcı bilgilerini kontrol et
+  useEffect(() => {
+    const savedCredentials = localStorage.getItem('adminCredentials');
+    if (savedCredentials) {
+      const { username: savedUser, password: savedPass } = JSON.parse(savedCredentials);
+      setUsername(savedUser);
+      setPassword(savedPass);
     }
-  }
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (res.ok) {
+        // Başarılı girişte önbelleğe al
+        localStorage.setItem('adminCredentials', JSON.stringify({ username, password }));
+        onLogin(true);
+        navigate('/admin/dashboard');
+      } else {
+        setError("Kullanıcı adı veya şifre hatalı");
+      }
+    } catch (err) {
+      setError("Sunucu hatası. Lütfen tekrar deneyin.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="admin-login">
-      <h2>Admin Giriş</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Kullanıcı adı" value={username} onChange={e => setUsername(e.target.value)} />
-        <input type="password" placeholder="Şifre" value={password} onChange={e => setPassword(e.target.value)} />
-        <button type="submit">Giriş Yap</button>
-      </form>
-      {error && <p className="error">{error}</p>}
+    <div className="admin-login-container">
+      <div className="admin-login-card">
+        <div className="login-header">
+          <h2>Admin Paneli Giriş</h2>
+          <div className="logo">
+            <span className="logo-primary">KARACABEY</span>
+            <span className="logo-secondary">HABER</span>
+          </div>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="input-group">
+            <label htmlFor="username">Kullanıcı Adı</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="admin@karacabeyhaber.com"
+              required
+            />
+          </div>
+          
+          <div className="input-group">
+            <label htmlFor="password">Şifre</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          
+          <button type="submit" className="login-button" disabled={isLoading}>
+            {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+          </button>
+          
+          {error && <div className="error-message">{error}</div>}
+        </form>
+        
+        <div className="login-footer">
+          <p>© {new Date().getFullYear()} Karacabey Haber Admin Paneli</p>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default AdminLogin
+export default AdminLogin;

@@ -52,8 +52,18 @@ def init_db():
             breaking_news INTEGER DEFAULT 0
         )
         """)
+        
+        # Subheadings tablosunu ekleyelim
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS subheadings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post_id INTEGER,
+            title TEXT,
+            content TEXT,
+            FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE
+        )
+        """)
         conn.commit()
-
 def query_db(query, args=(), one=False):
     with sqlite3.connect(DB_FILE) as conn:
         cur = conn.cursor()
@@ -67,6 +77,10 @@ class LoginData(BaseModel):
     username: str
     password: str
 
+class Subheading(BaseModel):
+    title: str
+    content: str
+
 class PostData(LoginData):
     title: str
     content: str
@@ -76,6 +90,7 @@ class PostData(LoginData):
     status: str
     publish_date: Optional[str] = None
     breaking_news: Optional[int] = 0
+    subheadings: Optional[List[Subheading]] = None  # Yeni alan
 
 class UpdatePostData(PostData):
     pass
@@ -114,41 +129,50 @@ def get_file(filename: str):
 @app.get("/posts")
 @limiter.limit("5/5seconds")
 def get_posts(request: Request):
-    rows = query_db("SELECT * FROM posts ORDER BY publish_date DESC")
-    return [{
-        "id": row[0],
-        "title": row[1],
-        "content": row[2],
-        "image": row[3],
-        "category": row[4],
-        "tags": row[5].split(',') if row[5] else [],
-        "status": row[6],
-        "publish_date": row[7],
-        "created_at": row[8],
-        "view_count": row[9],
-        "breaking_news": row[10]
-    } for row in rows]
+    posts = query_db("SELECT * FROM posts ORDER BY publish_date DESC")
+    result = []
+    for post in posts:
+        subheadings = query_db("SELECT title, content FROM subheadings WHERE post_id = ?", (post[0],))
+        result.append({
+            "id": post[0],
+            "title": post[1],
+            "content": post[2],
+            "image": post[3],
+            "category": post[4],
+            "tags": post[5].split(',') if post[5] else [],
+            "status": post[6],
+            "publish_date": post[7],
+            "created_at": post[8],
+            "view_count": post[9],
+            "breaking_news": post[10],
+            "subheadings": [{"title": s[0], "content": s[1]} for s in subheadings]
+        })
+    return result
 
 @app.get("/posts/{post_id}")
 @limiter.limit("5/5seconds")
-def get_post(request: Request,post_id: int):
+def get_post(request: Request, post_id: int):
     query_db("UPDATE posts SET view_count = view_count + 1 WHERE id = ?", (post_id,))
-    row = query_db("SELECT * FROM posts WHERE id = ?", (post_id,), one=True)
-    if not row:
+    post = query_db("SELECT * FROM posts WHERE id = ?", (post_id,), one=True)
+    if not post:
         raise HTTPException(status_code=404, detail="Post not found")
+    
+    subheadings = query_db("SELECT title, content FROM subheadings WHERE post_id = ?", (post_id,))
+    
     return {
-        "id": row[0],
-        "title": row[1],
-        "content": row[2],
-        "image": row[3],
-        "category": row[4],
-        "tags": row[5].split(',') if row[5] else [],
-        "status": row[6],
-        "publish_date": row[7],
-        "created_at": row[8],
-        "view_count": row[9],
-        "breaking_news": row[10]
-    }
+        "id": post[0],
+        "title": post[1],
+        "content": post[2],
+        "image": post[3],
+        "category": post[4],
+        "tags": post[5].split(',') if post[5] else [],
+        "status": post[6],
+        "publish_date": post[7],
+        "created_at": post[8],
+        "view_count": post[9],
+        "breaking_news": post[10],
+        "subheadings": [{"title": s[0], "content": s[1]} for s in subheadings]
+    }   
 
 @app.post("/posts")
 @limiter.limit("5/5seconds")
@@ -156,9 +180,11 @@ def create_post(request: Request, data: PostData):
     if not is_admin(data):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    query_db("""
+    # Post'u oluştur
+    cursor = query_db("""
     INSERT INTO posts (title, content, image, category, tags, status, publish_date, created_at, breaking_news)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    RETURNING id
     """, (
         data.title,
         data.content,
@@ -169,9 +195,19 @@ def create_post(request: Request, data: PostData):
         data.publish_date or datetime.now().isoformat(),
         datetime.now().isoformat(),
         data.breaking_news
-    ))
+    ), one=True)
 
-    return {"message": "Post created"}
+    post_id = cursor[0]
+
+    # Subheadings ekle
+    if data.subheadings:
+        for subheading in data.subheadings:
+            query_db("""
+            INSERT INTO subheadings (post_id, title, content)
+            VALUES (?, ?, ?)
+            """, (post_id, subheading.title, subheading.content))
+
+    return {"message": "Post created", "id": post_id}
 
 @app.put("/posts/{post_id}")
 @limiter.limit("5/5seconds")
@@ -197,6 +233,15 @@ def update_post(request: Request, post_id: int, data: UpdatePostData):
         data.breaking_news,
         post_id
     ))
+
+    query_db("DELETE FROM subheadings WHERE post_id = ?", (post_id,))
+
+    if data.subheadings:
+        for subheading in data.subheadings:
+            query_db("""
+            INSERT INTO subheadings (post_id, title, content)
+            VALUES (?, ?, ?)
+            """, (post_id, subheading.title, subheading.content))
 
     return {"message": "Post updated"}
 
