@@ -49,6 +49,11 @@ const OtherCategories = () => {
       name: "Belediye",
       path: "/belediye",
       description: "Belediye hizmetleri, projeler ve duyurular"
+    },
+    {
+      name: "Resmi İlanlar",
+      path: "/resmi-ilanlar",
+      description: "Resmi ilanlar, duyurular ve kamu bilgilendirmeleri"
     }
   ];
   return (

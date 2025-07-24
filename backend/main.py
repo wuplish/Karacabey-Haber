@@ -99,7 +99,7 @@ class UpdatePostData(PostData):
 
 # --- Auth ---
 def is_admin(data: LoginData):
-    return data.username == "admin" and data.password == "admin1234"
+    return data.username == "karacabeyhaber@admin.panel" and data.password == "karacabeyhaber@admin.user.haber@latest"
 from fastapi import Request
 @app.post("/login")
 @limiter.limit("1/5seconds")
@@ -107,7 +107,7 @@ def login(request: Request,data: LoginData):
     if is_admin(data):
         return {"success": True}
     raise HTTPException(status_code=401, detail="Unauthorized")
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4", ".mp3"}
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 def allowed_file(filename):
     return os.path.splitext(filename)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -273,7 +273,7 @@ def get_breaking():
         WHERE status = 'published'
         AND substr(publish_date, 1, 10) = ?
         ORDER BY publish_date DESC 
-        LIMIT 5
+        LIMIT 20
     """, (today,))
     
     return [
@@ -301,7 +301,7 @@ def get_slider_posts():
         FROM posts 
         WHERE status = 'published'
         ORDER BY publish_date DESC 
-        LIMIT 5
+        LIMIT 8
     """)
 
     return [

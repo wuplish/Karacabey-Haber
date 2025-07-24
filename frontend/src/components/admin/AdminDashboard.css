@@ -22,6 +22,7 @@
 
 .admin-dashboard {
   min-height: 100vh;
+  min-width: 100vh;
   background-color: var(--light);
   padding: 2rem;
 }
@@ -93,7 +94,7 @@
 }
 
 .post-header {
-  padding: 1.5rem;
+  padding: 1rem;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -102,13 +103,18 @@
 }
 
 .post-header h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
+
+  font-size: 0.9rem;
+  font-weight: 400;
   color: var(--dark);
   margin: 0;
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  white-space: nowrap;      
+  overflow: hidden;          
+  text-overflow: ellipsis;   
+  max-width: 80%;       
 }
 
 .status-badge {
@@ -133,36 +139,29 @@
   align-items: center;
   gap: 0.8rem;
 }
-
 .edit-btn, .delete-btn {
-  background: none;
+  background: transparent; /* arka plan yok */
   border: none;
   cursor: pointer;
-  font-size: 1rem;
-  transition: var(--transition);
-  width: 30px;
-  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  margin: 0 0.3rem;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-}
-
-.edit-btn {
-  color: var(--secondary);
+  transition: background-color 0.3s ease;
 }
 
 .edit-btn:hover {
   background-color: rgba(44, 62, 80, 0.1);
 }
 
-.delete-btn {
-  color: var(--primary);
+.delete-btn:hover {
+  background-color: rgba(217, 35, 46, 0.2);
 }
 
-.delete-btn:hover {
-  background-color: var(--primary-light);
-}
 
 .post-details {
   padding: 0 1.5rem 1.5rem;

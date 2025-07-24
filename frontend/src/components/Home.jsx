@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './HomePage.css';
 import Slider from "./slider/slider";
 import BreakingNewsBanner from './breakingnews/BreakingNewsBanner';
-
+import { FaEdit, FaTrash } from "react-icons/fa";
 const Home = () => {
   const [breaking, setBreaking] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -13,7 +13,6 @@ const Home = () => {
     fetch("http://localhost:5000/breaking")
       .then(res => res.json())
       .then(data => {
-        console.log("BREAKING DATA:", data);
         setBreaking(data);
       });
 
@@ -27,6 +26,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      
       {loading ? (
         <div className="loader-wrapper">
           <div className="loader"></div>
@@ -42,8 +42,8 @@ const Home = () => {
                   <span className="category-tag">{post.category}</span>
                 </div>
                 <div className="card-content">
-                  <h3 className="post-title">{post.title.slice(0, 10)}...</h3>
-                  <p className="post-excerpt">{post.content.slice(0, 20)}...</p>
+                  <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
+                  <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
                   <div className="post-meta">
                     <span className="read-time">3 dk okuma</span>
                     <span className="publish-date">
@@ -63,7 +63,7 @@ const Home = () => {
                   <img src={post.image} alt={post.title} />
                   <div className="content">
                     <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
-                    <p className="post-excerpt">{post.content.slice(0, 20)}...</p>
+                    <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
                     <div className="post-meta">
                       <span className="read-time">2 dk okuma</span>
                       <span className="publish-date">
@@ -83,8 +83,8 @@ const Home = () => {
                     <span className="category-tag">{post.category}</span>
                   </div>
                   <div className="card-content">
-                    <h3 className="post-title">{post.title.slice(0, 20)}...</h3>
-                    <p className="post-excerpt">{post.content.slice(0, 10)}...</p>
+                    <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
+                    <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
                     <div className="post-meta">
                       <span className="read-time">2 dk okuma</span>
                       <span className="publish-date">

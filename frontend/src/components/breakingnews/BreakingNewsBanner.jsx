@@ -24,6 +24,7 @@ const BreakingNewsBanner = ({ breaking }) => {
       <strong>SON DAKİKA:&nbsp;</strong>
       <span>{currentNews.title}</span>
     </Link>
+    
   );
 };
 

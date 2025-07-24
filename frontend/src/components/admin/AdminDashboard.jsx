@@ -117,7 +117,7 @@ function AdminDashboard() {
                         handleEdit(post);
                       }}
                     >
-                      <FaEdit />
+                      <FaEdit size={16} color="blue" />
                     </button>
                     <button 
                       className="delete-btn"
@@ -125,8 +125,8 @@ function AdminDashboard() {
                         e.stopPropagation();
                         handleDelete(post.id);
                       }}
-                    >
-                      <FaTrash />
+                    >           
+                    <FaTrash size={16} color="red" />
                     </button>
                     {expandedPost === post.id ? <FaChevronUp /> : <FaChevronDown />}
                   </div>
@@ -161,7 +161,7 @@ function AdminDashboard() {
 
 function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
   const categories = [
-    "Gündem", "Spor", "Magazin", "Ekonomi",
+    "Gündem","Resmi İlanlar", "Spor", "Magazin", "Ekonomi",
     "Siyaset", "Eğitim", "Sağlık", "Teknoloji",
     "Kültür-Sanat", "Yaşam", "Asayiş", "Tarım", "Belediye"
   ];
@@ -242,7 +242,7 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
   };
 
   const uploadImage = async () => {
-    if (!file) return form.image;
+    if (!file) return form.image || "http://localhost:5000/uploads/ifnoimage.png";
     
     const data = new FormData();
     data.append('file', file);
@@ -254,12 +254,12 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
         body: data
       });
       const json = await res.json();
-      console.log(json.url)
       return json.url;
     } finally {
       setUploading(false);
     }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

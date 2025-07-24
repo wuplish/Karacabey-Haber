@@ -27,12 +27,13 @@ const CategoryPage = ({ category }) => {
     'Siyaset': '#2ecc71',
     'Eğitim': '#1abc9c',
     'Sağlık': '#e67e22',
-    'Teknoloji': '#34495e',
+    'Teknoloji': '#6d77fdff',
     'Kültür-Sanat': '#d35400',
     'Yaşam': '#27ae60',
     'Asayiş': '#c0392b',
     'Tarım': '#16a085',
-    'Belediye': '#8e44ad'
+    'Belediye': '#8e44ad',
+    'Resmi İlanlar':'#ff0000ff'
   };
 
   return (

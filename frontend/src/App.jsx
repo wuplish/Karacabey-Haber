@@ -33,7 +33,7 @@ function App() {
           <Route path="/facebook" element={<Facebook />} />
           <Route path="/instagram" element={<Instagram />} />
           <Route path="/twitter" element={<Twitter />} />
-          <Route path="/post/:kisim" element={<PostDetail />} />
+          <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/gundem" element={<CategoryPage category="Gündem" />} />
           <Route path="/spor" element={<CategoryPage category="Spor" />} />
           <Route path="/ekonomi" element={<CategoryPage category="Ekonomi" />} />
@@ -43,6 +43,7 @@ function App() {
           <Route path="/saglik" element={<CategoryPage category="Sağlık" />} />
           <Route path="/teknoloji" element={<CategoryPage category="Teknoloji" />} />
           <Route path="/kultur-sanat" element={<CategoryPage category="Kültür ve Sanat" />} />
+          <Route path="/resmi-ilanlar" element={<CategoryPage category="Resmi İlanlar" />} />
           <Route path="/yasam" element={<CategoryPage category="Yaşam" />} />
           <Route path="/asayis" element={<CategoryPage category="Asayiş" />} />
           <Route path="/tarim" element={<CategoryPage category="Tarım" />} />
