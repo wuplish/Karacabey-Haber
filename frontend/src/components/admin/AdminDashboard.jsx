@@ -253,6 +253,7 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
         body: data
       });
       const json = await res.json();
+      console.log(json.url)
       return json.url;
     } finally {
       setUploading(false);

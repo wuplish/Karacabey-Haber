@@ -129,7 +129,6 @@ def get_file(filename: str):
 
 # --- Posts ---
 @app.get("/posts")
-@limiter.limit("5/5seconds")
 def get_posts(request: Request):
     posts = query_db("SELECT * FROM posts ORDER BY publish_date DESC")
     result = []
