@@ -13,6 +13,8 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from utils.filename_util import save_uploaded_file
 from utils.slug import create_slug
+import jsonify
+today = datetime.now().strftime("%d-%m-%Y")
 app = FastAPI()
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -266,27 +268,32 @@ def delete_post(post_id: int, data: LoginData):
 # --- Breaking News ---
 @app.get("/breaking")
 def get_breaking():
-    row = query_db("""
-    SELECT * FROM posts WHERE breaking_news = 1 AND status = 'published'
-    ORDER BY publish_date DESC LIMIT 1
-    """, one=True)
+    today = datetime.now().strftime("%Y-%m-%d")
 
-    if not row:
-        return {}
-
-    return {
-        "id": row[0],
-        "title": row[1],
-        "content": row[2],
-        "image": row[3],
-        "category": row[4],
-        "tags": row[5].split(','),
-        "status": row[6],
-        "publish_date": row[7],
-        "created_at": row[8],
-        "view_count": row[9],
-        "breaking_news": row[10]
-    }
+    rows = query_db("""
+        SELECT * FROM posts 
+        WHERE status = 'published'
+        AND substr(publish_date, 1, 10) = ?
+        ORDER BY publish_date DESC 
+        LIMIT 5
+    """, (today,))
+    
+    return [
+        {
+            "id": row[0],
+            "title": row[1],
+            "content": row[2],
+            "image": row[3],
+            "category": row[4],
+            "tags": row[5].split(',') if row[5] else [],
+            "status": row[6],
+            "publish_date": row[7],
+            "created_at": row[8],
+            "view_count": row[9],
+            "breaking_news": row[10],
+            "slug": row[11]
+        } for row in rows
+    ]
 
 # --- Slider ---
 @app.get("/slides")
@@ -311,7 +318,6 @@ def get_slider_posts():
 
 
 # --- Slug ---
-# Yeni endpoint ekleyin (mevcut /posts/{id} yanına)
 @app.get("/posts/by-slug/{slug}")
 def get_post_by_slug(slug: str):
     post = query_db("SELECT * FROM posts WHERE slug = ?", (slug,), one=True)
@@ -335,6 +341,17 @@ def get_post_by_slug(slug: str):
         "slug": post[11],  
         "subheadings": [{"title": s[0], "content": s[1]} for s in subheadings]
     }
+
+# --- Today ---
+@app.get("/today")
+def get_today_news():
+    rows = query_db(f"""
+        SELECT * FROM posts 
+        WHERE DATE(publish_date) = '{today}'
+        AND status = 'published'
+        ORDER BY publish_date DESC
+    """)
+    return jsonify(rows)
 
 # --- Start DB ---
 init_db()

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
 import Slider from "./slider/slider"
+import BreakingNewsBanner from './breakingnews/BreakingNewsBanner';
 const Home = () => {
   const [breaking, setBreaking] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -10,7 +11,10 @@ const Home = () => {
   useEffect(() => {
     fetch("http://localhost:5000/breaking")
       .then(res => res.json())
-      .then(data => setBreaking(data));
+      .then(data => {
+        console.log("BREAKING DATA:", data); // << BU SATIRI EKLE
+        setBreaking(data);
+      })
 
     fetch("http://localhost:5000/posts")
       .then(res => res.json())
@@ -22,19 +26,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* Breaking News */}
-      {breaking && breaking.title && (
-        <Link to={`/haber/${breaking.id}`} className="breaking-news-card">
-          <div className="breaking-overlay">
-            <span className="breaking-badge">SON DAKİKA</span>
-            <h2>{breaking.title}</h2>
-            <p>{breaking.content?.slice(0, 150)}...</p>
-          </div>
-          <img src={breaking.image} alt={breaking.title} className="breaking-image" />
-        </Link>
-      )}
       <Slider></Slider>
-      {/* Main Content */}
       <div className="content-wrapper">
         <h2 className="section-title">
           <span>Tüm Haberler</span>

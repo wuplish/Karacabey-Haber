@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import CategoryPage from './components/CategoryPage'
 import PostDetail from './components/PostDetail'
-import BreakingNewsBanner from './components/BreakingNewsBanner'
+import BreakingNewsBanner from './components/breakingnews/BreakingNewsBanner.jsx'
 import NotFound from './components/NotFound'
 import Instagram from './components/socialmedia/Instagram'
 import Twitter from './components/socialmedia/Twitter'
@@ -14,10 +14,18 @@ import Home from './components/Home'
 import OtherCategories from './components/OtherCategories'
 import AdminPanel from './AdminPanel.jsx'
 function App() {
+  const [breaking, setBreaking] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/breaking")
+      .then(res => res.json())
+      .then(data => setBreaking(data));
+  }, []);
+
   return (
     <>
-      <BreakingNewsBanner />
-      <Header />
+      <Header breaking={breaking} />
+      <BreakingNewsBanner breaking={breaking} />
       <main className="content">
         <Routes>
           <Route path="/ara/:query" element={<SearchResults />} />

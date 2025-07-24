@@ -17,16 +17,33 @@ function AdminDashboard() {
     setEditPost(null);
   };
 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   useEffect(() => {
     fetchPosts();
+    const savedCredentials = localStorage.getItem('adminCredentials');
+    if (savedCredentials) {
+      try {
+        const parsedCredentials = JSON.parse(savedCredentials);
+        if (parsedCredentials.username && parsedCredentials.password) {
+          setUsername(parsedCredentials.username);
+          setPassword(parsedCredentials.password);
+        } else {
+          console.warn("Geçersiz credential formatı");
+        }
+      } catch (error) {
+        console.error("JSON parse hatası:", error);
+        localStorage.removeItem('adminCredentials');
+      }
+    }
   }, []);
-
   const handleDelete = async (id) => {
     if (window.confirm('Bu haberi silmek istediğinize emin misiniz?')) {
       await fetch(`http://localhost:5000/posts/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: "admin", password: "admin1234" })
+        body: JSON.stringify({ username, password })
       });
       fetchPosts();
     }
@@ -158,7 +175,25 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
   const [preview, setPreview] = useState('');
   const [newSubheading, setNewSubheading] = useState({ title: '', content: '' });
   const [showSubheadingForm, setShowSubheadingForm] = useState(false);
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  useEffect(() => {
+    const savedCredentials = localStorage.getItem('adminCredentials');
+    if (savedCredentials) {
+      try {
+        const parsedCredentials = JSON.parse(savedCredentials);
+        if (parsedCredentials.username && parsedCredentials.password) {
+          setUsername(parsedCredentials.username);
+          setPassword(parsedCredentials.password);
+        } else {
+          console.warn("Geçersiz credential formatı");
+        }
+      } catch (error) {
+        console.error("JSON parse hatası:", error);
+        localStorage.removeItem('adminCredentials');
+      }
+    }
+  }, []);
   useEffect(() => {
     if (editPost) {
       setForm({
@@ -233,8 +268,8 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
         image: imageUrl,
         tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
         subheadings: subheadings,
-        username: 'admin',
-        password: 'admin1234'
+        username, 
+        password  
       };
       
       const method = editPost ? 'PUT' : 'POST';
