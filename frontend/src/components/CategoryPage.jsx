@@ -44,9 +44,8 @@ const CategoryPage = ({ category }) => {
 
       <div className="category-content">
         {loading ? (
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-            <p>Haberler yükleniyor...</p>
+          <div className="loader-wrapper">
+            <div className="loader"></div>
           </div>
         ) : posts.length === 0 ? (
           <div className="no-posts">

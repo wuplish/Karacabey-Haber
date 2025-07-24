@@ -177,7 +177,6 @@ def get_post(request: Request, post_id: int):
 
 @app.post("/posts")
 @limiter.limit("5/5seconds")
-@app.post("/posts")
 def create_post(request: Request, data: PostData):
     if not is_admin(data):
         raise HTTPException(status_code=401, detail="Unauthorized")

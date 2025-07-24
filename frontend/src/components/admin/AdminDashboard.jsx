@@ -167,9 +167,10 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
   ];
 
   const [form, setForm] = useState({
-    title: '', content: '', image: '', category: '',
+    content: '', image: '', category: '',
     tags: '', status: 'draft', publish_date: ''
   });
+
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState('');
