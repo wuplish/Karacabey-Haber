@@ -4,6 +4,7 @@ import './HomePage.css';
 import Slider from "./slider/slider";
 import BreakingNewsBanner from './breakingnews/BreakingNewsBanner';
 import { FaEdit, FaTrash } from "react-icons/fa";
+
 const Home = () => {
   const [breaking, setBreaking] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -26,102 +27,149 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      
       {loading ? (
         <div className="loader-wrapper">
           <div className="loader"></div>
         </div>
       ) : (
         <>
-          {/* İlk 4 post */}
-          <div className="top-posts-row">
-            {posts.slice(0, 4).map(post => (
-              <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
-                <div className="card-image-container">
-                  <img src={post.image} alt={post.title} className="post-image" />
-                  <span className="category-tag">{post.category}</span>
-                </div>
-                <div className="card-content">
-                  <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
-                  <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
-                  <div className="post-meta">
-                    <span className="read-time">3 dk okuma</span>
-                    <span className="publish-date">
-                      {new Date(post.publish_date).toLocaleDateString('tr-TR')}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+          {/* Üst reklam alanı */}
+          <div className="ad-container top-ad">
+            <div className="ad-rectangle">Üst Reklam Alanı</div>
           </div>
-          <div className="slide-section">
-            <div className="slider-area">
-              <Slider />
-              {/* Buraya yatay post ekliyoruz */}
-              {posts.slice(6, 8).map(post => (
-                <Link to={`/post/${post.id}`} className="slider-bottom-post">
-                  <img src={post.image} alt={post.title} />
-                  <div className="content">
-                    <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
-                    <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
-                    <div className="post-meta">
-                      <span className="read-time">2 dk okuma</span>
-                      <span className="publish-date">
-                        {new Date(post.publish_date).toLocaleDateString('tr-TR')}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+
+          <div className="main-content-wrapper">
+            {/* Sol reklam sütunu */}
+            <div className="ad-column left-ad-column">
+              <div className="ad-square">Sol Kare Reklam 1</div>
+              <div className="ad-square">Sol Kare Reklam 2</div>
+              <div className="ad-rectangle">Sol Dikdörtgen Reklam</div>
             </div>
-            <div className="side-posts">
-              {/* 5. ve 6. postlar burada zaten */}
-              {posts.slice(4, 6).map(post => (
-                <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
-                  <div className="card-image-container">
-                    <img src={post.image} alt={post.title} className="post-image" />
-                    <span className="category-tag">{post.category}</span>
-                  </div>
-                  <div className="card-content">
-                    <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
-                    <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
-                    <div className="post-meta">
-                      <span className="read-time">2 dk okuma</span>
-                      <span className="publish-date">
-                        {new Date(post.publish_date).toLocaleDateString('tr-TR')}
-                      </span>
+            
+            {/* Ana İçerik - Genişletilmiş */}
+            <div className="main-content expanded">
+              {/* İlk 4 post */}
+              <div className="top-posts-row">
+                {posts.slice(0, 4).map(post => (
+                  <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
+                    <div className="card-image-container">
+                      <img src={post.image} alt={post.title} className="post-image" />
+                      <span className="category-tag">{post.category}</span>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                    <div className="card-content">
+                      <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
+                      <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
+                      <div className="post-meta">
+                        <span className="read-time">3 dk okuma</span>
+                        <span className="publish-date">
+                          {new Date(post.publish_date).toLocaleDateString('tr-TR')}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="slide-section">
+                <div className="slider-area">
+                  <Slider />
+                  {/* Yatay postlar */}
+                  {posts.slice(6, 8).map(post => (
+                    <Link to={`/post/${post.id}`} className="slider-bottom-post" key={post.id}>
+                      <img src={post.image} alt={post.title} />
+                      <div className="content">
+                        <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
+                        <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
+                        <div className="post-meta">
+                          <span className="read-time">2 dk okuma</span>
+                          <span className="publish-date">
+                            {new Date(post.publish_date).toLocaleDateString('tr-TR')}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="side-posts">
+                  {/* 5. ve 6. postlar */}
+                  {posts.slice(4, 6).map(post => (
+                    <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
+                      <div className="card-image-container">
+                        <img src={post.image} alt={post.title} className="post-image" />
+                        <span className="category-tag">{post.category}</span>
+                      </div>
+                      <div className="card-content">
+                        <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
+                        <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
+                        <div className="post-meta">
+                          <span className="read-time">2 dk okuma</span>
+                          <span className="publish-date">
+                            {new Date(post.publish_date).toLocaleDateString('tr-TR')}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="content-wrapper">
+                <h2 className="section-title">
+                  <span>Diğer Tüm Haberler</span>
+                </h2>
+
+                {(() => {
+                  const categorized = {}; 
+                  posts.slice(8).forEach(post => {
+                    if (!categorized[post.category]) {
+                      categorized[post.category] = [];
+                    }
+                    categorized[post.category].push(post);
+                  });
+
+                  return Object.entries(categorized).map(([category, categoryPosts]) => {
+                    if (categoryPosts.length === 0) return null;
+
+                    return (
+                      <div key={category} className="category-section">
+                        <h3 className="category-title">{category} Haberleri</h3>
+                        <div className="posts-grid">
+                          {categoryPosts.map(post => (
+                            <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
+                              <div className="card-image-container">
+                                <img src={post.image} alt={post.title} className="post-image" />
+                                <span className="category-tag">{post.category}</span>
+                              </div>
+                              <div className="card-content">
+                                <h3 className="post-title">{post.title}</h3>
+                                <p className="post-excerpt">{post.content.slice(0, 50)}...</p>
+                                <div className="post-meta">
+                                  <span className="read-time">2 dk okuma</span>
+                                  <span className="publish-date">
+                                    {new Date(post.publish_date).toLocaleDateString('tr-TR')}
+                                  </span>
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </div>
+
+            <div className="ad-column right-ad-column">
+              <div className="ad-square">Sağ Kare Reklam 1</div>
+              <div className="ad-square">Sağ Kare Reklam 2</div>
+              <div className="ad-rectangle">Sağ Dikdörtgen Reklam</div>
             </div>
           </div>
 
-
-          <div className="content-wrapper">
-            <h2 className="section-title">
-              <span>Diğer Tüm Haberler</span>
-            </h2>
-            <div className="posts-grid">
-              {posts.slice(8).map(post => (
-                <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
-                  <div className="card-image-container">
-                    <img src={post.image} alt={post.title} className="post-image" />
-                    <span className="category-tag">{post.category}</span>
-                  </div>
-                  <div className="card-content">
-                    <h3 className="post-title">{post.title}</h3>
-                    <p className="post-excerpt">{post.content.slice(0, 50)}...</p>
-                    <div className="post-meta">
-                      <span className="read-time">2 dk okuma</span>
-                      <span className="publish-date">
-                        {new Date(post.publish_date).toLocaleDateString('tr-TR')}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+          {/* Alt reklam alanı */}
+          <div className="ad-container bottom-ad">
+            <div className="ad-rectangle">Alt Reklam Alanı</div>
           </div>
         </>
       )}

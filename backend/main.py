@@ -8,6 +8,7 @@ import os
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 import sqlite3
+import requests
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -110,7 +111,6 @@ def login(request: Request,data: LoginData):
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 def allowed_file(filename):
     return os.path.splitext(filename)[1].lower() in ALLOWED_EXTENSIONS
-
 
 # --- File Upload System ---
 @app.post("/upload")
@@ -295,14 +295,25 @@ def get_breaking():
 
 # --- Slider ---
 @app.get("/slides")
-def get_slider_posts():
-    rows = query_db("""
-        SELECT id, title, image, publish_date 
-        FROM posts 
-        WHERE status = 'published'
-        ORDER BY publish_date DESC 
-        LIMIT 8
-    """)
+def get_slider_posts(category: str = None):
+    if category:
+        query = """
+            SELECT id, title, image, publish_date 
+            FROM posts 
+            WHERE status = 'published' AND category = ? 
+            ORDER BY publish_date DESC 
+            LIMIT 8
+        """ # category check added
+        rows = query_db(query, (category,))
+    else:
+        query = """
+            SELECT id, title, image, publish_date 
+            FROM posts 
+            WHERE status = 'published' 
+            ORDER BY publish_date DESC 
+            LIMIT 8
+        """
+        rows = query_db(query)
 
     return [
         {
