@@ -33,18 +33,7 @@ const Home = () => {
         </div>
       ) : (
         <>
-          {/* Üst reklam alanı */}
-          <div className="ad-container top-ad">
-            <div className="ad-rectangle">Üst Reklam Alanı</div>
-          </div>
-
-          <div className="main-content-wrapper">
-            {/* Sol reklam sütunu */}
-            <div className="ad-column left-ad-column">
-              <div className="ad-square">Sol Kare Reklam 1</div>
-              <div className="ad-square">Sol Kare Reklam 2</div>
-              <div className="ad-rectangle">Sol Dikdörtgen Reklam</div>
-            </div>
+          
             
             {/* Ana İçerik - Genişletilmiş */}
             <div className="main-content expanded">
@@ -159,18 +148,6 @@ const Home = () => {
                 })()}
               </div>
             </div>
-
-            <div className="ad-column right-ad-column">
-              <div className="ad-square">Sağ Kare Reklam 1</div>
-              <div className="ad-square">Sağ Kare Reklam 2</div>
-              <div className="ad-rectangle">Sağ Dikdörtgen Reklam</div>
-            </div>
-          </div>
-
-          {/* Alt reklam alanı */}
-          <div className="ad-container bottom-ad">
-            <div className="ad-rectangle">Alt Reklam Alanı</div>
-          </div>
         </>
       )}
     </div>

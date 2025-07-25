@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Request
+import json
+from fastapi import Body, FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -17,10 +18,20 @@ from utils.slug import create_slug
 import jsonify
 today = datetime.now().strftime("%d-%m-%Y")
 app = FastAPI()
+CATEGORY_JSON = "categories.json"
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def get_user_id(request: Request):
     return request.headers.get("gelmisgecmiseniyiuserid") or get_remote_address(request)
+def load_categories():
+    if not os.path.exists(CATEGORY_JSON):
+        return []
+    with open(CATEGORY_JSON, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_categories(data):
+    with open(CATEGORY_JSON, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 limiter = Limiter(key_func=get_user_id)
 
@@ -75,6 +86,11 @@ def query_db(query, args=(), one=False):
         return (rows[0] if rows else None) if one else rows
 
 # --- Models ---
+class CategoryModel(BaseModel):
+    name: str
+    path: Optional[str] = None
+    description: Optional[str] = None
+
 class LoginData(BaseModel):
     username: str
     password: str
@@ -361,6 +377,28 @@ def get_today_news():
         ORDER BY publish_date DESC
     """)
     return jsonify(rows)
+# --- Category System ---
+@app.get("/category")
+def get_categories():
+    return load_categories()
+
+@app.post("/category")
+def create_category(data: CategoryModel = Body(...)):
+    categories = load_categories()
+    path = data.path or "/" + create_slug(data.name)
+    
+    if any(cat['path'] == path for cat in categories):
+        raise HTTPException(status_code=400, detail="Bu path zaten kullanılıyor.")
+
+    new_cat = {
+        "name": data.name,
+        "path": path,
+        "description": data.description or ""
+    }
+
+    categories.append(new_cat)
+    save_categories(categories)
+    return {"message": "Kategori oluşturuldu", "category": new_cat}
 
 # --- Start DB ---
 init_db()
