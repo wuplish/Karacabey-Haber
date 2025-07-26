@@ -1,4 +1,4 @@
-/* Temel Stiller */
+
 .post-detail-container {
   max-width: 1000px;
   margin: 2rem auto;
@@ -8,7 +8,6 @@
   line-height: 1.6;
 }
 
-/* Gönderi Alanı */
 .post-article {
   background: #fff;
   border-radius: 12px;
@@ -17,7 +16,6 @@
   margin-bottom: 2rem;
 }
 
-/* Başlık ve Meta */
 .post-header-meta {
   display: flex;
   justify-content: space-between;
@@ -59,7 +57,6 @@
   color: #2c3e50;
 }
 
-/* Öne Çıkan Görsel */
 .featured-image-container {
   margin: 2rem 0;
   border-radius: 8px;
@@ -83,7 +80,6 @@
   font-style: italic;
 }
 
-/* İçerik */
 .post-content {
   font-size: 1.1rem;
   line-height: 1.8;
@@ -95,7 +91,6 @@
   text-align: justify;
 }
 
-/* Alt Bilgiler */
 .post-footer-meta {
   margin-top: 3rem;
   padding-top: 1.5rem;
@@ -135,7 +130,6 @@
   background: #e2e8f0;
 }
 
-/* İlgili Gönderiler */
 .related-posts {
   background: #fff;
   border-radius: 12px;
@@ -192,25 +186,34 @@
   line-height: 1.4;
 }
 
-/* Yükleme ve Hata */
-.loading-container {
+.loader-wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: 300px;
+  align-items: center;
+  height: 50vh;
 }
 
-.loading-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top: 4px solid #3498db;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+.loader {
+  width: 40px;
+  aspect-ratio: 1;
+  position: relative;
 }
-
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: -8px 0 0 -8px;
+  width: 16px;
+  aspect-ratio: 1;
+  background: #3FB8AF;
+  animation: l1-1 2s infinite, l1-2 0.5s infinite;
+}
+.loader:after {
+  background: #FF3D7F;
+  animation-delay: -1s, 0s;
+}
 .error-container {
   text-align: center;
   padding: 2rem;
@@ -251,7 +254,6 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .post-article {
     padding: 1.5rem;

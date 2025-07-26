@@ -1,5 +1,3 @@
-
-
 .home-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -45,18 +43,18 @@
 }
 .currency-right ul {
   display: flex;
-  gap: 12px;           /* Ögeler arası boşluk */
+  gap: 12px;          
   padding: 0;
   margin: 0;
   list-style: none;
-  flex-wrap: wrap;     /* Ekran daralınca alt satıra geçer */
+  flex-wrap: wrap;    
   justify-content: center;
 }
 
 .currency-right ul li {
-  flex: 1 1 auto;      /* Esneyebilir */
-  min-width: 70px;     /* Minimum genişlik */
-  background-color: #c4e0f7;
+  flex: 1 1 auto;     
+  min-width: 70px;     
+  background: linear-gradient(135deg, #bae2ff, hsl(204, 100%, 94%));
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 1rem;
@@ -85,7 +83,7 @@
 .currency-right h3 {
   margin-bottom: 10px;
 }
-/* Sadece mobilde göster */
+
 .mobile-slider-wrapper {
   display: none;
 }
@@ -95,7 +93,6 @@
     display: block;
   }
 
-  /* Slide-section'daki eski slider'ı gizle */
   .slide-section .slider-area {
     display: none;
   }
@@ -107,8 +104,6 @@
   }
 }
 
-
-/* İlk 4 post yatay */
 .top-posts-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -116,7 +111,6 @@
   margin: 2rem 0;
 }
 
-/* Slide ve yan postlar */
 .slide-section {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -134,7 +128,6 @@
   gap: 1.5rem;
 }
 
-/* Section Title */
 .section-title {
   position: relative;
   margin: 2rem 0;
@@ -148,9 +141,8 @@
   padding: 0 2rem;
   position: relative;
 }
-/* Slider altındaki yatay post */
 .slider-bottom-post {
-  width: 100%; /* slide-section içindeki slider-area kadar genişlikte */
+  width: 100%; 
   height: 150px;
   margin-top: 1rem;
   background: white;
@@ -192,7 +184,6 @@
   line-height: 1.4;
 }
 
-/* Responsive için küçültme */
 @media (max-width: 768px) {
   .slider-bottom-post {
     flex-direction: column;
@@ -223,7 +214,6 @@
   right: -60px;
 }
 
-/* Grid sonrası postlar */
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -231,7 +221,6 @@
   margin-bottom: 3rem;
 }
 
-/* Post Kartı */
 .post-card {
   background: white;
   border-radius: 10px;
@@ -306,7 +295,6 @@
   margin-top: auto;
 }
 
-/* Loader */
 .loader-wrapper {
   display: flex;
   justify-content: center;
@@ -346,7 +334,6 @@
   80%, 100% { transform: rotate(0.5turn); }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .top-posts-row {
     grid-template-columns: 1fr;

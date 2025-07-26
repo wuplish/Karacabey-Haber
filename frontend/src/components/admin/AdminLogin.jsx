@@ -9,7 +9,6 @@ function AdminLogin({ onLogin }) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Önbellekten kullanıcı bilgilerini kontrol et
   useEffect(() => {
     const savedCredentials = localStorage.getItem('adminCredentials');
     if (savedCredentials) {
@@ -32,7 +31,6 @@ function AdminLogin({ onLogin }) {
       });
 
       if (res.ok) {
-        // Başarılı girişte önbelleğe al
         localStorage.setItem('adminCredentials', JSON.stringify({ username, password }));
         onLogin(true);
         navigate('/admin/dashboard');

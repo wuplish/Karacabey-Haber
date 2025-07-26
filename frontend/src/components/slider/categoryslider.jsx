@@ -54,7 +54,6 @@ const CategorySlider = ({ category = null }) => {
         </div>
       ))}
 
-      {/* Kırmızı Oklar */}
       <button className="arrow left" onClick={goToPrev}>
         &#10094;
       </button>

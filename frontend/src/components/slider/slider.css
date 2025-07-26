@@ -21,18 +21,17 @@
   box-sizing: border-box;
   color: white;
 }
-/* Masaüstü düzeni */
+
 .slider {
   position: relative;
   width: 100%;
-  height: 400px; /* ya da neyse */
+  height: 400px; 
   overflow: hidden;
 }
 
-/* Mobilde en üstte ve tam genişlikte sabitle */
 @media (max-width: 768px) {
   .slider {
-    order: -1;         /* Eğer flex içinde aşağıdaysa yukarı çıkarır */
+    order: -1;       
     z-index: 9999;
   }
 }
@@ -86,7 +85,6 @@
   background: #f57b6e;
 }
 
-/* --- Oklar (kırmızı) --- */
 .arrow {
   position: absolute;
   top: 50%;

@@ -124,7 +124,6 @@ const Home = () => {
             )}
 
             <div className="main-content expanded">
-              {/* İlk 4 post */}
               <div className="top-posts-row">
                 {posts.slice(0, 4).map(post => (
                   <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
@@ -148,7 +147,6 @@ const Home = () => {
               <div className="slide-section">
                 <div className="slider-area">
                   <Slider />
-                  {/* Yatay postlar */}
                   {posts.slice(6, 8).map(post => (
                     <Link to={`/post/${post.id}`} className="slider-bottom-post" key={post.id}>
                       <img src={post.image} alt={post.title} />
@@ -165,7 +163,6 @@ const Home = () => {
                   ))}
                 </div>
                 <div className="side-posts">
-                  {/* 5. ve 6. postlar */}
                   {posts.slice(4, 6).map(post => (
                     <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
                       <div className="card-image-container">

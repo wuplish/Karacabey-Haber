@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './CategoryPage.css';
-import CategorySlider from './slider/categoryslider';
+import CategorySlider from '../slider/categoryslider';
 
 const CategoryPage = ({ category }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [categoryColor, setCategoryColor] = useState('#dd0000ff'); // default renk
+  const [categoryColor, setCategoryColor] = useState('#dd0000ff'); 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  // Kategorilere ait yazıları al
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:5000/posts")
@@ -21,7 +20,6 @@ const CategoryPage = ({ category }) => {
       .catch(() => setLoading(false));
   }, [category]);
 
-  // Kategori rengi çek
   useEffect(() => {
     fetch("http://localhost:5000/category")
       .then(res => res.json())
@@ -30,11 +28,11 @@ const CategoryPage = ({ category }) => {
         if (match && match.color) {
           setCategoryColor(match.color);
         } else {
-          setCategoryColor('#dd0000ff'); // fallback
+          setCategoryColor('#dd0000ff'); 
         }
       })
       .catch(() => {
-        setCategoryColor('#dd0000ff'); // hata durumunda fallback
+        setCategoryColor('#dd0000ff'); 
       });
   }, [category]);
 
@@ -67,7 +65,6 @@ const CategoryPage = ({ category }) => {
           <CategorySlider category={category} />
         </div>
       )}
-      {/* İlk 4 post */}
       <div className="top-posts-row">
         {posts.slice(0, 4).map(post => (
           <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
@@ -88,7 +85,6 @@ const CategoryPage = ({ category }) => {
         ))}
       </div>
 
-      {/* Slider ve 6-8 arası */}
       <div className="slide-section">
         <div className="slider-area">
           <CategorySlider category={category} />
@@ -109,7 +105,6 @@ const CategoryPage = ({ category }) => {
           ))}
         </div>
 
-        {/* 5-6. post sağda */}
         <div className="side-posts">
           {posts.slice(4, 6).map(post => (
             <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
@@ -132,7 +127,6 @@ const CategoryPage = ({ category }) => {
         </div>
       </div>
 
-      {/* Geri kalan tüm postlar */}
       <div className="content-wrapper">
         <h2 className="section-title">
           <span>Diğer {category} Haberleri</span>

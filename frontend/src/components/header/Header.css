@@ -1,4 +1,3 @@
-/* Header.css */
 :root {
   --primary: #D9232E;
   --primary-dark: #A71D26;
@@ -11,12 +10,10 @@
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Apply Poppins to all elements */
 * {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Base Header Styles */
 .header {
   background-color: var(--white);
   position: fixed;
@@ -42,7 +39,6 @@
   height: 80px;
 }
 
-/* Logo Styles */
 .logo-link {
   text-decoration: none;
   z-index: 1001;
@@ -51,7 +47,7 @@
 .logo {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-top: 25px; /* 10px aşağı indirdi */
+  margin-top: 25px; 
   display: flex;
   flex-direction: column;
   line-height: 1;
@@ -67,7 +63,6 @@
   font-weight: 600;
 }
 
-/* Search Bar */
 .search-form {
   flex: 1;
   max-width: 500px;
@@ -106,7 +101,7 @@
   background: var(--primary);
   border: none;
   width: 36px;
-  height: 36px; /* aspect-ratio: 1/1 ile aynı işlevi görüyor, birini kullanabilirsiniz */
+  height: 36px; 
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -114,15 +109,14 @@
   cursor: pointer;
   transition: var(--transition);
   box-shadow: 0 2px 6px rgba(217, 35, 46, 0.3);
-  padding: 0; /* Ekstra güvenlik için */
-  box-sizing: border-box; /* Kenarlıklar dahil boyut hesabı */
-  line-height: 0; /* SVG hizalaması için */
+  padding: 0;
+  box-sizing: border-box;
+  line-height: 0; 
 }
 
-/* Tarayıcı uyumluluğu için */
 @supports not (aspect-ratio: 1/1) {
   .search-button {
-    aspect-ratio: none; /* Desteklemeyen tarayıcılar için */
+    aspect-ratio: none;
   }
 }
 
@@ -140,16 +134,15 @@
 .search-icon {
   width: 18px;
   height: 18px;
-  color: var(--white); /* Bu satırı değiştirin */
-  stroke: currentColor; /* Yeni ekleyin */
-  fill: none; /* Yeni ekleyin */
+  color: var(--white); 
+  stroke: currentColor; 
+  fill: none; 
   transition: transform 0.2s ease;
 }
 .search-button:hover .search-icon {
   transform: scale(1.1);
 }
 
-/* Navigation Links */
 .nav-links {
   display: flex;
   gap: 1.5rem;
@@ -196,14 +189,13 @@
   padding: 0.75rem;
   z-index: 1001;
   flex-direction: column;
-  justify-content: center; /* Ortala */
+  justify-content: center; 
   width: 40px;
   height: 30px;
   position: relative;
-  gap: 3px; /* Çizgiler arası boşluk */
+  gap: 3px; 
 }
 
-/* Menü çizgileri */
 .menu-line {
   display: block;
   width: 100%;
@@ -224,14 +216,14 @@
 }
 
 .nav-links.mobile-show {
-  display: flex;               /* Flex container yap */
-  flex-direction: column;      /* Dikey diz */
-  align-items: center;         /* Yatayda ortala */
-  justify-content: center;     /* Dikeyde ortala */
-  height: 100vh;               /* Tam ekran yüksekliği */
+  display: flex;               
+  flex-direction: column;     
+  align-items: center;         
+  justify-content: center;   
+  height: 100vh;              
   width: 100%;
-  gap: 1.8rem;                 /* Linkler arası boşluk */
-  padding-top: 80px;           /* Header altından başlasın */
+  gap: 1.8rem;               
+  padding-top: 80px;          
   background: var(--white);
   position: fixed;
   top: 0;
@@ -242,7 +234,6 @@
   pointer-events: auto;
 }
 
-/* Mobile Design */
 @media (max-width: 992px) {
   .header-container {
     padding: 0 1.5rem;

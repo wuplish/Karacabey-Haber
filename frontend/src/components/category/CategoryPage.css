@@ -3,7 +3,6 @@
   margin: 0 auto;
   padding: 0 1rem;
 }
-/* Sadece mobilde göster */
 .mobile-slider-wrapper {
   display: none;
 }
@@ -13,7 +12,6 @@
     display: block;
   }
 
-  /* Slide-section'daki eski slider'ı gizle */
   .slide-section .slider-area {
     display: none;
   }

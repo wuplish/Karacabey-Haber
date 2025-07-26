@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './PostDetail.css';
-import { getOrCreateUserId } from '../utils/userId';
+import { getOrCreateUserId } from '../../utils/userId';
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -14,7 +14,6 @@ const PostDetail = () => {
     const fetchData = async () => {
       const userId = getOrCreateUserId();
       try {
-        // Ana gönderiyi al
         const postRes = await fetch(`http://localhost:5000/posts/${id}`, {
           headers: {
             'gelmisgecmiseniyiuserid': userId,
@@ -29,7 +28,6 @@ const PostDetail = () => {
         const postData = await postRes.json();
         setPost(postData);
 
-        // İlgili gönderileri al
         const relatedRes = await fetch(`http://localhost:5000/posts?category=${postData.category}&limit=3`);
         const relatedData = await relatedRes.json();
         setRelatedPosts(relatedData.filter(p => p.id !== postData.id));
@@ -55,10 +53,9 @@ const PostDetail = () => {
   };
 
   if (loading) return (
-    <div className="loading-container">
-      <div className="loading-spinner"></div>
-      <p>İçerik yükleniyor...</p>
-    </div>
+      <div className="loader-wrapper">
+        <div className="loader"></div>
+      </div>
   );
 
   if (error) return (
@@ -75,7 +72,6 @@ const PostDetail = () => {
   return (
     <div className="post-detail-container">
       <article className="post-article">
-        {/* Kategori ve Tarih */}
         <div className="post-header-meta">
           <span className="category-badge">{post.category}</span>
           <time className="publish-date">
@@ -89,10 +85,8 @@ const PostDetail = () => {
           </time>
         </div>
 
-        {/* Başlık */}
         <h1 className="post-title">{post.title}</h1>
 
-        {/* Öne Çıkan Görsel */}
         {post.image && (
           <div className="featured-image-container">
             <img
@@ -107,7 +101,6 @@ const PostDetail = () => {
           </div>
         )}
 
-        {/* İçerik */}
         <div className="post-content">
           {formatContent(post.content)}
         </div>
@@ -122,7 +115,6 @@ const PostDetail = () => {
             ))}
           </div>
         )}
-        {/* Meta Bilgiler */}
         <div className="post-footer-meta">
           <div className="view-count">
             <span>👁️ {post.view_count} görüntülenme</span>
@@ -141,7 +133,6 @@ const PostDetail = () => {
         </div>
       </article>
 
-      {/* İlgili Gönderiler */}
       {relatedPosts.length > 0 && (
         <aside className="related-posts">
           <h3 className="related-title">İlgili Haberler</h3>

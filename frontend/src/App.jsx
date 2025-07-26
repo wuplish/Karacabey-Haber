@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import CategoryPage from './components/CategoryPage'
-import PostDetail from './components/PostDetail'
+import Header from './components/header/Header.jsx'
+import Footer from './components/footer/Footer.jsx'
+import CategoryPage from './components/category/CategoryPage.jsx'
+import PostDetail from './components/post/PostDetail.jsx'
 import BreakingNewsBanner from './components/breakingnews/BreakingNewsBanner.jsx'
-import NotFound from './components/NotFound'
+import NotFound from './components/notfound/NotFound.jsx'
 import Instagram from './components/socialmedia/Instagram'
 import Twitter from './components/socialmedia/Twitter'
 import Facebook from './components/socialmedia/Facebook'
-import SearchResults from './components/SearchResults'
+import SearchResults from './components/search/SearchResults.jsx'
 import Home from './components/Home'
-import OtherCategories from './components/OtherCategories'
+import OtherCategories from './components/category/OtherCategories.jsx'
 import AdminPanel from './AdminPanel.jsx'
 
 function App() {
@@ -57,7 +57,6 @@ function App() {
             />
           ))}
 
-          {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

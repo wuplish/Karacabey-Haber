@@ -25,7 +25,6 @@ const SearchResults = () => {
       })
   }, [query])
 
-  // Arama terimini vurgulama fonksiyonu
   const highlightText = (text) => {
     if (!query) return text
     const parts = text.split(new RegExp(`(${query})`, 'gi'))

@@ -70,13 +70,13 @@
     "description": "Döviz, borsa, piyasa analizleri ve ekonomik gelişmeler"
   },
   {
-    "name": "test",
+    "name": "testpage",
     "path": "/test",
-    "description": "test"
+    "description": "wow!"
   },
   {
-    "name": "testttt",
-    "path": "/test2",
-    "description": "TEst bilmemne"
+    "name": "sa",
+    "path": "/sa",
+    "description": "sa"
   }
 ]

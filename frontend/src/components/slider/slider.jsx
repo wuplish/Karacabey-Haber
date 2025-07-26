@@ -49,8 +49,6 @@ const Slider = () => {
           </div>
         </div>
       ))}
-
-      {/* Kırmızı Oklar */}
       <button className="arrow left" onClick={goToPrev}>
         &#10094;
       </button>
