@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Siyaset",
+    "path": "/siyaset",
+    "description": "Yerel ve ulusal siyaset haberleri, analizler ve gelişmeler"
+  },
+  {
+    "name": "Eğitim",
+    "path": "/egitim",
+    "description": "Okullar, kurslar, eğitim sistemindeki değişiklikler"
+  },
+  {
+    "name": "Sağlık",
+    "path": "/saglik",
+    "description": "Hastaneler, sağlık hizmetleri, koruyucu sağlık bilgileri"
+  },
+  {
+    "name": "Teknoloji",
+    "path": "/teknoloji",
+    "description": "Yeni teknolojiler, dijital dünyadan haberler"
+  },
+  {
+    "name": "Kültür-Sanat",
+    "path": "/kultur-sanat",
+    "description": "Sergiler, tiyatrolar, yerel sanat etkinlikleri"
+  },
+  {
+    "name": "Yaşam",
+    "path": "/yasam",
+    "description": "Günlük hayata dair pratik bilgiler, ipuçları"
+  },
+  {
+    "name": "Asayiş",
+    "path": "/asayis",
+    "description": "Güvenlik haberleri, polis faaliyetleri"
+  },
+  {
+    "name": "Tarım",
+    "path": "/tarim",
+    "description": "Çiftçi haberleri, tarımsal destekler, hasat durumu"
+  },
+  {
+    "name": "Belediye",
+    "path": "/belediye",
+    "description": "Belediye hizmetleri, projeler ve duyurular"
+  },
+  {
+    "name": "Resmi İlanlar",
+    "path": "/resmi-ilanlar",
+    "description": "Resmi ilanlar, duyurular ve kamu bilgilendirmeleri"
+  },
+  {
+    "name": "Gündem",
+    "path": "/gundem",
+    "description": "Güncel olaylar, gelişmeler ve halkın gündeminde olan konular"
+  },
+  {
+    "name": "Spor",
+    "path": "/spor",
+    "description": "Futbol, basketbol ve diğer spor dallarından haberler"
+  },
+  {
+    "name": "Magazin",
+    "path": "/magazin",
+    "description": "Ünlüler dünyası, dedikodular ve magazin gelişmeleri"
+  },
+  {
+    "name": "Ekonomi",
+    "path": "/ekonomi",
+    "description": "Döviz, borsa, piyasa analizleri ve ekonomik gelişmeler"
+  },
+  {
+    "name": "test",
+    "path": "/test",
+    "description": "test"
+  },
+  {
+    "name": "testttt",
+    "path": "/test2",
+    "description": "TEst bilmemne"
+  }
+]

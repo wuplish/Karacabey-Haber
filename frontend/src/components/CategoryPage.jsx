@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import './CategoryPage.css';
 import CategorySlider from './slider/categoryslider';
 
 const CategoryPage = ({ category }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [categoryColor, setCategoryColor] = useState('#dd0000ff'); // default renk
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  // Kategorilere ait yazıları al
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:5000/posts")
@@ -19,22 +21,22 @@ const CategoryPage = ({ category }) => {
       .catch(() => setLoading(false));
   }, [category]);
 
-  const categoryColors = {
-    'Gündem': '#e74c3c',
-    'Spor': '#3498db',
-    'Magazin': '#9b59b6',
-    'Ekonomi': '#f39c12',
-    'Siyaset': '#2ecc71',
-    'Eğitim': '#1abc9c',
-    'Sağlık': '#e67e22',
-    'Teknoloji': '#6d77fdff',
-    'Kültür-Sanat': '#d35400',
-    'Yaşam': '#27ae60',
-    'Asayiş': '#c0392b',
-    'Tarım': '#16a085',
-    'Belediye': '#8e44ad',
-    'Resmi İlanlar': '#ff0000ff'
-  };
+  // Kategori rengi çek
+  useEffect(() => {
+    fetch("http://localhost:5000/category")
+      .then(res => res.json())
+      .then(data => {
+        const match = data.find(cat => cat.name === category);
+        if (match && match.color) {
+          setCategoryColor(match.color);
+        } else {
+          setCategoryColor('#dd0000ff'); // fallback
+        }
+      })
+      .catch(() => {
+        setCategoryColor('#dd0000ff'); // hata durumunda fallback
+      });
+  }, [category]);
 
   if (loading) {
     return (
@@ -56,12 +58,16 @@ const CategoryPage = ({ category }) => {
 
   return (
     <div className="category-page">
-      <div className="category-header" style={{ backgroundColor: categoryColors[category] || '#2c3e50' }}>
+      <div className="category-header" style={{ backgroundColor: categoryColor }}>
         <h1>{category} Haberleri</h1>
         <p>En güncel {category.toLowerCase()} haberleri burada</p>
       </div>
-
-      {/* 🟥 İlk 4 post - özel kartlar */}
+      {!showMobileMenu && (
+        <div className="mobile-slider-wrapper">
+          <CategorySlider category={category} />
+        </div>
+      )}
+      {/* İlk 4 post */}
       <div className="top-posts-row">
         {posts.slice(0, 4).map(post => (
           <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
@@ -73,7 +79,6 @@ const CategoryPage = ({ category }) => {
               <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
               <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
               <div className="post-meta">
-                <span className="read-time">3 dk okuma</span>
                 <span className="publish-date">
                   {new Date(post.publish_date).toLocaleDateString('tr-TR')}
                 </span>
@@ -83,12 +88,10 @@ const CategoryPage = ({ category }) => {
         ))}
       </div>
 
-      {/* 🟦 Slider + 6.-8. postlar + yan postlar */}
+      {/* Slider ve 6-8 arası */}
       <div className="slide-section">
         <div className="slider-area">
           <CategorySlider category={category} />
-
-          {/* Alt kısımda 7-8. postlar */}
           {posts.slice(6, 8).map(post => (
             <Link to={`/post/${post.id}`} className="slider-bottom-post" key={post.id}>
               <img src={post.image} alt={post.title} />
@@ -106,7 +109,7 @@ const CategoryPage = ({ category }) => {
           ))}
         </div>
 
-        {/* 5-6. postları sağ tarafa yerleştir */}
+        {/* 5-6. post sağda */}
         <div className="side-posts">
           {posts.slice(4, 6).map(post => (
             <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
@@ -129,7 +132,7 @@ const CategoryPage = ({ category }) => {
         </div>
       </div>
 
-      {/* 🟩 Geri kalan tüm haberler */}
+      {/* Geri kalan tüm postlar */}
       <div className="content-wrapper">
         <h2 className="section-title">
           <span>Diğer {category} Haberleri</span>

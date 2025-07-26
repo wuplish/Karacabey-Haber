@@ -1,0 +1,38 @@
+.footer {
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.footer-logo-link {
+  display: inline-block;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.footer-logo-link:hover {
+  transform: scale(1.05);
+}
+
+.footer-logo {
+  max-width: 120px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+.footer-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.footer-agency-link {
+  color: #1c1c1c;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.footer-agency-link:hover {
+  text-decoration: underline;
+}

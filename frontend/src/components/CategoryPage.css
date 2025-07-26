@@ -3,6 +3,21 @@
   margin: 0 auto;
   padding: 0 1rem;
 }
+/* Sadece mobilde göster */
+.mobile-slider-wrapper {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-slider-wrapper {
+    display: block;
+  }
+
+  /* Slide-section'daki eski slider'ı gizle */
+  .slide-section .slider-area {
+    display: none;
+  }
+}
 
 .category-header {
   margin-top: 60px;

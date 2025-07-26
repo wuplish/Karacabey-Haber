@@ -4,11 +4,72 @@ import './HomePage.css';
 import Slider from "./slider/slider";
 import BreakingNewsBanner from './breakingnews/BreakingNewsBanner';
 import { FaEdit, FaTrash } from "react-icons/fa";
-
+import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
 const Home = () => {
   const [breaking, setBreaking] = useState(null);
+  const [weather, setWeather] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currency, setCurrency] = useState(null);
+  const [currencyLoading, setCurrencyLoading] = useState(true);
+  const [currencyError, setCurrencyError] = useState(null);
+
+  useEffect(() => {
+    const fetchCurrency = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/doviz");
+        const data = await res.json();
+        if (data.detail) {
+          setCurrencyError("Döviz verisi alınamadı");
+          setCurrency(null);
+        } else {
+          setCurrency(data);
+          setCurrencyError(null);
+        }
+      } catch (err) {
+        console.error("Döviz verisi alınamadı:", err);
+        setCurrencyError("Sunucuya ulaşılamadı");
+        setCurrency(null);
+      } finally {
+        setCurrencyLoading(false);
+      }
+    };
+    fetchCurrency();
+  }, []);
+  function getWeatherIcon(temp) {
+    if (temp >= 30) return <WiDaySunny size={40} color="#f39c12" />;
+    if (temp >= 20) return <WiDaySunny size={40} color="#f1c40f" />;
+    if (temp >= 10) return <WiCloudy size={40} color="#7f8c8d" />;
+    if (temp >= 0) return <WiRain size={40} color="#3498db" />;
+    return <WiSnow size={40} color="#5dade2" />;
+  }
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const ipRes = await fetch("https://api64.ipify.org?format=json");
+        const ipData = await ipRes.json();
+        const weatherRes = await fetch(`http://localhost:5000/api/havadurumu/${ipData.ip}`);
+        const weatherData = await weatherRes.json();
+        if(weatherData.detail) {
+          setWeatherError("Hava durumu alınamadı");
+          setWeather(null);
+        } else {
+          setWeather(weatherData);
+          setWeatherError(null);
+        }
+      } catch (err) {
+        console.error("Hava durumu alınamadı:", err);
+        setWeatherError("Sunucuya ulaşılamadı");
+        setWeather(null);
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+
+    fetchWeather();
+  }, []);
 
   useEffect(() => {
     fetch("http://localhost:5000/breaking")
@@ -33,9 +94,35 @@ const Home = () => {
         </div>
       ) : (
         <>
-          
-            
-            {/* Ana İçerik - Genişletilmiş */}
+            <div className="mobile-slider-wrapper">
+              <Slider />
+            </div>
+            {weather && (
+              <div className="weather-widget">
+                <div className="weather-left">
+                  <h3>{weather.sehir}</h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    {getWeatherIcon(weather.sicaklik)}
+                    <p><strong>{weather.sicaklik}°C</strong></p>
+                  </div>
+                  <p>Rüzgar: {weather.ruzgar} km/h</p>
+                </div>
+
+                <div className="currency-right">
+                  <h3>Döviz Kurları</h3>
+                  {currencyLoading && <p>Yükleniyor...</p>}
+                  {currencyError && <p style={{color: 'red'}}>{currencyError}</p>}
+                  {currency && (
+                    <ul style={{listStyle: "none", padding: 0, margin: 0}}>
+                      <li><strong>USD:</strong> {currency.usd ?? "Yok"}</li>
+                      <li><strong>EUR:</strong> {currency.euro ?? "Yok"}</li>
+                      <li><strong>GBP:</strong> {currency.gbp ?? "Yok"}</li> 
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="main-content expanded">
               {/* İlk 4 post */}
               <div className="top-posts-row">
@@ -49,7 +136,6 @@ const Home = () => {
                       <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
                       <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
                       <div className="post-meta">
-                        <span className="read-time">3 dk okuma</span>
                         <span className="publish-date">
                           {new Date(post.publish_date).toLocaleDateString('tr-TR')}
                         </span>
@@ -70,7 +156,6 @@ const Home = () => {
                         <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
                         <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
                         <div className="post-meta">
-                          <span className="read-time">2 dk okuma</span>
                           <span className="publish-date">
                             {new Date(post.publish_date).toLocaleDateString('tr-TR')}
                           </span>
@@ -91,7 +176,6 @@ const Home = () => {
                         <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
                         <p className="post-excerpt">{post.content.slice(0, 30)}...</p>
                         <div className="post-meta">
-                          <span className="read-time">2 dk okuma</span>
                           <span className="publish-date">
                             {new Date(post.publish_date).toLocaleDateString('tr-TR')}
                           </span>
@@ -133,7 +217,6 @@ const Home = () => {
                                 <h3 className="post-title">{post.title}</h3>
                                 <p className="post-excerpt">{post.content.slice(0, 50)}...</p>
                                 <div className="post-meta">
-                                  <span className="read-time">2 dk okuma</span>
                                   <span className="publish-date">
                                     {new Date(post.publish_date).toLocaleDateString('tr-TR')}
                                   </span>

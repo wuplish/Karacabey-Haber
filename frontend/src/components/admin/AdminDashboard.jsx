@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaTrash, FaEdit, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './AdminDashboard.css';
-
+import axios from "axios";  
 function AdminDashboard() {
   const [posts, setPosts] = useState([]);
   const [editPost, setEditPost] = useState(null);
@@ -9,17 +9,26 @@ function AdminDashboard() {
   const [subheadings, setSubheadings] = useState([]);
   const [newSubheading, setNewSubheading] = useState({ title: '', content: '' });
   const [showSubheadingForm, setShowSubheadingForm] = useState(false);
-
+  const [categories, setCategories] = useState([]);
   const fetchPosts = async () => {
     const res = await fetch("http://localhost:5000/posts");
     const data = await res.json();
     setPosts(data);
     setEditPost(null);
   };
+  const fetchCategories = async () => {
+    const response = await fetch("http://localhost:5000/category");
+    const data = await response.json();
+    console.log("Kategoriler verisi:", data);
+    setCategories(data);
+  };
 
+  useEffect(() => {
+    fetchCategories();
+  }, []);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const [activeTab, setActiveTab] = useState("haber");
   useEffect(() => {
     fetchPosts();
     const savedCredentials = localStorage.getItem('adminCredentials');
@@ -70,7 +79,12 @@ function AdminDashboard() {
   };
 
   return (
+    
     <div className="admin-dashboard">
+      <div className="tab-menu">
+        <button onClick={() => setActiveTab("haber")} className={activeTab === "haber" ? "active" : ""}>Haberler</button>
+        <button onClick={() => setActiveTab("kategori")} className={activeTab === "kategori" ? "active" : ""}>Kategoriler</button>
+      </div>
       <div className="dashboard-header">
         <h1>Haber Yönetim Paneli</h1>
         <div className="header-actions">
@@ -86,7 +100,7 @@ function AdminDashboard() {
           </button>
         </div>
       </div>
-
+      {activeTab === "haber" ? (
       <div className="dashboard-content">
         <div className="post-form-section">
           <PostForm 
@@ -94,6 +108,7 @@ function AdminDashboard() {
             editPost={editPost} 
             subheadings={subheadings}
             setSubheadings={setSubheadings}
+            categories={categories}
           />
         </div>
 
@@ -155,17 +170,70 @@ function AdminDashboard() {
           </div>
         </div>
       </div>
+      ) : (
+        <CategoryManager fetchCategories={fetchCategories} categories={categories} />
+      )}
     </div>
   );
 }
+function CategoryManager({ fetchCategories, categories }) {
+  const [newCategory, setNewCategory] = useState({ name: '', path: '', description: '' });
 
-function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
-  const categories = [
-    "Gündem","Resmi İlanlar", "Spor", "Magazin", "Ekonomi",
-    "Siyaset", "Eğitim", "Sağlık", "Teknoloji",
-    "Kültür-Sanat", "Yaşam", "Asayiş", "Tarım", "Belediye"
-  ];
+  const handleAddCategory = async () => {
+    await fetch("http://localhost:5000/category", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newCategory),
+    });
+    setNewCategory({ name: '', path: '', description: '' });
+    fetchCategories();
+  };
 
+  const handleDeleteCategory = async (name) => {
+    if (window.confirm(`${name} kategorisini silmek istiyor musunuz?`)) {
+      await fetch(`http://localhost:5000/category/${name}`, { method: "DELETE" });
+      fetchCategories();
+    }
+  };
+
+  return (
+    <div className="category-manager">
+      <h2>Kategori Yönetimi</h2>
+      <div className="category-form">
+        <input placeholder="Ad" value={newCategory.name} onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
+        <input placeholder="Yol (path)" value={newCategory.path} onChange={(e) => setNewCategory({ ...newCategory, path: e.target.value })} />
+        <input placeholder="Açıklama" value={newCategory.description} onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })} />
+        <button onClick={handleAddCategory}>Ekle</button>
+      </div>
+
+      <ul className="category-list">
+        {categories.map((cat, idx) => (
+          <li key={idx}>
+            <strong>{cat.name}</strong> - {cat.path}
+            <button onClick={() => handleDeleteCategory(cat.name)}>Sil</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+function PostForm({ onPostSaved, editPost, subheadings, setSubheadings, categories }) {
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/category");
+        const namesOnly = response.data.map((item) => item.name); // sadece name çek
+        setCategories(namesOnly);
+      } catch (error) {
+        console.error("Kategori verisi alınamadı:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+
+    
   const [form, setForm] = useState({
     content: '', image: '', category: '',
     tags: '', status: 'draft', publish_date: ''
@@ -420,17 +488,19 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings }) {
           <div className="sidebar">
             <div className="form-group">
               <label>Kategori*</label>
-              <select
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seçiniz</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Seçiniz</option>
+                  {categories.map((category, index) => (
+                    <option key={index} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
             </div>
 
             <div className="form-group">

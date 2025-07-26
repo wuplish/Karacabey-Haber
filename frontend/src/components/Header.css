@@ -188,7 +188,6 @@
   color: var(--primary);
 }
 
-/* Mobile Menu Button */
 .mobile-menu-button {
   display: none;
   background: none;
@@ -197,12 +196,14 @@
   padding: 0.75rem;
   z-index: 1001;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center; /* Ortala */
   width: 40px;
   height: 30px;
   position: relative;
+  gap: 3px; /* Çizgiler arası boşluk */
 }
 
+/* Menü çizgileri */
 .menu-line {
   display: block;
   width: 100%;
@@ -213,16 +214,32 @@
   transform-origin: center;
 }
 
+
 .mobile-menu-button.active .menu-line:nth-child(1) {
-  transform: translateY(11px) rotate(45deg);
+  transform: translateY(8px) rotate(45deg);
 }
 
 .mobile-menu-button.active .menu-line:nth-child(2) {
-  opacity: 0;
+  transform: translateY(-8px) rotate(-45deg);
 }
 
-.mobile-menu-button.active .menu-line:nth-child(3) {
-  transform: translateY(-11px) rotate(-45deg);
+.nav-links.mobile-show {
+  display: flex;               /* Flex container yap */
+  flex-direction: column;      /* Dikey diz */
+  align-items: center;         /* Yatayda ortala */
+  justify-content: center;     /* Dikeyde ortala */
+  height: 100vh;               /* Tam ekran yüksekliği */
+  width: 100%;
+  gap: 1.8rem;                 /* Linkler arası boşluk */
+  padding-top: 80px;           /* Header altından başlasın */
+  background: var(--white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Mobile Design */

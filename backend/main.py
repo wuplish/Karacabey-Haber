@@ -1,10 +1,12 @@
 import json
+import threading
 from fastapi import Body, FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
+import time
 import os
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
@@ -318,7 +320,7 @@ def get_slider_posts(category: str = None):
             FROM posts 
             WHERE status = 'published' AND category = ? 
             ORDER BY publish_date DESC 
-            LIMIT 8
+            LIMIT 15
         """ # category check added
         rows = query_db(query, (category,))
     else:
@@ -327,7 +329,7 @@ def get_slider_posts(category: str = None):
             FROM posts 
             WHERE status = 'published' 
             ORDER BY publish_date DESC 
-            LIMIT 8
+            LIMIT 15
         """
         rows = query_db(query)
 
@@ -386,7 +388,7 @@ def get_categories():
 def create_category(data: CategoryModel = Body(...)):
     categories = load_categories()
     path = data.path or "/" + create_slug(data.name)
-    
+
     if any(cat['path'] == path for cat in categories):
         raise HTTPException(status_code=400, detail="Bu path zaten kullanılıyor.")
 
@@ -400,5 +402,99 @@ def create_category(data: CategoryModel = Body(...)):
     save_categories(categories)
     return {"message": "Kategori oluşturuldu", "category": new_cat}
 
+@app.delete("/category/{name}")
+def delete_category_by_name(name: str):
+    categories = load_categories()
+
+    filtered_categories = [cat for cat in categories if cat['name'] != name]
+
+    if len(filtered_categories) == len(categories):
+        raise HTTPException(status_code=404, detail="Kategori bulunamadı.")
+
+    save_categories(filtered_categories)
+    return {"message": f"{name} kategorisi silindi."}
+
+# Hava Durumu Helpers
+def get_location_from_ip(ip):
+    try:
+        res = requests.get(f"http://ip-api.com/json/{ip}")
+        if res.status_code == 200:
+            data = res.json()
+            if data['status'] == 'success':
+                return data['lat'], data['lon'], data['city']
+    except:
+        pass
+    return None, None, None
+
+def get_weather(lat, lon):
+    try:
+        url = (
+            f"https://api.open-meteo.com/v1/forecast?"
+            f"latitude={lat}&longitude={lon}&current_weather=true&timezone=auto"
+        )
+        res = requests.get(url)
+        if res.status_code == 200:
+            data = res.json()
+            return data.get("current_weather")
+    except:
+        pass
+    return None
+
+# --- Hava Durumu Api ---
+@app.get("/api/havadurumu/{ipadress}")
+def get_havadurumu_with_ipadress(ipadress: str):
+    lat, lon, city = get_location_from_ip(ipadress)
+    if lat is None or lon is None:
+        return JSONResponse(status_code=404, content={"detail": "Konum alınamadı"})
+
+    weather = get_weather(lat, lon)
+    if not weather:
+        return JSONResponse(status_code=404, content={"detail": "Hava durumu alınamadı"})
+
+    return {
+        "sehir": city,
+        "sicaklik": weather["temperature"],  
+        "ruzgar": weather["windspeed"],  
+        "zaman": weather["time"]           
+    }
+
+# --- Get Gram Altın Api ---
+API_KEY = "FM6HagN5eL"
+headers = {"key": API_KEY}
+
+def fetch_latest_data():
+    today = datetime.now()
+    for i in range(7):
+        date_str = (today - timedelta(days=i)).strftime("%d-%m-%Y")
+        url = (
+            f"https://evds2.tcmb.gov.tr/service/evds/"
+            f"series=TP.DK.USD.A-TP.DK.EUR.A-TP.DK.GBP.A"
+            f"&startDate={date_str}&endDate={date_str}&type=json&limit=1&sort=desc"
+        )
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            items = data.get("items", [])
+            if items and (
+                items[0].get("TP_DK_USD_A") or
+                items[0].get("TP_DK_EUR_A") or
+                items[0].get("TP_DK_GBP_A")
+            ):
+                return {
+                    "tarih": items[0].get("Tarih"),
+                    "usd": items[0].get("TP_DK_USD_A"),
+                    "euro": items[0].get("TP_DK_EUR_A"),
+                    "gbp": items[0].get("TP_DK_GBP_A")
+                }
+    return {
+        "tarih": None,
+        "usd": None,
+        "euro": None,
+        "gbp": None
+    }
+
+@app.get("/api/doviz")
+def doviz():
+    return fetch_latest_data()
 # --- Start DB ---
 init_db()

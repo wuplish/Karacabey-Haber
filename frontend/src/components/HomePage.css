@@ -5,6 +5,108 @@
   margin: 0 auto;
   padding: 0 1rem;
 }
+.weather-widget {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #f3f3f3, #dfe9f3);
+  padding: 16px 24px;
+  margin: 20px 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+.weather-left h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.weather-left p {
+  margin: 4px 0;
+}
+
+.weather-right {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.weather-widget {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 2px solid #ccc;
+  padding: 15px 25px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #a2d9ff, #ffffff);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  gap: 40px;
+}
+.currency-right ul {
+  display: flex;
+  gap: 12px;           /* Ögeler arası boşluk */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  flex-wrap: wrap;     /* Ekran daralınca alt satıra geçer */
+  justify-content: center;
+}
+
+.currency-right ul li {
+  flex: 1 1 auto;      /* Esneyebilir */
+  min-width: 70px;     /* Minimum genişlik */
+  background-color: #c4e0f7;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1952a8;
+  text-align: center;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.6);
+  transition: background-color 0.3s ease;
+}
+
+.currency-right ul li strong {
+  font-weight: 700;
+}
+
+.currency-right ul li:hover {
+  background-color: #90caf9;
+  cursor: default;
+}
+
+
+.weather-left, .currency-right {
+  flex: 1;
+}
+
+
+.currency-right h3 {
+  margin-bottom: 10px;
+}
+/* Sadece mobilde göster */
+.mobile-slider-wrapper {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-slider-wrapper {
+    display: block;
+  }
+
+  /* Slide-section'daki eski slider'ı gizle */
+  .slide-section .slider-area {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .weather-widget {
+    display: none !important;
+  }
+}
+
 
 /* İlk 4 post yatay */
 .top-posts-row {
