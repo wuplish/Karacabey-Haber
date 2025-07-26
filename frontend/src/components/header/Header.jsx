@@ -36,7 +36,7 @@ const Header = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://localhost:5000/category");
+        const res = await fetch("https://api.karacabeygazatesi.com/category");
         const data = await res.json();
 
         // Backend'den gelen `header` alanını `showInHeader` olarak ayarla
@@ -57,7 +57,7 @@ const Header = () => {
   useEffect(() => {
     const fetchLogoSettings = async () => {
       try {
-        const res = await fetch('http://localhost:5000/settings/logo-text');
+        const res = await fetch('https://api.karacabeygazatesi.com/settings/logo-text');
         if (res.ok) {
           const data = await res.json();
           setLogoSettings({

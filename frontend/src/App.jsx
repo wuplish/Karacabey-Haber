@@ -19,13 +19,13 @@ function App() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/breaking")
+    fetch("https://api.karacabeygazatesi.com/breaking")
       .then(res => res.json())
       .then(data => setBreaking(data));
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/category")
+    fetch("http://api.karacabeygazatesi.com/category")
       .then(res => res.json())
       .then(data => setCategories(data));
   }, []);

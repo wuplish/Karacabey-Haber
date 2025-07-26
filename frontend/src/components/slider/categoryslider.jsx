@@ -9,8 +9,8 @@ const CategorySlider = ({ category = null }) => {
 
   useEffect(() => {
     const url = category
-      ? `http://localhost:5000/slides?category=${encodeURIComponent(category)}`
-      : "http://localhost:5000/slides";
+      ? `http://api.karacabeygazatesi.com/slides?category=${encodeURIComponent(category)}`
+      : "http://api.karacabeygazatesi.com/slides";
 
     fetch(url)
       .then((res) => res.json())

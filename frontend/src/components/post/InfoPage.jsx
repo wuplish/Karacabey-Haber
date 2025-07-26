@@ -33,7 +33,7 @@ const InfoPage = ({ section }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/settings/footer")
+      .get("http://api.karacabeygazatesi.com/settings/footer")
       .then((res) => {
         setData(res.data);
         setLoading(false);
@@ -54,7 +54,7 @@ const InfoPage = ({ section }) => {
 
     try {
       // Örnek POST isteği - backend'de bunu karşılayacak endpoint olmalı
-      await axios.post("http://localhost:5000/contact", formData);
+      await axios.post("https://api.karacabeygazatesi.com/contact", formData);
 
       setFormStatus({ loading: false, error: null, success: "Mesajınız gönderildi!" });
       setFormData({ name: "", email: "", message: "" });

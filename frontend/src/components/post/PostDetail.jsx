@@ -16,7 +16,7 @@ const PostDetail = () => {
     const fetchData = async () => {
       const userId = getOrCreateUserId();
       try {
-        const postRes = await fetch(`http://localhost:5000/posts/${slug}`, {
+        const postRes = await fetch(`http://api.karacabeygazatesi.com/posts/${slug}`, {
           headers: {
             'gelmisgecmiseniyiuserid': userId,
           },
@@ -31,7 +31,7 @@ const PostDetail = () => {
         setPost(postData);
 
         // İlgili haberler çekiliyor
-        const relatedRes = await fetch(`http://localhost:5000/posts?category=${encodeURIComponent(postData.category)}&limit=4`);
+        const relatedRes = await fetch(`http://api.karacabeygazatesi.com/posts?category=${encodeURIComponent(postData.category)}&limit=4`);
         if (!relatedRes.ok) throw new Error('İlgili haberler alınamadı');
         const relatedData = await relatedRes.json();
 

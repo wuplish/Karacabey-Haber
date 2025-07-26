@@ -10,7 +10,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     setLoading(true)
-    fetch("http://localhost:5000/posts")
+    fetch("http://api.karacabeygazatesi.com/posts")
       .then(res => res.json())
       .then(data => {
         setPosts(data)

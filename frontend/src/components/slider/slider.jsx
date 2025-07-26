@@ -8,7 +8,7 @@ const Slider = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/slides")
+    fetch("http://api.karacabeygazatesi.com/slides")
       .then((res) => res.json())
       .then((data) => setSlides(data));
   }, []);
