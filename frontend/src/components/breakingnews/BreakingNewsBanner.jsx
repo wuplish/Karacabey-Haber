@@ -6,6 +6,11 @@ import './BreakingNewsBanner.css';
 const BreakingNewsBanner = ({ breaking }) => {
   const [index, setIndex] = useState(0);
   const [animClass, setAnimClass] = useState('animate-slide-in');
+  const [socialLinks, setSocialLinks] = useState({
+    facebook: '',
+    instagram: '',
+    twitter: ''
+  });
 
   useEffect(() => {
     if (!breaking || breaking.length === 0) return;
@@ -21,6 +26,25 @@ const BreakingNewsBanner = ({ breaking }) => {
 
     return () => clearInterval(interval);
   }, [breaking]);
+
+  // Sosyal medya linklerini fetch et
+  useEffect(() => {
+    async function fetchSocialLinks() {
+      try {
+        const res = await fetch('http://localhost:5000/socialmedia');
+        if (!res.ok) throw new Error('Sosyal medya linkleri alınamadı');
+        const data = await res.json();
+        setSocialLinks({
+          facebook: data.facebook || '',
+          instagram: data.instagram || '',
+          twitter: data.twitter || ''
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchSocialLinks();
+  }, []);
 
   if (!breaking || breaking.length === 0) return null;
 
@@ -38,15 +62,21 @@ const BreakingNewsBanner = ({ breaking }) => {
       </Link>
 
       <div className="social-icons">
-        <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-          <FaFacebookF />
-        </a>
-        <a href="https://instagram.com/yourpage" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <FaInstagram />
-        </a>
-        <a href="https://twitter.com/yourpage" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-          <FaTwitter />
-        </a>
+        {socialLinks.facebook && (
+          <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <FaFacebookF />
+          </a>
+        )}
+        {socialLinks.instagram && (
+          <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <FaInstagram />
+          </a>
+        )}
+        {socialLinks.twitter && (
+          <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+            <FaTwitter />
+          </a>
+        )}
       </div>
     </div>
   );

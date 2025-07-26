@@ -91,8 +91,10 @@ def query_db(query, args=(), one=False):
 class CategoryModel(BaseModel):
     name: str
     path: Optional[str] = None
-    description: Optional[str] = None
-
+    description: Optional[str] = ""
+    order: Optional[int] = 0
+    header: Optional[bool] = False
+    
 class LoginData(BaseModel):
     username: str
     password: str
@@ -101,17 +103,20 @@ class Subheading(BaseModel):
     title: str
     content: str
 
-class PostData(LoginData):
+class PostData(BaseModel):
     title: str
     content: str
-    image: str
-    category: str
-    tags: List[str]
-    status: str
+    image: Optional[str] = None
+    category: Optional[str] = None
+    tags: List[str] = []
+    status: Optional[str] = "draft"
     publish_date: Optional[str] = None
-    breaking_news: Optional[int] = 0
-    subheadings: Optional[List[Subheading]] = None  
-    slug: Optional[str] = None
+    breaking_news: Optional[bool] = False
+    subheadings: Optional[List[Subheading]] = []
+    username: Optional[str] = None
+    password: Optional[str] = None
+    slug: Optional[str] = None  
+
 
 class UpdatePostData(PostData):
     pass
@@ -164,20 +169,23 @@ def get_posts(request: Request):
             "created_at": post[8],
             "view_count": post[9],
             "breaking_news": post[10],
+            "slug": post[11],
             "subheadings": [{"title": s[0], "content": s[1]} for s in subheadings]
         })
     return result
 
-@app.get("/posts/{post_id}")
+@app.get("/posts/{slug}")
 @limiter.limit("5/5seconds")
-def get_post(request: Request, post_id: int):
-    query_db("UPDATE posts SET view_count = view_count + 1 WHERE id = ?", (post_id,))
-    post = query_db("SELECT * FROM posts WHERE id = ?", (post_id,), one=True)
+def get_post_by_slug(request: Request, slug: str):
+    post = query_db("SELECT * FROM posts WHERE slug = ?", (slug,), one=True)
+    
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     
-    subheadings = query_db("SELECT title, content FROM subheadings WHERE post_id = ?", (post_id,))
-    
+    query_db("UPDATE posts SET view_count = view_count + 1 WHERE slug = ?", (slug,))
+
+    subheadings = query_db("SELECT title, content FROM subheadings WHERE post_id = ?", (post[0],))
+
     return {
         "id": post[0],
         "title": post[1],
@@ -190,15 +198,19 @@ def get_post(request: Request, post_id: int):
         "created_at": post[8],
         "view_count": post[9],
         "breaking_news": post[10],
+        "slug": post[11],
         "subheadings": [{"title": s[0], "content": s[1]} for s in subheadings]
-    }   
+    }
+
 
 @app.post("/posts")
 @limiter.limit("5/5seconds")
 def create_post(request: Request, data: PostData):
     if not is_admin(data):
         raise HTTPException(status_code=401, detail="Unauthorized")
-    slug = data.slug or create_slug(data.title)
+    slug = data.slug
+    print("Gelen slug:", slug)
+    slug = create_slug(data.title)
     counter = 1
     original_slug = slug
     while query_db("SELECT id FROM posts WHERE slug = ?", (slug,), one=True):
@@ -369,6 +381,82 @@ def get_post_by_slug(slug: str):
         "subheadings": [{"title": s[0], "content": s[1]} for s in subheadings]
     }
 
+
+# - admin panel -
+LOGO_SETTINGS_PATH = "data/logo_settings.json"
+
+def read_logo_settings():
+    try:
+        with open(LOGO_SETTINGS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {
+            "logo_line1": "KARACABEY",
+            "logo_line2": "HABER",
+            "logo_line1_color": "#e63946",
+            "logo_line2_color": "#222222"
+        }
+
+def write_logo_settings(data: dict):
+    with open(LOGO_SETTINGS_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+@app.get("/settings/logo-text")
+def get_logo_text():
+    return read_logo_settings()
+
+@app.post("/settings/logo-text")
+async def update_logo_text(request: Request):
+    data = await request.json()
+    current = read_logo_settings()
+    updated = {
+        "logo_line1": data.get("logo_line1", current["logo_line1"]),
+        "logo_line2": data.get("logo_line2", current["logo_line2"]),
+        "logo_line1_color": data.get("logo_line1_color", current["logo_line1_color"]),
+        "logo_line2_color": data.get("logo_line2_color", current["logo_line2_color"]),
+    }
+    write_logo_settings(updated)
+    return updated
+# social media
+SOCIALMEDIA_PATH = "data/socialmedia.json"
+def read_socialmedia():
+    try:
+        with open(SOCIALMEDIA_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Eğer dosya yoksa varsayılan boş yapı döner
+        return {
+            "facebook": "",
+            "instagram": "",
+            "twitter": ""
+        }
+
+def write_socialmedia(data: dict):
+    with open(SOCIALMEDIA_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+@app.get("/socialmedia")
+def get_socialmedia():
+    return read_socialmedia()
+
+@app.post("/settings/socialmedia")
+async def update_socialmedia(request: Request, data: LoginData = Body(...)):
+    if not is_admin(data):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    body = await request.json()
+    current = read_socialmedia()
+
+    updated = {
+        "facebook": body.get("facebook", current.get("facebook", "")),
+        "instagram": body.get("instagram", current.get("instagram", "")),
+        "twitter": body.get("twitter", current.get("twitter", ""))
+    }
+
+    write_socialmedia(updated)
+    return updated
+
+
 # --- Today ---
 @app.get("/today")
 def get_today_news():
@@ -392,15 +480,23 @@ def create_category(data: CategoryModel = Body(...)):
     if any(cat['path'] == path for cat in categories):
         raise HTTPException(status_code=400, detail="Bu path zaten kullanılıyor.")
 
+    if data.header:
+        header_count = sum(1 for cat in categories if cat.get("header"))
+        if header_count >= 4:
+            raise HTTPException(status_code=400, detail="En fazla 4 tane header kategorisi olabilir.")
+
     new_cat = {
         "name": data.name,
         "path": path,
-        "description": data.description or ""
+        "description": data.description or "",
+        "order": data.order or 0,
+        "header": data.header or False
     }
 
     categories.append(new_cat)
     save_categories(categories)
     return {"message": "Kategori oluşturuldu", "category": new_cat}
+
 
 @app.delete("/category/{name}")
 def delete_category_by_name(name: str):

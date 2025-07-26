@@ -70,13 +70,36 @@
     "description": "Döviz, borsa, piyasa analizleri ve ekonomik gelişmeler"
   },
   {
-    "name": "testpage",
+    "name": "test",
     "path": "/test",
-    "description": "wow!"
+    "description": "test"
   },
   {
-    "name": "sa",
-    "path": "/sa",
-    "description": "sa"
+    "name": "test",
+    "path": "/tesettt",
+    "description": "tetetestt",
+    "order": 0,
+    "header": false
+  },
+  {
+    "name": "testtt",
+    "path": "/teesttt",
+    "description": "tetewqrwer",
+    "order": 0,
+    "header": false
+  },
+  {
+    "name": "test",
+    "path": "/teeawdawd",
+    "description": "awdawd",
+    "order": 0,
+    "header": false
+  },
+  {
+    "name": "test",
+    "path": "/fuck",
+    "description": "test",
+    "order": 0,
+    "header": true
   }
 ]

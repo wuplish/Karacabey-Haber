@@ -67,7 +67,7 @@ const CategoryPage = ({ category }) => {
       )}
       <div className="top-posts-row">
         {posts.slice(0, 4).map(post => (
-          <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
+          <Link to={`/post/${post.slug}`} className="post-card" key={post.slug}>
             <div className="card-image-container">
               <img src={post.image} alt={post.title} className="post-image" />
               <span className="category-tag">{post.category}</span>
@@ -89,7 +89,7 @@ const CategoryPage = ({ category }) => {
         <div className="slider-area">
           <CategorySlider category={category} />
           {posts.slice(6, 8).map(post => (
-            <Link to={`/post/${post.id}`} className="slider-bottom-post" key={post.id}>
+            <Link to={`/post/${post.slug}`} className="slider-bottom-post" key={post.slug}>
               <img src={post.image} alt={post.title} />
               <div className="content">
                 <h3 className="post-title">{post.title.slice(0, 30)}...</h3>
@@ -107,7 +107,7 @@ const CategoryPage = ({ category }) => {
 
         <div className="side-posts">
           {posts.slice(4, 6).map(post => (
-            <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
+            <Link to={`/post/${post.slug}`} className="post-card" key={post.slug}>
               <div className="card-image-container">
                 <img src={post.image} alt={post.title} className="post-image" />
                 <span className="category-tag">{post.category}</span>
@@ -133,7 +133,7 @@ const CategoryPage = ({ category }) => {
         </h2>
         <div className="posts-grid">
           {posts.slice(8).map(post => (
-            <Link to={`/post/${post.id}`} className="post-card" key={post.id}>
+            <Link to={`/post/${post.slug}`} className="post-card" key={post.slug}>
               <div className="card-image-container">
                 <img src={post.image} alt={post.title} className="post-image" />
                 <span className="category-tag">{post.category}</span>

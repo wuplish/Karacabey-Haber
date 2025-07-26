@@ -17,15 +17,136 @@ function AdminDashboard() {
     setEditPost(null);
   };
   const fetchCategories = async () => {
-    const response = await fetch("http://localhost:5000/category");
-    const data = await response.json();
-    console.log("Kategoriler verisi:", data);
-    setCategories(data);
+    try {
+      const res = await fetch("http://localhost:5000/category");
+      const data = await res.json();
+      // header → showInHeader eşlemesi
+      setCategories(data.map(cat => ({
+        ...cat,
+        showInHeader: cat.header || false
+      })));
+    } catch (err) {
+      console.error("Kategori alınamadı:", err);
+    }
   };
+
 
   useEffect(() => {
     fetchCategories();
   }, []);
+  function HeaderSettings() {
+  const [settings, setSettings] = useState({
+    logo_line1: '',
+    logo_line2: '',
+    logo_line1_color: '#000000',
+    logo_line2_color: '#000000'
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch('http://localhost:5000/settings/logo-text');
+        if (!res.ok) throw new Error('Ayarlar alınamadı');
+        const data = await res.json();
+        setSettings(data);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSettings();
+  }, []);
+
+  const handleChange = (e) => {
+    setSettings({...settings, [e.target.name]: e.target.value});
+  };
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      setSaving(true);
+      setError(null);
+      setSuccessMsg(null);
+      try {
+        const res = await fetch('http://localhost:5000/settings/logo-text', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(settings),
+        });
+        if (!res.ok) throw new Error('Kaydetme başarısız');
+        setSuccessMsg('Ayarlar kaydedildi!');
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setSaving(false);
+      }
+    };
+
+    if (loading) return <p>Yükleniyor...</p>;
+    if (error) return <p style={{color: 'red'}}>Hata: {error}</p>;
+
+    return (
+      <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
+        <h2>Header Logo Ayarları</h2>
+        <label>
+          Logo Satırı 1:
+          <input
+            type="text"
+            name="logo_line1"
+            value={settings.logo_line1}
+            onChange={handleChange}
+            required
+            style={{ width: '100%', marginBottom: 10 }}
+          />
+        </label>
+
+        <label>
+          Logo Satırı 2:
+          <input
+            type="text"
+            name="logo_line2"
+            value={settings.logo_line2}
+            onChange={handleChange}
+            required
+            style={{ width: '100%', marginBottom: 10 }}
+          />
+        </label>
+
+        <label>
+          Logo Satırı 1 Renk:
+          <input
+            type="color"
+            name="logo_line1_color"
+            value={settings.logo_line1_color}
+            onChange={handleChange}
+            style={{ width: '100%', marginBottom: 10 }}
+          />
+        </label>
+
+        <label>
+          Logo Satırı 2 Renk:
+          <input
+            type="color"
+            name="logo_line2_color"
+            value={settings.logo_line2_color}
+            onChange={handleChange}
+            style={{ width: '100%', marginBottom: 20 }}
+          />
+        </label>
+
+        <button type="submit" disabled={saving} style={{ padding: '10px 20px' }}>
+          {saving ? 'Kaydediliyor...' : 'Kaydet'}
+        </button>
+
+        {successMsg && <p style={{ color: 'green', marginTop: 10 }}>{successMsg}</p>}
+      </form>
+    );
+  }
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [activeTab, setActiveTab] = useState("haber");
@@ -82,8 +203,12 @@ function AdminDashboard() {
     
     <div className="admin-dashboard">
       <div className="tab-menu">
+        <div className="tab-menu">
         <button onClick={() => setActiveTab("haber")} className={activeTab === "haber" ? "active" : ""}>Haberler</button>
         <button onClick={() => setActiveTab("kategori")} className={activeTab === "kategori" ? "active" : ""}>Kategoriler</button>
+        <button onClick={() => setActiveTab("header")} className={activeTab === "header" ? "active" : ""}>Header Ayarları</button>
+        <button onClick={() => setActiveTab("socialmedia")} className={activeTab === "socialmedia" ? "active" : ""}>Sosyal Medya Ayarları</button>
+      </div>
       </div>
       <div className="dashboard-header">
         <h1>Haber Yönetim Paneli</h1>
@@ -170,22 +295,181 @@ function AdminDashboard() {
           </div>
         </div>
       </div>
-      ) : (
+      ) : activeTab === "kategori" ? (
         <CategoryManager fetchCategories={fetchCategories} categories={categories} />
-      )}
+      ) : activeTab === "header" ? (
+        <HeaderSettings />
+      ) : activeTab === "socialmedia" ? (
+        <SocialMediaSettings />
+      ) : null}
     </div>
   );
 }
+
+function SocialMediaSettings() {
+  const [links, setLinks] = useState({
+    facebook: '',
+    instagram: '',
+    twitter: '',
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+
+  useEffect(() => {
+    async function fetchLinks() {
+      try {
+        const res = await fetch('http://localhost:5000/socialmedia');
+        if (!res.ok) throw new Error('Sosyal medya linkleri alınamadı');
+        const data = await res.json();
+        setLinks(data);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLinks();
+  }, []);
+
+  const handleChange = (e) => {
+    setLinks({ ...links, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    setSuccessMsg(null);
+
+    try {
+      const savedCredentials = localStorage.getItem('adminCredentials');
+      let credentials = { username: '', password: '' };
+      if (savedCredentials) {
+        credentials = JSON.parse(savedCredentials);
+      }
+
+      const payload = {
+        ...links,
+        username: credentials.username,
+        password: credentials.password,
+      };
+
+      const res = await fetch('http://localhost:5000/settings/socialmedia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Kaydetme başarısız');
+      setSuccessMsg('Sosyal medya linkleri kaydedildi!');
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <p>Yükleniyor...</p>;
+  if (error) return <p style={{ color: 'red' }}>Hata: {error}</p>;
+
+  return (
+    <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
+      <h2>Sosyal Medya Linkleri</h2>
+
+      <label>
+        Facebook:
+        <input
+          type="url"
+          name="facebook"
+          value={links.facebook}
+          onChange={handleChange}
+          placeholder="https://facebook.com/yourpage"
+          style={{ width: '100%', marginBottom: 10 }}
+        />
+      </label>
+
+      <label>
+        Instagram:
+        <input
+          type="url"
+          name="instagram"
+          value={links.instagram}
+          onChange={handleChange}
+          placeholder="https://instagram.com/yourpage"
+          style={{ width: '100%', marginBottom: 10 }}
+        />
+      </label>
+
+      <label>
+        Twitter:
+        <input
+          type="url"
+          name="twitter"
+          value={links.twitter}
+          onChange={handleChange}
+          placeholder="https://twitter.com/yourpage"
+          style={{ width: '100%', marginBottom: 20 }}
+        />
+      </label>
+
+      <button type="submit" disabled={saving} style={{ padding: '10px 20px' }}>
+        {saving ? 'Kaydediliyor...' : 'Kaydet'}
+      </button>
+
+      {successMsg && <p style={{ color: 'green', marginTop: 10 }}>{successMsg}</p>}
+    </form>
+  );
+}
+
+
+
 function CategoryManager({ fetchCategories, categories }) {
-  const [newCategory, setNewCategory] = useState({ name: '', path: '', description: '' });
+  const [newCategory, setNewCategory] = useState({ 
+    name: '', 
+    path: '', 
+    description: '', 
+    showInHeader: false 
+  });
 
   const handleAddCategory = async () => {
+    const headerCount = categories.filter(c => c.showInHeader).length;
+    if (newCategory.showInHeader && headerCount >= 4) {
+      alert("Header’da en fazla 4 kategori olabilir.");
+      return;
+    }
+
+    // Backend header alanını bekliyor, burayı güncelle
     await fetch("http://localhost:5000/category", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCategory),
+      body: JSON.stringify({
+        name: newCategory.name,
+        path: newCategory.path,
+        description: newCategory.description,
+        header: newCategory.showInHeader // burası önemli
+      }),
     });
-    setNewCategory({ name: '', path: '', description: '' });
+
+    setNewCategory({ name: '', path: '', description: '', showInHeader: false });
+    fetchCategories();
+  };
+
+  const handleToggleHeader = async (name, value) => {
+    const headerCount = categories.filter(c => c.showInHeader).length;
+
+    // Eğer aktif etme işlemi ve zaten 4 tane varsa engelle
+    if (value && !categories.find(c => c.name === name).showInHeader && headerCount >= 4) {
+      alert("Header’da en fazla 4 kategori olabilir.");
+      return;
+    }
+
+    await fetch(`http://localhost:5000/category/${name}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ header: value }), // burada header olarak gönder
+    });
     fetchCategories();
   };
 
@@ -196,20 +480,49 @@ function CategoryManager({ fetchCategories, categories }) {
     }
   };
 
+
   return (
     <div className="category-manager">
       <h2>Kategori Yönetimi</h2>
       <div className="category-form">
-        <input placeholder="Ad" value={newCategory.name} onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
-        <input placeholder="Yol (path)" value={newCategory.path} onChange={(e) => setNewCategory({ ...newCategory, path: e.target.value })} />
-        <input placeholder="Açıklama" value={newCategory.description} onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })} />
+        <input 
+          placeholder="Ad" 
+          value={newCategory.name} 
+          onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} 
+        />
+        <input 
+          placeholder="Yol (path)" 
+          value={newCategory.path} 
+          onChange={(e) => setNewCategory({ ...newCategory, path: e.target.value })} 
+        />
+        <input 
+          placeholder="Açıklama" 
+          value={newCategory.description} 
+          onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })} 
+        />
+        <label>
+          Header’da Göster
+          <input 
+            type="checkbox" 
+            checked={newCategory.showInHeader} 
+            onChange={(e) => setNewCategory({ ...newCategory, showInHeader: e.target.checked })} 
+          />
+        </label>
         <button onClick={handleAddCategory}>Ekle</button>
       </div>
 
       <ul className="category-list">
-        {categories.map((cat, idx) => (
+        {Array.isArray(categories) && categories.map((cat, idx) => (
           <li key={idx}>
-            <strong>{cat.name}</strong> - {cat.path}
+            <strong>{cat.name}</strong> - {cat.path} <br />
+            <label>
+              Header’da Gözüksün mü? 
+              <input 
+                type="checkbox" 
+                checked={cat.showInHeader || false} 
+                onChange={(e) => handleToggleHeader(cat.name, e.target.checked)} 
+              />
+            </label>
             <button onClick={() => handleDeleteCategory(cat.name)}>Sil</button>
           </li>
         ))}
@@ -218,6 +531,8 @@ function CategoryManager({ fetchCategories, categories }) {
   );
 }
 function PostForm({ onPostSaved, editPost, subheadings, setSubheadings, categories }) {
+   const [cat, setCategories] = useState([]);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -328,6 +643,24 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings, categori
     }
   };
 
+  // Slug üretici fonksiyon
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[çğıöşü]/g, c => ({
+        ç: 'c',
+        ğ: 'g',
+        ı: 'i',
+        ö: 'o',
+        ş: 's',
+        ü: 'u'
+      }[c]))
+      .replace(/[^a-z0-9\s-]/g, '')  // harf/rakam/boşluk dışında sil
+      .replace(/\s+/g, '-')          // boşlukları tire yap
+      .replace(/-+/g, '-')           // birden çok tireyi teke indir
+      .replace(/^-+|-+$/g, '');      // baş/son tireyi sil
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -335,16 +668,17 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings, categori
       const imageUrl = await uploadImage();
       const payload = {
         ...form,
+        slug: generateSlug(form.title),
         image: imageUrl,
         tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
         subheadings: subheadings,
         username, 
-        password  
+        password 
       };
-      
+      console.log(payload)
       const method = editPost ? 'PUT' : 'POST';
       const url = editPost 
-        ? `http://localhost:5000/posts/${editPost.id}`
+        ? `http://localhost:5000/posts/${editPost.slug}`
         : 'http://localhost:5000/posts';
 
       const response = await fetch(url, {

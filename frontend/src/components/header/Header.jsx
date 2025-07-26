@@ -8,6 +8,14 @@ const Header = () => {
   const [categories, setCategories] = useState([]);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
+  // Logo ayarları için state
+  const [logoSettings, setLogoSettings] = useState({
+    logo_line1: 'KARACABEY',
+    logo_line2: 'HABER',
+    logo_line1_color: '#000000',
+    logo_line2_color: '#000000'
+  });
+
   useEffect(() => {
     const sliderWrapper = document.querySelector('.mobile-slider-wrapper');
     if (sliderWrapper) {
@@ -30,12 +38,40 @@ const Header = () => {
       try {
         const res = await fetch("http://localhost:5000/category");
         const data = await res.json();
-        setCategories(data);
+
+        // Backend'den gelen `header` alanını `showInHeader` olarak ayarla
+        const mappedCategories = data.map(cat => ({
+          ...cat,
+          showInHeader: cat.header || false
+        }));
+
+        setCategories(mappedCategories);
       } catch (err) {
         console.error("Kategori alınamadı:", err);
       }
     };
     fetchCategories();
+  }, []);
+
+  // Backend'den logo ayarlarını çek
+  useEffect(() => {
+    const fetchLogoSettings = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/settings/logo-text');
+        if (res.ok) {
+          const data = await res.json();
+          setLogoSettings({
+            logo_line1: data.logo_line1 || 'KARACABEY',
+            logo_line2: data.logo_line2 || 'HABER',
+            logo_line1_color: data.logo_line1_color || '#000000',
+            logo_line2_color: data.logo_line2_color || '#000000'
+          });
+        }
+      } catch (error) {
+        console.error('Logo ayarları alınamadı:', error);
+      }
+    };
+    fetchLogoSettings();
   }, []);
 
   const handleSearch = (e) => {
@@ -57,17 +93,32 @@ const Header = () => {
     }
   };
 
+  // Sadece header'da gösterilmek istenen kategoriler, maksimum 4 adet
+  const mainCategories = categories
+    .filter(cat => cat.showInHeader)
+    .slice(0, 4);
 
-  const mainCategories = categories.slice(0, 4);
-  const otherCategories = categories.slice(4);
+  // Header'da gösterilmeyen diğer kategoriler
+  const otherCategories = categories.filter(cat => !cat.showInHeader);
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`} role="banner">
       <div className="header-container">
         <Link to="/" className="logo-link" aria-label="Ana sayfaya dön">
           <h1 className="logo">
-            <span className="logo-first">KARACABEY</span>
-            <span className="logo-second">HABER</span>
+            <span 
+              className="logo-first"
+              style={{ color: logoSettings.logo_line1_color }}
+            >
+              {logoSettings.logo_line1}
+            </span>
+            <br />
+            <span 
+              className="logo-second"
+              style={{ color: logoSettings.logo_line2_color }}
+            >
+              {logoSettings.logo_line2}
+            </span>
           </h1>
         </Link>
 
@@ -118,13 +169,15 @@ const Header = () => {
             </Link>
           ))}
 
-          <Link 
-            to="/diger" 
-            className="nav-link" 
-            onClick={() => setShowMobileMenu(false)}
-          >
-            Diğer Kategoriler
-          </Link>
+          {otherCategories.length > 0 && (
+            <Link 
+              to="/diger" 
+              className="nav-link" 
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Diğer Kategoriler
+            </Link>
+          )}
         </nav>
 
         <button

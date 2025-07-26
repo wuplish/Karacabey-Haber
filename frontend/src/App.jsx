@@ -41,7 +41,7 @@ function App() {
           <Route path="/facebook" element={<Facebook />} />
           <Route path="/instagram" element={<Instagram />} />
           <Route path="/twitter" element={<Twitter />} />
-          <Route path="/post/:id" element={<PostDetail />} />
+          <Route path="/post/:slug" element={<PostDetail />} />
           <Route path="/diger" element={<OtherCategories />} />
           {categories.map((cat, i) => (
             <Route

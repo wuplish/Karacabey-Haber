@@ -1,4 +1,3 @@
-// OtherCategories.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './OtherCategories.css';
@@ -11,7 +10,9 @@ const OtherCategories = () => {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setCategories(data.slice(4)); 
+          // header alanı true olanları çıkar, sadece header=false olanları al
+          const filtered = data.filter(cat => !cat.header);
+          setCategories(filtered);
         } else {
           console.error("Kategori verisi geçerli bir dizi değil.");
         }
