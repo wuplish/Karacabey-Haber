@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, act } from 'react';
 import { FaPlus, FaTrash, FaEdit, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './AdminDashboard.css';
 import axios from "axios";  
@@ -163,7 +163,7 @@ function AdminDashboard() {
           console.warn("Geçersiz credential formatı");
         }
       } catch (error) {
-        console.error("JSON parse hatası:", error);
+        console.error("JSON  parse hatası:", error);
         localStorage.removeItem('adminCredentials');
       }
     }
@@ -208,6 +208,7 @@ function AdminDashboard() {
         <button onClick={() => setActiveTab("kategori")} className={activeTab === "kategori" ? "active" : ""}>Kategoriler</button>
         <button onClick={() => setActiveTab("header")} className={activeTab === "header" ? "active" : ""}>Header Ayarları</button>
         <button onClick={() => setActiveTab("socialmedia")} className={activeTab === "socialmedia" ? "active" : ""}>Sosyal Medya Ayarları</button>
+        <button onClick={() => setActiveTab("footer")} className={activeTab === "footer" ? "active" : ""}>Footer Ayarları</button>
       </div>
       </div>
       <div className="dashboard-header">
@@ -301,8 +302,256 @@ function AdminDashboard() {
         <HeaderSettings />
       ) : activeTab === "socialmedia" ? (
         <SocialMediaSettings />
+      ) : activeTab === "footer" ? (
+        <FooterSettings />
       ) : null}
     </div>
+  );
+}
+function FooterSettings() {
+  const [footerLinks, setFooterLinks] = useState({
+    kunye: "",
+    kurumsal: "",
+    gizlilik: "",
+    kvkk: "",
+    iletisim: "",
+  });
+
+  const [contactInfo, setContactInfo] = useState({
+    adres: "",
+    telefon: "",
+    email: "",
+  });
+
+  const [plans, setPlans] = useState([]);
+  const [newPlan, setNewPlan] = useState({
+    name: "",
+    price: "",
+    description: "",
+    features: ""
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch("http://localhost:5000/settings/footer");
+        if (!res.ok) throw new Error("Footer ayarları alınamadı");
+        const data = await res.json();
+
+        setFooterLinks(data.links || {});
+        setContactInfo(data.iletisim || { adres: "", telefon: "", email: "" });
+        setPlans(data.plans || []);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSettings();
+  }, []);
+
+  const handleLinkChange = (e) => {
+    setFooterLinks({ ...footerLinks, [e.target.name]: e.target.value });
+  };
+
+  const handleContactChange = (e) => {
+    setContactInfo({ ...contactInfo, [e.target.name]: e.target.value });
+  };
+
+  const handlePlanChange = (index, field, value) => {
+    const updatedPlans = [...plans];
+    updatedPlans[index][field] = value;
+    setPlans(updatedPlans);
+  };
+
+  const handleAddPlan = () => {
+    if (newPlan.name.trim()) {
+      setPlans([...plans, newPlan]);
+      setNewPlan({ name: "", price: "", description: "", features: "" });
+    }
+  };
+
+  const handleRemovePlan = (index) => {
+    const updated = [...plans];
+    updated.splice(index, 1);
+    setPlans(updated);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    setSuccessMsg(null);
+
+    try {
+      const res = await fetch("http://localhost:5000/settings/footer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ links: footerLinks, iletisim: contactInfo, plans }),
+      });
+      if (!res.ok) throw new Error("Kaydetme başarısız");
+      setSuccessMsg("Footer ayarları başarıyla kaydedildi!");
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <p>Yükleniyor...</p>;
+  if (error) return <p style={{ color: "red" }}>Hata: {error}</p>;
+
+  return (
+    <form onSubmit={handleSubmit} style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
+      <h2>Footer Ayarları</h2>
+
+      {/* Diğer footer linkleri */}
+      {["kunye", "kurumsal", "gizlilik", "kvkk"].map((key) => (
+        <div key={key} style={{ marginBottom: 12 }}>
+          <label>
+            {key.charAt(0).toUpperCase() + key.slice(1)}:
+            <input
+              type="text"
+              name={key}
+              value={footerLinks[key]}
+              onChange={handleLinkChange}
+              style={{ width: "100%" }}
+            />
+          </label>
+        </div>
+      ))}
+
+      {/* İletişim Bilgileri Bölümü */}
+      <h3>İletişim Bilgileri</h3>
+      <div style={{ marginBottom: 12 }}>
+        <label>
+          Adres:
+          <input
+            type="text"
+            name="adres"
+            value={contactInfo.adres}
+            onChange={handleContactChange}
+            style={{ width: "100%" }}
+          />
+        </label>
+      </div>
+      <div style={{ marginBottom: 12 }}>
+        <label>
+          Telefon:
+          <input
+            type="text"
+            name="telefon"
+            value={contactInfo.telefon}
+            onChange={handleContactChange}
+            style={{ width: "100%" }}
+          />
+        </label>
+      </div>
+      <div style={{ marginBottom: 12 }}>
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={contactInfo.email}
+            onChange={handleContactChange}
+            style={{ width: "100%" }}
+          />
+        </label>
+      </div>
+
+      {/* Abonelik Planları */}
+      <h3>Abonelik Planları</h3>
+      {plans.map((plan, index) => (
+        <div key={index} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
+          <label>
+            Plan Adı:
+            <input
+              type="text"
+              value={plan.name}
+              onChange={(e) => handlePlanChange(index, "name", e.target.value)}
+              style={{ width: "100%", marginBottom: 5 }}
+            />
+          </label>
+
+          <label>
+            Fiyat:
+            <input
+              type="text"
+              value={plan.price}
+              onChange={(e) => handlePlanChange(index, "price", e.target.value)}
+              style={{ width: "100%", marginBottom: 5 }}
+            />
+          </label>
+
+          <label>
+            Açıklama:
+            <input
+              type="text"
+              value={plan.description}
+              onChange={(e) => handlePlanChange(index, "description", e.target.value)}
+              style={{ width: "100%", marginBottom: 5 }}
+            />
+          </label>
+
+          <label>
+            Özellikler:
+            <input
+              type="text"
+              value={plan.features}
+              onChange={(e) => handlePlanChange(index, "features", e.target.value)}
+              style={{ width: "100%", marginBottom: 5 }}
+            />
+          </label>
+
+          <button type="button" onClick={() => handleRemovePlan(index)} style={{ marginTop: 5 }}>
+            Planı Sil
+          </button>
+        </div>
+      ))}
+
+      <h4>Yeni Plan Ekle</h4>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+        <input
+          type="text"
+          placeholder="Plan adı"
+          value={newPlan.name}
+          onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Fiyat"
+          value={newPlan.price}
+          onChange={(e) => setNewPlan({ ...newPlan, price: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Açıklama"
+          value={newPlan.description}
+          onChange={(e) => setNewPlan({ ...newPlan, description: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Özellikler"
+          value={newPlan.features}
+          onChange={(e) => setNewPlan({ ...newPlan, features: e.target.value })}
+        />
+        <button type="button" onClick={handleAddPlan}>
+          Ekle
+        </button>
+      </div>
+
+      <button type="submit" disabled={saving} style={{ marginTop: 20 }}>
+        {saving ? "Kaydediliyor..." : "Kaydet"}
+      </button>
+
+      {successMsg && <p style={{ color: "green", marginTop: 10 }}>{successMsg}</p>}
+    </form>
   );
 }
 

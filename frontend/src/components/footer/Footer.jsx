@@ -1,33 +1,76 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
+import googlePlayIcon from '../footer/assets/goolgle-play-icon.png';
+import appStoreIcon from '../footer/assets/app-store-icon.png';
+import huaweiAppGalleryIcon from '../footer/assets/huawei-app-gallery-icon.png';
 
-const Footer = () => (
-  <footer className="footer">
-    <a
-      href="https://www.aytuncbaskan.com"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="footer-logo-link"
-    >
-      <img
-        src="https://www.aytuncbaskan.com/wp-content/uploads/2025/04/Adsiz-tasarim-2022-12-09T014101.358-scaled.png"
-        alt="Aytunç Baskan Creative Agency Logo"
-        className="footer-logo"
-      />
-    </a>
-    <p className="footer-text">
-      Bu site{" "}
+const Footer = () => {
+  const links = [
+    { to: '/kunye', label: 'Künye' },
+    { to: '/kurumsal', label: 'Kurumsal' },
+    { to: '/abonelik', label: 'Abonelik Planları' },
+    { to: '/gizlilik', label: 'Gizlilik Politikası' },
+    { to: '/kvkk', label: 'KVKK' },
+    { to: '/iletisim', label: 'İletişim' },
+  ];
+  
+
+  const storeImages = [
+    { src: googlePlayIcon, alt: 'Google Play Store', href: 'https://google.com' },
+    { src: appStoreIcon, alt: 'Apple App Store', href: 'https://google.com' },
+    { src: huaweiAppGalleryIcon, alt: 'Huawei AppGallery', href: 'https://google.com' },
+  ];
+
+  return (
+    <footer className="footer">
+      <nav className="footer-nav">
+        {links.map((link, index) => (
+          <React.Fragment key={link.to}>
+            <Link to={link.to} className="footer-link">
+              {link.label}
+            </Link>
+            {index < links.length - 1 && <span className="separator">|</span>}
+          </React.Fragment>
+        ))}
+      </nav>
+
+      {/* Store images */}
+      <div className="store-images">
+        {storeImages.map(({ src, alt, href }, i) => (
+          <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="store-link">
+            <img src={src} alt={alt} className="store-icon" />
+          </a>
+        ))}
+      </div>
+
       <a
         href="https://www.aytuncbaskan.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="footer-agency-link"
+        className="footer-logo-link"
       >
-        Aytunç Baskan Creative Agency
+        <img
+          src="https://www.aytuncbaskan.com/wp-content/uploads/2025/04/Adsiz-tasarim-2022-12-09T014101.358-scaled.png"
+          alt="Aytunç Baskan Creative Agency Logo"
+          className="footer-logo"
+        />
       </a>
-      ® tarafından gelişmiş altyapı sistemleri kullanılarak hazırlanmıştır.
-    </p>
-  </footer>
-);
+
+      <p className="footer-text">
+        Bu site{' '}
+        <a
+          href="https://www.aytuncbaskan.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-agency-link"
+        >
+          Aytunç Baskan Creative Agency
+        </a>
+        ® tarafından hazırlanmıştır.
+      </p>
+    </footer>
+  );
+};
 
 export default Footer;

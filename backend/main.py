@@ -94,7 +94,26 @@ class CategoryModel(BaseModel):
     description: Optional[str] = ""
     order: Optional[int] = 0
     header: Optional[bool] = False
-    
+class PlanModel(BaseModel):
+    name: str
+    price: str
+    description: str
+    features: str
+class IletisimModel(BaseModel):
+    adres: str
+    telefon: str
+    email: str
+class FooterLinks(BaseModel):
+    kunye: str
+    kurumsal: str
+    gizlilik: str
+    kvkk: str
+
+class FooterSettings(BaseModel):
+    links: FooterLinks
+    iletisim: IletisimModel   # Burası mutlaka olmalı
+    plans: List[PlanModel]
+
 class LoginData(BaseModel):
     username: str
     password: str
@@ -134,6 +153,33 @@ def login(request: Request,data: LoginData):
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 def allowed_file(filename):
     return os.path.splitext(filename)[1].lower() in ALLOWED_EXTENSIONS
+SETTINGS_FILE = "data/footer_settings.json"
+# Ayarları JSON'dan oku
+def load_footer_settings():
+    if not os.path.exists(SETTINGS_FILE):
+        return {"links": {}, "plans": []}
+    with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+# Ayarları JSON'a yaz
+def save_footer_settings(data):
+    with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+# GET endpoint
+@app.get("/settings/footer")
+async def get_footer_settings():
+    return load_footer_settings()
+
+# POST endpoint
+@app.post("/settings/footer")
+async def update_footer_settings(settings: FooterSettings):
+    try:
+        save_footer_settings(settings.dict())
+        return {"message": "Footer ayarları başarıyla kaydedildi"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ayarlar kaydedilemedi: {str(e)}")
+
 
 # --- File Upload System ---
 @app.post("/upload")
@@ -592,5 +638,5 @@ def fetch_latest_data():
 @app.get("/api/doviz")
 def doviz():
     return fetch_latest_data()
-# --- Start DB ---
+
 init_db()

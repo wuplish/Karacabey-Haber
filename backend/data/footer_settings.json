@@ -1,0 +1,33 @@
+{
+  "links": {
+    "kunye": "**Başlık**Test\nsadawdawdawd",
+    "kurumsal": "teeesttt",
+    "gizlilik": "teeesttt",
+    "kvkk": "teeesttt"
+  },
+  "iletisim": {
+    "adres": "123",
+    "telefon": "123",
+    "email": "123@gmail.com"
+  },
+  "plans": [
+    {
+      "name": "teeesttt",
+      "price": "1",
+      "description": "teeesttt",
+      "features": "teeesttt"
+    },
+    {
+      "name": "qweq",
+      "price": "21312",
+      "description": "qewqwe",
+      "features": "123123"
+    },
+    {
+      "name": "123123",
+      "price": "qweqwee1321",
+      "description": "123123",
+      "features": "edqw"
+    }
+  ]
+}
