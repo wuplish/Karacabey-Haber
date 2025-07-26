@@ -103,6 +103,10 @@ class IletisimModel(BaseModel):
     adres: str
     telefon: str
     email: str
+class MobilModel(BaseModel):
+    playstore: str
+    appstore: str
+    huaweistore: str
 class FooterLinks(BaseModel):
     kunye: str
     kurumsal: str
@@ -160,17 +164,14 @@ def load_footer_settings():
         return {"links": {}, "plans": []}
     with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
-
 # Ayarları JSON'a yaz
 def save_footer_settings(data):
     with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-
 # GET endpoint
 @app.get("/settings/footer")
 async def get_footer_settings():
     return load_footer_settings()
-
 # POST endpoint
 @app.post("/settings/footer")
 async def update_footer_settings(settings: FooterSettings):
@@ -179,8 +180,29 @@ async def update_footer_settings(settings: FooterSettings):
         return {"message": "Footer ayarları başarıyla kaydedildi"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ayarlar kaydedilemedi: {str(e)}")
+    
 
 
+URL = "data/url.json"
+def load_app_settings():
+    if not os.path.exists(URL):
+        return {"nothing": {}}
+    with open(URL, "r", encoding="utf-8") as f:
+        return json.load(f)
+def save_app_settings(data):
+    with open(URL, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+@app.get("/settings/apps")
+async def get_apps_settings():
+    return load_app_settings()
+# POST endpoint
+@app.post("/settings/apps")
+async def update_apps_settings(settings: MobilModel):
+    try:
+        save_app_settings(settings.dict())
+        return {"message": "apps ayarları başarıyla kaydedildi"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ayarlar kaydedilemedi: {str(e)}")
 # --- File Upload System ---
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):

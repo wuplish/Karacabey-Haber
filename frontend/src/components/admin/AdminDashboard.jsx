@@ -209,6 +209,7 @@ function AdminDashboard() {
         <button onClick={() => setActiveTab("header")} className={activeTab === "header" ? "active" : ""}>Header Ayarları</button>
         <button onClick={() => setActiveTab("socialmedia")} className={activeTab === "socialmedia" ? "active" : ""}>Sosyal Medya Ayarları</button>
         <button onClick={() => setActiveTab("footer")} className={activeTab === "footer" ? "active" : ""}>Footer Ayarları</button>
+        <button onClick={() => setActiveTab("mobilappurl")} className={activeTab === "mobilappurl" ? "active" : ""}>Mobil APP URl Ayarları</button>
       </div>
       </div>
       <div className="dashboard-header">
@@ -304,10 +305,104 @@ function AdminDashboard() {
         <SocialMediaSettings />
       ) : activeTab === "footer" ? (
         <FooterSettings />
+      ) : activeTab === "mobilappurl" ? (
+        <MobilAppUrlSettings />
       ) : null}
     </div>
   );
 }
+function MobilAppUrlSettings() {
+  const [form, setForm] = useState({
+    playstore: "",
+    appstore: "",
+    huaweistore: "",
+  });
+
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/settings/apps");
+      setForm(res.data);
+    } catch (err) {
+      console.error("Ayarlar alınamadı:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post("http://localhost:5000/settings/apps", form);
+      setMessage("Ayarlar kaydedildi!");
+    } catch (err) {
+      setMessage("Hata oluştu!");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="p-4 max-w-lg mx-auto space-y-4">
+      <h2 className="text-xl font-semibold">Mobil Uygulama URL Ayarları</h2>
+
+      <div>
+        <label className="block font-medium">Play Store</label>
+        <input
+          type="text"
+          name="playstore"
+          value={form.playstore}
+          onChange={handleChange}
+          className="border p-2 w-full rounded"
+          placeholder="https://play.google.com/store/apps/details?id=..."
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium">App Store</label>
+        <input
+          type="text"
+          name="appstore"
+          value={form.appstore}
+          onChange={handleChange}
+          className="border p-2 w-full rounded"
+          placeholder="https://apps.apple.com/tr/app/..."
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium">Huawei AppGallery</label>
+        <input
+          type="text"
+          name="huaweistore"
+          value={form.huaweistore}
+          onChange={handleChange}
+          className="border p-2 w-full rounded"
+          placeholder="https://appgallery.huawei.com/#/app/..."
+        />
+      </div>
+
+      <button
+        onClick={handleSave}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
+        disabled={loading}
+      >
+        {loading ? "Kaydediliyor..." : "Kaydet"}
+      </button>
+
+      {message && <p className="text-green-600">{message}</p>}
+    </div>
+  );
+}
+
+
 function FooterSettings() {
   const [footerLinks, setFooterLinks] = useState({
     kunye: "",
@@ -410,57 +505,53 @@ function FooterSettings() {
     <form onSubmit={handleSubmit} style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
       <h2>Footer Ayarları</h2>
 
-      {/* Diğer footer linkleri */}
+      {/* Footer Linkleri */}
       {["kunye", "kurumsal", "gizlilik", "kvkk"].map((key) => (
         <div key={key} style={{ marginBottom: 12 }}>
           <label>
             {key.charAt(0).toUpperCase() + key.slice(1)}:
-            <input
-              type="text"
+            <textarea
               name={key}
               value={footerLinks[key]}
               onChange={handleLinkChange}
-              style={{ width: "100%" }}
+              style={{ width: "100%", height: 100, padding: 8, resize: "vertical" }}
             />
           </label>
         </div>
       ))}
 
-      {/* İletişim Bilgileri Bölümü */}
+      {/* İletişim Bilgileri */}
       <h3>İletişim Bilgileri</h3>
       <div style={{ marginBottom: 12 }}>
         <label>
           Adres:
-          <input
-            type="text"
+          <textarea
             name="adres"
             value={contactInfo.adres}
             onChange={handleContactChange}
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: 80, padding: 8, resize: "vertical" }}
           />
         </label>
       </div>
       <div style={{ marginBottom: 12 }}>
         <label>
           Telefon:
-          <input
-            type="text"
+          <textarea
             name="telefon"
             value={contactInfo.telefon}
             onChange={handleContactChange}
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: 40, padding: 8, resize: "none" }}
           />
         </label>
       </div>
       <div style={{ marginBottom: 12 }}>
         <label>
           Email:
-          <input
-            type="email"
+          <textarea
             name="email"
             value={contactInfo.email}
             onChange={handleContactChange}
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: 40, padding: 8, resize: "none" }}
           />
         </label>
       </div>
@@ -471,41 +562,37 @@ function FooterSettings() {
         <div key={index} style={{ border: '1px solid #ccc', padding: 10, marginBottom: 10 }}>
           <label>
             Plan Adı:
-            <input
-              type="text"
+            <textarea
               value={plan.name}
               onChange={(e) => handlePlanChange(index, "name", e.target.value)}
-              style={{ width: "100%", marginBottom: 5 }}
+              style={{ width: "100%", height: 40, marginBottom: 5, resize: "none", padding: 8 }}
             />
           </label>
 
           <label>
             Fiyat:
-            <input
-              type="text"
+            <textarea
               value={plan.price}
               onChange={(e) => handlePlanChange(index, "price", e.target.value)}
-              style={{ width: "100%", marginBottom: 5 }}
+              style={{ width: "100%", height: 40, marginBottom: 5, resize: "none", padding: 8 }}
             />
           </label>
 
           <label>
             Açıklama:
-            <input
-              type="text"
+            <textarea
               value={plan.description}
               onChange={(e) => handlePlanChange(index, "description", e.target.value)}
-              style={{ width: "100%", marginBottom: 5 }}
+              style={{ width: "100%", height: 80, marginBottom: 5, resize: "vertical", padding: 8 }}
             />
           </label>
 
           <label>
             Özellikler:
-            <input
-              type="text"
+            <textarea
               value={plan.features}
               onChange={(e) => handlePlanChange(index, "features", e.target.value)}
-              style={{ width: "100%", marginBottom: 5 }}
+              style={{ width: "100%", height: 80, marginBottom: 5, resize: "vertical", padding: 8 }}
             />
           </label>
 
@@ -516,30 +603,30 @@ function FooterSettings() {
       ))}
 
       <h4>Yeni Plan Ekle</h4>
-      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-        <input
-          type="text"
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <textarea
           placeholder="Plan adı"
           value={newPlan.name}
           onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
+          style={{ padding: 8, height: 40, resize: "none" }}
         />
-        <input
-          type="text"
+        <textarea
           placeholder="Fiyat"
           value={newPlan.price}
           onChange={(e) => setNewPlan({ ...newPlan, price: e.target.value })}
+          style={{ padding: 8, height: 40, resize: "none" }}
         />
-        <input
-          type="text"
+        <textarea
           placeholder="Açıklama"
           value={newPlan.description}
           onChange={(e) => setNewPlan({ ...newPlan, description: e.target.value })}
+          style={{ height: 80, resize: "vertical", padding: 8 }}
         />
-        <input
-          type="text"
+        <textarea
           placeholder="Özellikler"
           value={newPlan.features}
           onChange={(e) => setNewPlan({ ...newPlan, features: e.target.value })}
+          style={{ height: 80, resize: "vertical", padding: 8 }}
         />
         <button type="button" onClick={handleAddPlan}>
           Ekle

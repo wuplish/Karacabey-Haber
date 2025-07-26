@@ -1,33 +1,21 @@
 {
   "links": {
-    "kunye": "**Başlık**Test\nsadawdawdawd",
-    "kurumsal": "teeesttt",
-    "gizlilik": "teeesttt",
-    "kvkk": "teeesttt"
+    "kunye": "📄 KÜNYE\n\nSite Adı: karacabeygazatesi.com\nYayın Türü: Yaygın süreli dijital yayın\nYayın Dili: Türkçe\nYayın Alanı: Türkiye genelinde\nYayıncı Kuruluş\n\nŞirket Adı: Aytunç Baskan Creative Agency\nAdres: Örnek Mahallesi, Örnek Sokak No:5, Kadıköy / İstanbul\nVergi Dairesi / No: Kadıköy VD / 1234567890\nMERSİS No: 0123456789012345\nTicaret Sicil No: 987654321\nİmtiyaz Sahibi / Sorumlu Müdür\n\nAdı Soyadı: Aytunç Baskan\nE-Posta: info@aytuncbaskan.com\nTelefon: +90 212 000 00 00\nEditör ve İçerik Ekibi\n\n    Baş Editör: Zeynep Yılmaz\n\n    Editörler: Mehmet Kaya, Ece Demir, Hasan Uçar\n\n    Görsel Tasarım: Berkay Şahin\n\nYazılım ve Teknik Destek\n\nYazılım Geliştirme: Aytunc Baskan\nSunucu ve Barındırma: Vercel / DigitalOcean\nİletişim: dev@wuplish.com\nİletişim Bilgileri\n\n📧 E-posta: iletisim@siteadi.com\n🌐 Web: www.karacabeygazatesi.com\n📍 Adres: Örnek Plaza, Kat:3, Şişli / İstanbul\nYasal Uyarı\n\nSiteAdı.com’da yayınlanan haber, yazı ve görsellerin her türlü telif hakkı SiteAdı.com'a aittir. Kaynak gösterilerek alıntı yapılabilir. İzinsiz kopyalanamaz veya çoğaltılamaz.\n\n5651 sayılı yasa ve ilgili mevzuat uyarınca, SiteAdı.com sadece yer sağlayıcıdır. İçeriklerle ilgili sorumluluk, içeriği oluşturan kişi veya kuruma aittir.\n",
+    "kurumsal": "karacabeygazatesi.com; kullanıcılarına doğru, tarafsız ve güncel içerik sunmayı hedefleyen dijital bir yayın platformudur. Kuruluşumuz; güvenilirliği, şeffaflığı ve kullanıcı odaklı yapısıyla sektörde fark yaratmayı amaçlamaktadır.\n\nMisyonumuz:\nToplumun her kesimine bilgiye erişim fırsatı sunmak, içeriklerimizle farkındalık yaratmak ve dijital medyada etik değerleri koruyarak yayıncılık yapmaktır.\n\nVizyonumuz:\nYenilikçi ve sürdürülebilir projelerle Türkiye’nin dijital yayıncılık alanında öncü kuruluşlarından biri olmak.\n\nDeğerlerimiz:\n- Tarafsızlık ve bağımsızlık\n- Doğruluk ve güvenilirlik\n- Saygı ve şeffaflık\n- Sürekli gelişim ve yenilik\n\nEkibimiz; editörlerden yazılımcılara, tasarımcılardan destek birimlerine kadar pek çok profesyonelden oluşur. Hep birlikte, kullanıcılarımıza en iyi deneyimi sunmak için çalışıyoruz.\n\nBize her zaman ulaşabilir, görüş ve önerilerinizi paylaşabilirsiniz.\n",
+    "gizlilik": "karacabeygazatesi.com olarak kullanıcılarımızın gizliliğine son derece önem veriyoruz. Bu Gizlilik Politikası, web sitemizi kullanırken hangi bilgileri topladığımızı, bu bilgileri nasıl kullandığımızı ve koruduğumuzu açıklar.\n\nToplanan Bilgiler:\n- Ziyaretçi verileri (IP adresi, tarayıcı türü, ziyaret süresi vb.)\n- Gönüllü olarak paylaşılan bilgiler (e-posta, isim, telefon vb.)\n\nKullanım Amaçları:\n- Hizmetlerimizi geliştirmek ve kullanıcı deneyimini iyileştirmek\n- Geri bildirimlere yanıt vermek\n- Yasal yükümlülükleri yerine getirmek\n\nÇerezler (Cookies):\nkaracabeygazatesi.com, kullanıcı deneyimini iyileştirmek amacıyla çerezler kullanabilir. Tarayıcı ayarlarınızdan çerezleri reddedebilirsiniz.\n\nBilgi Paylaşımı:\nKişisel bilgileriniz, yasal zorunluluklar haricinde üçüncü şahıslarla paylaşılmaz. Verileriniz, güvenlik önlemleriyle korunur.\n\nDış Bağlantılar:\nSitemizde diğer sitelere yönlendiren bağlantılar bulunabilir. Bu sitelerin gizlilik politikalarından karacabeygazatesi.com sorumlu değildir.\n\nGizlilik Politikası Güncellemeleri:\nGizlilik politikamız zaman zaman güncellenebilir. Güncellemeler sitemizden duyurulur ve yürürlüğe girdikten sonra geçerli olur.\n\nKullanıcılarımızın güveni bizim için önemlidir. Sorularınız için bizimle iletişime geçebilirsiniz.\n",
+    "kvkk": "karacabeygazatesi.com olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) kapsamında kişisel verilerinizin korunmasına büyük önem vermekteyiz. Bu metin, kişisel verilerinizin işlenme amaçları, kapsamı ve haklarınız hakkında bilgilendirme yapmak amacıyla hazırlanmıştır.\n\nToplanan Kişisel Verileriniz:\n- İletişim bilgileri (ad, soyad, e-posta, telefon)\n- Site kullanım bilgileri (IP adresi, çerez verileri, erişim tarih ve saatleri)\n- İletişim formları ve abonelik bilgileri\n\nKişisel Verilerin İşlenme Amaçları:\n- Hizmetlerin sunulması ve geliştirilmesi\n- İletişim taleplerinin karşılanması\n- Yasal yükümlülüklerin yerine getirilmesi\n- Pazarlama ve reklam faaliyetlerinin yürütülmesi (izin alınması halinde)\n\nVeri Sahibinin Hakları:\nKVKK'nın 11. maddesi kapsamında, kişisel verilerinizle ilgili olarak;\n- Verilerin işlenip işlenmediğini öğrenme,\n- İşlenen veriler hakkında bilgi talep etme,\n- Verilerin üçüncü kişilere aktarılıp aktarılmadığını öğrenme,\n- Eksik veya yanlış işlenen verilerin düzeltilmesini talep etme,\n- KVKK kapsamında verilmiş olan diğer haklarınızı kullanma haklarına sahipsiniz.\n\nVeri Güvenliği:\nKişisel verileriniz, gerekli teknik ve idari tedbirler alınarak yetkisiz erişime, kayba veya hukuka aykırı işlemlere karşı korunmaktadır.\n\nİletişim:\nKişisel verilerinizle ilgili haklarınızı kullanmak veya sorularınız için bizimle aşağıdaki iletişim bilgileri üzerinden irtibata geçebilirsiniz:\n\nAdres: Örnek Mah. No:5 Kadıköy / İstanbul  \nTelefon: +90 555 000 00 00  \nE-posta: kvkk@karacabeygazatesi.com\n\nBu aydınlatma metni zaman zaman güncellenebilir. Güncellemeler sitemizden duyurulur ve yürürlüğe girdikten sonra geçerlilik kazanır.\n"
   },
   "iletisim": {
-    "adres": "123",
-    "telefon": "123",
-    "email": "123@gmail.com"
+    "adres": "Bursa / Karacabey ",
+    "telefon": "5071387569",
+    "email": "info@karacabeygazatesi.com"
   },
   "plans": [
     {
-      "name": "teeesttt",
-      "price": "1",
-      "description": "teeesttt",
-      "features": "teeesttt"
-    },
-    {
-      "name": "qweq",
-      "price": "21312",
-      "description": "qewqwe",
-      "features": "123123"
-    },
-    {
-      "name": "123123",
-      "price": "qweqwee1321",
-      "description": "123123",
-      "features": "edqw"
+      "name": "",
+      "price": "",
+      "description": "",
+      "features": ""
     }
   ]
 }

@@ -2,17 +2,23 @@
   {
     "name": "Siyaset",
     "path": "/siyaset",
-    "description": "Yerel ve ulusal siyaset haberleri, analizler ve gelişmeler"
+    "description": "Yerel ve ulusal siyaset haberleri, analizler ve gelişmeler",
+    "order": 3,
+    "header": true
   },
   {
     "name": "Eğitim",
     "path": "/egitim",
-    "description": "Okullar, kurslar, eğitim sistemindeki değişiklikler"
+    "description": "Okullar, kurslar, eğitim sistemindeki değişiklikler",
+    "order": 2,
+    "header": true
   },
   {
     "name": "Sağlık",
     "path": "/saglik",
-    "description": "Hastaneler, sağlık hizmetleri, koruyucu sağlık bilgileri"
+    "description": "Hastaneler, sağlık hizmetleri, koruyucu sağlık bilgileri",
+    "order": 1,
+    "header": true
   },
   {
     "name": "Teknoloji",
@@ -52,7 +58,9 @@
   {
     "name": "Gündem",
     "path": "/gundem",
-    "description": "Güncel olaylar, gelişmeler ve halkın gündeminde olan konular"
+    "description": "Güncel olaylar, gelişmeler ve halkın gündeminde olan konular",
+    "order": 0,
+    "header": true
   },
   {
     "name": "Spor",
@@ -68,38 +76,5 @@
     "name": "Ekonomi",
     "path": "/ekonomi",
     "description": "Döviz, borsa, piyasa analizleri ve ekonomik gelişmeler"
-  },
-  {
-    "name": "test",
-    "path": "/test",
-    "description": "test"
-  },
-  {
-    "name": "test",
-    "path": "/tesettt",
-    "description": "tetetestt",
-    "order": 0,
-    "header": false
-  },
-  {
-    "name": "testtt",
-    "path": "/teesttt",
-    "description": "tetewqrwer",
-    "order": 0,
-    "header": false
-  },
-  {
-    "name": "test",
-    "path": "/teeawdawd",
-    "description": "awdawd",
-    "order": 0,
-    "header": false
-  },
-  {
-    "name": "test",
-    "path": "/fuck",
-    "description": "test",
-    "order": 0,
-    "header": true
   }
 ]

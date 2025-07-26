@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 import googlePlayIcon from '../footer/assets/goolgle-play-icon.png';
@@ -6,6 +6,26 @@ import appStoreIcon from '../footer/assets/app-store-icon.png';
 import huaweiAppGalleryIcon from '../footer/assets/huawei-app-gallery-icon.png';
 
 const Footer = () => {
+  const [appLinks, setAppLinks] = useState({
+    playstore: '',
+    appstore: '',
+    huaweistore: '',
+  });
+
+  useEffect(() => {
+    const fetchAppLinks = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/settings/apps');
+        const data = await res.json();
+        setAppLinks(data);
+      } catch (error) {
+        console.error('Mobil uygulama linkleri alınamadı:', error);
+      }
+    };
+
+    fetchAppLinks();
+  }, []);
+
   const links = [
     { to: '/kunye', label: 'Künye' },
     { to: '/kurumsal', label: 'Kurumsal' },
@@ -14,12 +34,11 @@ const Footer = () => {
     { to: '/kvkk', label: 'KVKK' },
     { to: '/iletisim', label: 'İletişim' },
   ];
-  
 
   const storeImages = [
-    { src: googlePlayIcon, alt: 'Google Play Store', href: 'https://google.com' },
-    { src: appStoreIcon, alt: 'Apple App Store', href: 'https://google.com' },
-    { src: huaweiAppGalleryIcon, alt: 'Huawei AppGallery', href: 'https://google.com' },
+    { src: googlePlayIcon, alt: 'Google Play Store', href: appLinks.playstore },
+    { src: appStoreIcon, alt: 'Apple App Store', href: appLinks.appstore },
+    { src: huaweiAppGalleryIcon, alt: 'Huawei AppGallery', href: appLinks.huaweistore },
   ];
 
   return (
@@ -35,12 +54,13 @@ const Footer = () => {
         ))}
       </nav>
 
-      {/* Store images */}
       <div className="store-images">
         {storeImages.map(({ src, alt, href }, i) => (
-          <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="store-link">
-            <img src={src} alt={alt} className="store-icon" />
-          </a>
+          href && (
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="store-link">
+              <img src={src} alt={alt} className="store-icon" />
+            </a>
+          )
         ))}
       </div>
 
