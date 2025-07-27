@@ -19,13 +19,13 @@ function App() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("https://api.karacabeygazatesi.com/breaking")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=breaking")
       .then(res => res.json())
       .then(data => setBreaking(data));
   }, []);
 
   useEffect(() => {
-    fetch("http://api.karacabeygazatesi.com/category")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=category")
       .then(res => res.json())
       .then(data => setCategories(data));
   }, []);

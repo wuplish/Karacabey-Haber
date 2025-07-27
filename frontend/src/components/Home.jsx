@@ -19,7 +19,7 @@ const Home = () => {
   useEffect(() => {
     const fetchCurrency = async () => {
       try {
-        const res = await fetch("http://api.karacabeygazatesi.com/api/doviz");
+        const res = await fetch("http://api.karacabeygazetesi.com/index.php?url=api/doviz");
         const data = await res.json();
         if (data.detail) {
           setCurrencyError("Döviz verisi alınamadı");
@@ -50,7 +50,7 @@ const Home = () => {
       try {
         const ipRes = await fetch("https://api64.ipify.org?format=json");
         const ipData = await ipRes.json();
-        const weatherRes = await fetch(`http://api.karacabeygazatesi.com/api/havadurumu/${ipData.ip}`);
+        const weatherRes = await fetch(`https://api.karacabeygazetesi.com/index.php?url=api/havadurumu/${ipData.ip}`);
         const weatherData = await weatherRes.json();
         if(weatherData.detail) {
           setWeatherError("Hava durumu alınamadı");
@@ -72,13 +72,13 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://api.karacabeygazatesi.com/breaking")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=breaking")
       .then(res => res.json())
       .then(data => {
         setBreaking(data);
       });
 
-    fetch("http://api.karacabeygazatesi.com/posts")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=posts")
       .then(res => res.json())
       .then(data => {
         setPosts(data);

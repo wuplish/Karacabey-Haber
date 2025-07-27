@@ -15,7 +15,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchAppLinks = async () => {
       try {
-        const res = await fetch('https://api.karacabeygazatesi.com/settings/apps');
+        const res = await fetch('https://api.karacabeygazetesi.com/index.php?url=settings/apps');
         const data = await res.json();
         setAppLinks(data);
       } catch (error) {

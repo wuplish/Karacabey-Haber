@@ -6,7 +6,7 @@ const OtherCategories = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("https://api.karacabeygazatesi.com/category")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=category")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

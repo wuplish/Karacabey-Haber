@@ -16,7 +16,7 @@ const PostDetail = () => {
     const fetchData = async () => {
       const userId = getOrCreateUserId();
       try {
-        const postRes = await fetch(`http://api.karacabeygazatesi.com/posts/${slug}`, {
+        const postRes = await fetch(`https://api.karacabeygazetesi.com/index.php?url=posts/by-slug/${slug}`, {
           headers: {
             'gelmisgecmiseniyiuserid': userId,
           },
@@ -31,7 +31,7 @@ const PostDetail = () => {
         setPost(postData);
 
         // İlgili haberler çekiliyor
-        const relatedRes = await fetch(`http://api.karacabeygazatesi.com/posts?category=${encodeURIComponent(postData.category)}&limit=4`);
+        const relatedRes = await fetch(`https://api.karacabeygazetesi.com/index.php?url=category&${encodeURIComponent(postData.category)}&limit=4`);
         if (!relatedRes.ok) throw new Error('İlgili haberler alınamadı');
         const relatedData = await relatedRes.json();
 
@@ -77,17 +77,17 @@ const PostDetail = () => {
 
   // Paylaşım butonları için fonksiyonlar:
   const handleWhatsAppShare = () => {
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(post.title)}%20https://karacabeygazatesi/post/${slug}`;
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(post.title)}%20https://api.karacabeygazetesi.com/index.php?url=post/${slug}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleFacebookShare = () => {
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://karacabeygazatesi/post/${slug}`)}`;
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://api.karacabeygazetesi.com/index.php?url=post/${slug}`)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleTwitterShare = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://karacabeygazatesi/post/${slug}`)}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://api.karacabeygazetesi.com/index.php?url=post/${slug}`)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 

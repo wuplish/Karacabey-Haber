@@ -8,7 +8,7 @@ const Slider = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://api.karacabeygazatesi.com/slides")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=slides")
       .then((res) => res.json())
       .then((data) => setSlides(data));
   }, []);
@@ -16,7 +16,7 @@ const Slider = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 5000); 
     return () => clearInterval(interval);
   }, [slides]);
 

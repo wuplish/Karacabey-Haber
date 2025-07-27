@@ -24,7 +24,7 @@ function AdminLogin({ onLogin }) {
     setError(null);
 
     try {
-      const res = await fetch("https://api.karacabeygazatesi.com/login", {
+      const res = await fetch("https://api.karacabeygazetesi.com/index.php?url=login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })

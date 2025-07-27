@@ -11,14 +11,14 @@ function AdminDashboard() {
   const [showSubheadingForm, setShowSubheadingForm] = useState(false);
   const [categories, setCategories] = useState([]);
   const fetchPosts = async () => {
-    const res = await fetch("https://api.karacabeygazatesi.com/posts");
+    const res = await fetch("https://api.karacabeygazetesi.com/index.php?url=posts");
     const data = await res.json();
     setPosts(data);
     setEditPost(null);
   };
   const fetchCategories = async () => {
     try {
-      const res = await fetch("https://api.karacabeygazatesi.com/category");
+      const res = await fetch("https://api.karacabeygazetesi.com/index.php?url=category");
       const data = await res.json();
       // header → showInHeader eşlemesi
       setCategories(data.map(cat => ({
@@ -49,7 +49,7 @@ function AdminDashboard() {
   useEffect(() => {
     async function fetchSettings() {
       try {
-        const res = await fetch('https://api.karacabeygazatesi.com/settings/logo-text');
+        const res = await fetch('https://api.karacabeygazetesi.com/index.php?url=settings/logo-text');
         if (!res.ok) throw new Error('Ayarlar alınamadı');
         const data = await res.json();
         setSettings(data);
@@ -72,7 +72,7 @@ function AdminDashboard() {
       setError(null);
       setSuccessMsg(null);
       try {
-        const res = await fetch('https://api.karacabeygazatesi.com/settings/logo-text', {
+        const res = await fetch('https://api.karacabeygazetesi.com/index.php?url=settings/logo-text', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(settings),
@@ -170,7 +170,7 @@ function AdminDashboard() {
   }, []);
   const handleDelete = async (id) => {
     if (window.confirm('Bu haberi silmek istediğinize emin misiniz?')) {
-      await fetch(`https://api.karacabeygazatesi.com/posts/${id}`, {
+      await fetch(`https://api.karacabeygazetesi.com/index.php?url=posts/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -323,7 +323,7 @@ function MobilAppUrlSettings() {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get("https://api.karacabeygazatesi.com/settings/apps");
+      const res = await axios.get("https://api.karacabeygazetesi.com/index.php?url=settings/apps");
       setForm(res.data);
     } catch (err) {
       console.error("Ayarlar alınamadı:", err);
@@ -341,7 +341,7 @@ function MobilAppUrlSettings() {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const res = await axios.post("https://api.karacabeygazatesi.com/settings/apps", form);
+      const res = await axios.post("https://api.karacabeygazetesi.com/index.php?url=settings/apps", form);
       setMessage("Ayarlar kaydedildi!");
     } catch (err) {
       setMessage("Hata oluştu!");
@@ -434,7 +434,7 @@ function FooterSettings() {
   useEffect(() => {
     async function fetchSettings() {
       try {
-        const res = await fetch("https://api.karacabeygazatesi.com/settings/footer");
+        const res = await fetch("https://api.karacabeygazetesi.com/index.php?url=settings/footer");
         if (!res.ok) throw new Error("Footer ayarları alınamadı");
         const data = await res.json();
 
@@ -484,7 +484,7 @@ function FooterSettings() {
     setSuccessMsg(null);
 
     try {
-      const res = await fetch("https://api.karacabeygazatesi.com/settings/footer", {
+      const res = await fetch("https://api.karacabeygazetesi.com/index.php?url=settings/footer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ links: footerLinks, iletisim: contactInfo, plans }),
@@ -657,7 +657,7 @@ function SocialMediaSettings() {
   useEffect(() => {
     async function fetchLinks() {
       try {
-        const res = await fetch('https://api.karacabeygazatesi.com/socialmedia');
+        const res = await fetch('https://api.karacabeygazetesi.com/index.php?url=socialmedia');
         if (!res.ok) throw new Error('Sosyal medya linkleri alınamadı');
         const data = await res.json();
         setLinks(data);
@@ -693,7 +693,7 @@ function SocialMediaSettings() {
         password: credentials.password,
       };
 
-      const res = await fetch('https://api.karacabeygazatesi.com/settings/socialmedia', {
+      const res = await fetch('https://api.karacabeygazetesi.com/index.php?url=settings/socialmedia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -777,7 +777,7 @@ function CategoryManager({ fetchCategories, categories }) {
     }
 
     // Backend header alanını bekliyor, burayı güncelle
-    await fetch("https://api.karacabeygazatesi.com/category", {
+    await fetch("https://api.karacabeygazetesi.com/index.php?url=category", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -801,7 +801,7 @@ function CategoryManager({ fetchCategories, categories }) {
       return;
     }
 
-    await fetch(`https://api.karacabeygazatesi.com/category/${name}`, {
+    await fetch(`https://api.karacabeygazetesi.com/index.php?url=category/${name}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ header: value }), // burada header olarak gönder
@@ -811,7 +811,7 @@ function CategoryManager({ fetchCategories, categories }) {
 
   const handleDeleteCategory = async (name) => {
     if (window.confirm(`${name} kategorisini silmek istiyor musunuz?`)) {
-      await fetch(`https://api.karacabeygazatesi.com/category/${name}`, { method: "DELETE" });
+      await fetch(`https://api.karacabeygazetesi.com/index.php?url=category/${name}`, { method: "DELETE" });
       fetchCategories();
     }
   };
@@ -872,7 +872,7 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings, categori
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("https://api.karacabeygazatesi.com/category");
+        const response = await axios.get("https://api.karacabeygazetesi.com/index.php?url=category");
         const namesOnly = response.data.map((item) => item.name); // sadece name çek
         setCategories(namesOnly);
       } catch (error) {
@@ -961,14 +961,14 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings, categori
   };
 
   const uploadImage = async () => {
-    if (!file) return form.image || "https://api.karacabeygazatesi.com/uploads/ifnoimage.png";
+    if (!file) return form.image || "https://api.karacabeygazetesi.com/index.php?url=uploads/ifnoimage.png";
     
     const data = new FormData();
     data.append('file', file);
     setUploading(true);
     
     try {
-      const res = await fetch('https://api.karacabeygazatesi.com/upload', {
+      const res = await fetch('https://api.karacabeygazetesi.com/index.php?url=upload', {
         method: 'POST',
         body: data
       });
@@ -1014,8 +1014,8 @@ function PostForm({ onPostSaved, editPost, subheadings, setSubheadings, categori
       console.log(payload)
       const method = editPost ? 'PUT' : 'POST';
       const url = editPost 
-        ? `https://api.karacabeygazatesi.com/posts/${editPost.slug}`
-        : 'https://api.karacabeygazatesi.com/posts';
+        ? `https://api.karacabeygazetesi.com/index.php?url=posts/${editPost.slug}`
+        : 'https://api.karacabeygazetesi.com/index.php?url=posts';
 
       const response = await fetch(url, {
         method,

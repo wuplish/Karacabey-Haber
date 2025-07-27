@@ -10,7 +10,7 @@ const CategoryPage = ({ category }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   useEffect(() => {
     setLoading(true);
-    fetch("https://api.karacabeygazatesi.com/posts")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=posts")
       .then(res => res.json())
       .then(data => {
         const filtered = data.filter(post => post.category === category);
@@ -21,7 +21,7 @@ const CategoryPage = ({ category }) => {
   }, [category]);
 
   useEffect(() => {
-    fetch("https://api.karacabeygazatesi.com/category")
+    fetch("https://api.karacabeygazetesi.com/index.php?url=category")
       .then(res => res.json())
       .then(data => {
         const match = data.find(cat => cat.name === category);

@@ -31,7 +31,7 @@ const BreakingNewsBanner = ({ breaking }) => {
   useEffect(() => {
     async function fetchSocialLinks() {
       try {
-        const res = await fetch('https://api.karacabeygazatesi.com/socialmedia');
+        const res = await fetch('https://api.karacabeygazetesi.com/index.php?url=socialmedia');
         if (!res.ok) throw new Error('Sosyal medya linkleri alınamadı');
         const data = await res.json();
         setSocialLinks({
