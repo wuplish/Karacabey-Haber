@@ -19,7 +19,8 @@ const Home = () => {
   useEffect(() => {
     const fetchCurrency = async () => {
       try {
-        const res = await fetch("http://api.karacabeygazetesi.com/index.php?url=api/doviz");
+        const res = await fetch("https://api.karacabeygazetesi.com/index.php?url=api/doviz");
+        await new Promise(resolve => setTimeout(resolve, 3000));
         const data = await res.json();
         if (data.detail) {
           setCurrencyError("Döviz verisi alınamadı");
@@ -100,7 +101,7 @@ const Home = () => {
             {weather && (
               <div className="weather-widget">
                 <div className="weather-left">
-                  <h3>{weather.sehir}</h3>
+                  <h3 class="weather-wewewe">{weather.sehir}</h3>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     {getWeatherIcon(weather.sicaklik)}
                     <p><strong>{weather.sicaklik}°C</strong></p>
@@ -109,7 +110,7 @@ const Home = () => {
                 </div>
 
                 <div className="currency-right">
-                  <h3>Döviz Kurları</h3>
+                  <h3 class="currency-header">Döviz Kurları</h3>
                   {currencyLoading && <p>Yükleniyor...</p>}
                   {currencyError && <p style={{color: 'red'}}>{currencyError}</p>}
                   {currency && (

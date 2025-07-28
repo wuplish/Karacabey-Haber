@@ -4,7 +4,7 @@ import './NotFound.css'
 
 function NotFound() {
     const location = useLocation()
-    if (location.pathname.startsWith('/admin')) {
+    if (location.pathname.startsWith('/karacabeyadminpanel')) {
         return null
     }
     return (

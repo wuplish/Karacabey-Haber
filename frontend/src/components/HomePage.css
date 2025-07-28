@@ -1,305 +1,26 @@
-.home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-.weather-widget {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, #f3f3f3, #dfe9f3);
-  padding: 16px 24px;
-  margin: 20px 0;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  font-family: 'Arial', sans-serif;
-}
-
-.weather-left h3 {
+/* --- Global / Base Styles (Mobile-First Defaults) --- */
+body {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.weather-left p {
-  margin: 4px 0;
-}
-
-.weather-right {
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-.weather-widget {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  border: 2px solid #ccc;
-  padding: 15px 25px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #a2d9ff, #ffffff);
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  gap: 40px;
-}
-.currency-right ul {
-  display: flex;
-  gap: 12px;          
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  flex-wrap: wrap;    
-  justify-content: center;
-}
-
-.currency-right ul li {
-  flex: 1 1 auto;     
-  min-width: 70px;     
-  background: linear-gradient(135deg, #bae2ff, hsl(204, 100%, 94%));
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1952a8;
-  text-align: center;
-  box-shadow: inset 0 1px 2px rgba(255,255,255,0.6);
-  transition: background-color 0.3s ease;
-}
-
-.currency-right ul li strong {
-  font-weight: 700;
-}
-
-.currency-right ul li:hover {
-  background-color: #90caf9;
-  cursor: default;
-}
-
-
-.weather-left, .currency-right {
-  flex: 1;
-}
-
-
-.currency-right h3 {
-  margin-bottom: 10px;
-}
-
-.mobile-slider-wrapper {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .mobile-slider-wrapper {
-    display: block;
-  }
-
-  .slide-section .slider-area {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .weather-widget {
-    display: none !important;
-  }
-}
-
-.top-posts-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-.slide-section {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.slider-area {
-  height: 100%;
-}
-
-.side-posts {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.section-title {
-  position: relative;
-  margin: 2rem 0;
-  font-size: 1.8rem;
-  color: #2c3e50;
-  text-align: center;
-}
-
-.section-title span {
-  display: inline-block;
-  padding: 0 2rem;
-  position: relative;
-}
-.slider-bottom-post {
-  width: 100%; 
-  height: 150px;
-  margin-top: 1rem;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  display: flex;
-  overflow: hidden;
-  text-decoration: none;
-  color: #2c3e50;
-  transition: all 0.3s ease;
-}
-
-.slider-bottom-post:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-}
-
-.slider-bottom-post img {
-  width: 40%;
-  object-fit: cover;
-}
-
-.slider-bottom-post .content {
-  padding: 1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.slider-bottom-post .post-title {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.slider-bottom-post .post-excerpt {
-  color: #7f8c8d;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-@media (max-width: 768px) {
-  .slider-bottom-post {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .slider-bottom-post img {
-    width: 100%;
-    height: 150px;
-  }
-}
-
-.section-title span:before,
-.section-title span:after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 50px;
-  height: 2px;
-  background: linear-gradient(to right, #3498db, #e74c3c);
-}
-
-.section-title span:before {
-  left: -60px;
-}
-
-.section-title span:after {
-  right: -60px;
-}
-
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.post-card {
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-  text-decoration: none;
-  color: #2c3e50;
-  display: flex;
-  flex-direction: column;
-}
-
-.post-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-}
-
-.card-image-container {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-}
-
-.post-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.post-card:hover .post-image {
-  transform: scale(1.1);
-}
-
-.category-tag {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  background: #3498db;
-  color: white;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.card-content {
-  padding: 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.post-title {
-  font-size: 1.2rem;
-  margin: 0 0 1rem 0;
-  line-height: 1.4;
-  flex: 1;
-}
-
-.post-excerpt {
-  color: #7f8c8d;
-  margin: 0 0 1rem 0;
+  font-family: 'Arial', sans-serif; /* Or your preferred font */
   line-height: 1.6;
+  color: #333;
+  background-color: #f8f9fa; /* Light background for the page */
 }
 
-.post-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: #95a5a6;
-  margin-top: auto;
+.home-container {
+  width: 100%; /* Full width on mobile */
+  max-width: 1200px; /* Max width for larger screens */
+  margin: 0 auto; /* Center on larger screens */
+  padding: 0 1rem; /* Padding on sides, adjust as needed */
+  box-sizing: border-box; /* Include padding in element's total width */
 }
 
+/* --- Loader Styles --- */
 .loader-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50vh;
+  min-height: 60vh; /* Ensure loader is visible in viewport */
 }
 
 .loader {
@@ -334,14 +55,424 @@
   80%, 100% { transform: rotate(0.5turn); }
 }
 
-@media (max-width: 768px) {
+/* --- Mobile Slider Wrapper (Visible on Mobile Only) --- */
+.mobile-slider-wrapper {
+  display: block; /* Always visible by default on small screens */
+  margin-bottom: 1.5rem; /* Space below the mobile slider */
+  /* ADDED: Move mobile slider down by 10 units */
+  margin-top: 13px; /* Adjust 10rem to your desired unit (e.g., 10px, 10vh) */
+}
+
+/* --- Weather & Currency Widget --- */
+/* Hidden by default on mobile, revealed on larger screens */
+.weather-widget {
+  display: none; /* Hidden on mobile by default */
+  justify-content: space-between;
+  align-items: flex-start; /* Align content to the top */
+  border: 2px solid #ccc;
+  padding: 15px 20px; /* Slightly reduced padding for compactness */
+  margin: 20px 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #a2d9ff, #ffffff);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  gap: 20px; /* Reduced gap for more space */
+  font-family: 'Arial', sans-serif; /* Consistent font */
+}
+
+.weather-left,
+.currency-right {
+  flex: 1; /* Allow these sections to take equal width */
+  min-width: 120px; /* Ensure minimum width for content */
+}
+
+.weather-wewewe, .currency-header {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem; /* Slightly smaller for compactness */
+  color: #333; /* Darker text for headers */
+}
+
+.weather-left p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+
+.currency-right ul {
+  display: flex;
+  flex-direction: column; /* Stack currency items vertically on wider screens */
+  gap: 8px; /* Reduced gap */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.currency-right ul li {
+  background: linear-gradient(135deg, #bae2ff, hsl(204, 100%, 94%));
+  border-radius: 8px;
+  padding: 6px 10px; /* Reduced padding */
+  font-size: 0.9rem; /* Smaller font size */
+  font-weight: 600;
+  color: #1952a8;
+  text-align: center;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.6);
+  transition: background-color 0.3s ease;
+}
+
+.currency-right ul li strong {
+  font-weight: 700;
+}
+
+.currency-right ul li:hover {
+  background-color: #90caf9;
+  cursor: default;
+}
+
+/* --- Main Content Layout --- */
+.main-content {
+  padding-bottom: 2rem; /* Space at the bottom */
+}
+
+/* --- Top Posts Row (Mobile-First: Single Column) --- */
+.top-posts-row {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1.5rem;
+  margin: 1.5rem 0; /* Reduced margin for mobile */
+}
+
+/* --- Slider Section (Mobile-First: Side Posts Only, Main Slider Hidden) --- */
+.slide-section {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1.5rem;
+  margin-bottom: 2rem; /* Reduced margin */
+}
+
+/* Hide the main slider area on mobile */
+.slider-area {
+  display: none;
+}
+
+/* Ensure side posts are always displayed on mobile (if not hidden by above rule) */
+.side-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* --- Slider Bottom Post (Mobile: Stacked Image and Content) --- */
+.slider-bottom-post {
+  display: flex;
+  flex-direction: column; /* Stack image and content vertically on mobile */
+  width: 100%;
+  height: auto; /* Auto height for content */
+  margin-top: 1rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  overflow: hidden; /* Ensure content stays within bounds */
+}
+
+.slider-bottom-post:hover {
+  transform: translateY(-5px); /* Less aggressive hover on mobile */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.slider-bottom-post img {
+  width: 100%; /* Full width image */
+  height: 150px; /* Fixed height for image on mobile */
+  object-fit: cover;
+}
+
+.slider-bottom-post .content {
+  padding: 0.8rem; /* Reduced padding */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slider-bottom-post .post-title {
+  font-size: 1.1rem; /* Smaller font size */
+  margin-bottom: 0.4rem;
+}
+
+.slider-bottom-post .post-excerpt {
+  color: #7f8c8d;
+  font-size: 0.85rem; /* Smaller font size */
+  line-height: 1.4;
+}
+
+/* --- Section Title --- */
+.section-title {
+  position: relative;
+  margin: 1.5rem 0; /* Reduced margin */
+  font-size: 1.5rem; /* Smaller font size */
+  color: #2c3e50;
+  text-align: center;
+}
+
+.section-title span {
+  display: inline-block;
+  padding: 0 1rem; /* Reduced padding */
+  position: relative;
+}
+
+.section-title span:before,
+.section-title span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 30px; /* Shorter lines on mobile */
+  height: 2px;
+  background: linear-gradient(to right, #3498db, #e74c3c);
+}
+
+.section-title span:before {
+  left: -40px; /* Adjust position */
+}
+
+.section-title span:after {
+  right: -40px; /* Adjust position */
+}
+
+/* --- Posts Grid (Mobile-First: Single Column) --- */
+.posts-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* --- Post Card --- */
+.post-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-card:hover {
+  transform: translateY(-5px); /* Less aggressive hover on mobile */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card-image-container {
+  position: relative;
+  height: 180px; /* Slightly smaller image height on mobile */
+  overflow: hidden;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.post-card:hover .post-image {
+  transform: scale(1.05); /* Less aggressive zoom on mobile */
+}
+
+.category-tag {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  background: #3498db;
+  color: white;
+  padding: 0.25rem 0.6rem; /* Smaller padding */
+  border-radius: 15px; /* Slightly smaller radius */
+  font-size: 0.75rem; /* Smaller font size */
+  font-weight: 500;
+}
+
+.card-content {
+  padding: 1rem; /* Reduced padding */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-title {
+  font-size: 1.1rem; /* Smaller font size */
+  margin: 0 0 0.8rem 0; /* Reduced margin */
+  line-height: 1.4;
+  flex: 1;
+}
+
+.post-excerpt {
+  color: #7f8c8d;
+  margin: 0 0 0.8rem 0; /* Reduced margin */
+  line-height: 1.5;
+  font-size: 0.9rem; /* Smaller font size */
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem; /* Smaller font size */
+  color: #95a5a6;
+  margin-top: auto;
+}
+
+/* --- Media Queries for Larger Screens (Desktop/Tablet) --- */
+
+/* Tablet & Smaller Desktop (e.g., 768px to 1024px) */
+@media (min-width: 768px) {
+  .home-container {
+    padding: 0 1.5rem; /* More padding on wider screens */
+  }
+
+  /* Show Weather Widget */
+  .weather-widget {
+    display: flex; /* Show weather widget on larger screens */
+    flex-wrap: nowrap; /* Prevent wrapping if space allows */
+    gap: 40px; /* Restore original gap */
+    padding: 16px 24px;
+  }
+
+  .weather-wewewe, .currency-header {
+    font-size: 1.2rem; /* Larger font for headers */
+  }
+
+  .currency-right ul {
+    flex-direction: row; /* Display currency items horizontally */
+    justify-content: flex-start; /* Align to start */
+  }
+
+  .currency-right ul li {
+    flex: 1 1 auto; /* Allow items to grow/shrink */
+    min-width: unset; /* Remove min-width constraint */
+  }
+
+  /* Hide Mobile Slider on larger screens */
+  .mobile-slider-wrapper {
+    display: none;
+    margin-top: 0; /* Remove margin-top from mobile wrapper when hidden */
+  }
+
   .top-posts-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); /* Two columns on tablets */
+    margin: 2rem 0;
   }
+
   .slide-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr 1fr; /* Restore original layout */
+    margin-bottom: 3rem;
   }
+
+  /* Show the main slider area on larger screens */
+  .slider-area {
+    display: block; /* Show main slider */
+  }
+  /* ADDED: Move desktop slider down within its container */
+  .slider-area .slider { /* Target the Slider component's root div inside slider-area */
+    margin-top: 10rem; /* Adjust 10rem to your desired unit */
+  }
+
+
+  .slider-bottom-post {
+    flex-direction: row; /* Image and content side-by-side */
+    height: 150px; /* Fixed height for rows */
+  }
+
+  .slider-bottom-post img {
+    width: 40%; /* Restore original image width */
+    height: 100%; /* Fill parent height */
+  }
+
+  .slider-bottom-post .content {
+    padding: 1rem; /* Restore original padding */
+  }
+
+  .slider-bottom-post .post-title {
+    font-size: 1.2rem;
+  }
+
+  .slider-bottom-post .post-excerpt {
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem; /* Restore original font size */
+    margin: 2rem 0;
+  }
+
+  .section-title span {
+    padding: 0 2rem; /* Restore original padding */
+  }
+
+  .section-title span:before,
+  .section-title span:after {
+    width: 50px; /* Restore original line width */
+  }
+
+  .section-title span:before {
+    left: -60px;
+  }
+
+  .section-title span:after {
+    right: -60px;
+  }
+
   .posts-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* At least 300px per column */
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .post-card {
+    flex-direction: column;
+  }
+
+  .card-image-container {
+    height: 200px;
+  }
+
+  .post-card:hover .post-image {
+    transform: scale(1.1); /* Restore original zoom */
+  }
+
+  .category-tag {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .post-title {
+    font-size: 1.2rem;
+  }
+
+  .post-excerpt {
+    font-size: 1rem; /* Slightly larger on desktop */
+  }
+
+  .post-meta {
+    font-size: 0.85rem;
+  }
+}
+
+/* Large Desktop (e.g., 1024px and up) */
+@media (min-width: 1024px) {
+  .top-posts-row {
+    grid-template-columns: repeat(4, 1fr); /* Four columns on larger desktops */
+  }
+
+  .posts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* At least 350px per column */
   }
 }

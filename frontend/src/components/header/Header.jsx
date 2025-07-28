@@ -112,7 +112,6 @@ const Header = () => {
             >
               {logoSettings.logo_line1}
             </span>
-            <br />
             <span 
               className="logo-second"
               style={{ color: logoSettings.logo_line2_color }}

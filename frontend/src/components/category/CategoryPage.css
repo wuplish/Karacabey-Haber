@@ -1,60 +1,54 @@
+/* --- Base Styles (Mobile-First Defaults) --- */
+/* These styles apply to all screen sizes, and are the default for mobile */
 .category-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  width: 100%; /* Full width on mobile */
+  max-width: 1200px; /* Max width for larger screens */
+  margin: 0 auto; /* Center on larger screens */
+  padding: 0 1rem; /* Padding on sides for small screens */
+  box-sizing: border-box; /* Include padding in element's total width */
+  font-family: 'Arial', sans-serif; /* Consistent font */
+  color: #333;
 }
+
+/* --- Mobile Slider Wrapper (Visible on Mobile Only) --- */
 .mobile-slider-wrapper {
-  display: none;
+  display: block; /* Visible by default on mobile */
+  margin-bottom: 1.5rem; /* Space below the slider */
+  /* Added margin-top to align with your previous request for slider placement */
+  margin-top: 1.5rem; /* Adjust this value if you need more space from the header */
 }
 
-@media (max-width: 768px) {
-  .mobile-slider-wrapper {
-    display: block;
-  }
-
-  .slide-section .slider-area {
-    display: none;
-  }
-}
-
+/* --- Category Header --- */
 .category-header {
-  margin-top: 60px;
-  padding: 3rem 2rem;
+  margin-top: 1rem; /* Reduced margin-top for mobile */
+  padding: 2rem 1rem; /* Reduced padding for mobile */
   text-align: center;
   color: white;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, rgba(0,0,0,0.2), transparent);
+  border-radius: 8px; /* Slightly smaller border-radius for mobile */
+  margin-bottom: 1.5rem; /* Reduced margin-bottom for mobile */
+  background: linear-gradient(135deg, rgba(0,0,0,0.2), transparent); /* This background implies an overlay */
+  /* Ensure the background color from JS is correctly applied and visible */
+  overflow: hidden; /* To contain potential gradient issues */
 }
 
 .category-header h1 {
-  font-size: 2.5rem;
+  font-size: 1.8rem; /* Smaller font size for mobile header */
   margin: 0 0 0.5rem 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Subtle shadow */
 }
 
 .category-header p {
-  font-size: 1.1rem;
+  font-size: 0.95rem; /* Smaller paragraph font size for mobile */
   opacity: 0.9;
   margin: 0;
 }
 
-.category-content {
-  padding: 1rem 0;
-}
-
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-* Loader */
+/* --- Loader Styles --- */
 .loader-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50vh;
+  min-height: 50vh; /* Ensure loader is visible in viewport */
 }
 
 .loader {
@@ -89,52 +83,375 @@
   80%, 100% { transform: rotate(0.5turn); }
 }
 
-
+/* --- No Posts Message --- */
 .no-posts {
   text-align: center;
-  padding: 3rem 0;
+  padding: 2rem 1rem; /* Reduced padding */
 }
 
 .no-posts img {
-  max-width: 300px;
-  margin-bottom: 1.5rem;
+  max-width: 200px; /* Smaller image on mobile */
+  margin-bottom: 1rem;
   opacity: 0.7;
 }
 
 .no-posts h3 {
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem; /* Smaller font size */
 }
 
 .home-link {
   display: inline-block;
   background: #f32a23;
   color: white;
-  padding: 0.8rem 1.5rem;
+  padding: 0.6rem 1.2rem; /* Smaller padding */
   border-radius: 6px;
   text-decoration: none;
   transition: background 0.3s ease;
+  font-size: 0.9rem; /* Smaller font size */
 }
 
 .home-link:hover {
-  background: #f32a23;
+  background: #c0201a; /* Darker red on hover */
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+
+/* --- Top Posts Row (Mobile: Single Column) --- */
+.top-posts-row {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1.2rem; /* Reduced gap */
+  margin-bottom: 1.5rem; /* Reduced margin */
 }
 
-@media (max-width: 768px) {
+/* --- Slider Section (Mobile: Side Posts Only, Main Slider Hidden) --- */
+.slide-section {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Hide the desktop slider area on mobile */
+.slider-area {
+  display: none;
+}
+
+/* Ensure side posts are always displayed on mobile */
+.side-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* --- Slider Bottom Post (Mobile: Stacked Image and Content) --- */
+.slider-bottom-post {
+  display: flex;
+  flex-direction: column; /* Stack image and content vertically on mobile */
+  width: 100%;
+  height: auto;
+  margin-top: 0.8rem; /* Reduced margin */
+  background: white;
+  border-radius: 8px; /* Slightly smaller border-radius */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Lighter shadow */
+  text-decoration: none;
+  color: #2c3e50;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.slider-bottom-post:hover {
+  transform: translateY(-3px); /* Less aggressive hover */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.slider-bottom-post img {
+  width: 100%;
+  height: 140px; /* Fixed height for image on mobile */
+  object-fit: cover;
+}
+
+.slider-bottom-post .content {
+  padding: 0.7rem; /* Reduced padding */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slider-bottom-post .post-title {
+  font-size: 1rem; /* Smaller font size */
+  margin-bottom: 0.3rem;
+}
+
+.slider-bottom-post .post-excerpt {
+  color: #7f8c8d;
+  font-size: 0.8rem; /* Smaller font size */
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+/* --- Section Title --- */
+.section-title {
+  position: relative;
+  margin: 1.5rem 0; /* Reduced margin */
+  font-size: 1.4rem; /* Smaller font size */
+  color: #2c3e50;
+  text-align: center;
+}
+
+.section-title span {
+  display: inline-block;
+  padding: 0 0.8rem; /* Reduced padding */
+  position: relative;
+}
+
+.section-title span:before,
+.section-title span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 20px; /* Shorter lines on mobile */
+  height: 2px;
+  background: linear-gradient(to right, #3498db, #e74c3c);
+}
+
+.section-title span:before {
+  left: -30px; /* Adjust position */
+}
+
+.section-title span:after {
+  right: -30px; /* Adjust position */
+}
+
+/* --- Posts Grid (Mobile: Single Column) --- */
+.posts-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1.2rem; /* Reduced gap */
+  margin-bottom: 2rem;
+}
+
+/* --- Post Card (General Post Card Styling, shared with Home Page if imported) --- */
+/* Assuming post-card styles are either shared or duplicated. If shared, ensure consistency. */
+.post-card {
+  background: white;
+  border-radius: 8px; /* Slightly smaller border-radius */
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Lighter shadow */
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-card:hover {
+  transform: translateY(-3px); /* Less aggressive hover */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.card-image-container {
+  position: relative;
+  height: 160px; /* Slightly smaller image height on mobile */
+  overflow: hidden;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease; /* Faster transition for mobile hover */
+}
+
+.post-card:hover .post-image {
+  transform: scale(1.03); /* Less aggressive zoom */
+}
+
+.category-tag {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  background: #3498db;
+  color: white;
+  padding: 0.2rem 0.5rem; /* Smaller padding */
+  border-radius: 12px; /* Smaller border-radius */
+  font-size: 0.7rem; /* Smaller font size */
+  font-weight: 500;
+}
+
+.card-content {
+  padding: 0.8rem; /* Reduced padding */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-title {
+  font-size: 1rem; /* Smaller font size */
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.post-excerpt {
+  color: #7f8c8d;
+  margin: 0 0 0.6rem 0;
+  line-height: 1.4;
+  font-size: 0.85rem; /* Smaller font size */
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem; /* Smaller font size */
+  color: #95a5a6;
+  margin-top: auto;
+}
+
+/* --- Media Queries for Larger Screens (Tablet & Desktop) --- */
+
+@media (min-width: 768px) {
+  .category-page {
+    padding: 0 1.5rem; /* More padding on wider screens */
+  }
+
+  /* Hide mobile slider on larger screens */
+  .mobile-slider-wrapper {
+    display: none;
+  }
+
   .category-header {
-    padding: 2rem 1rem;
+    margin-top: 60px; /* Restore original margin-top */
+    padding: 3rem 2rem; /* Restore original padding */
+    border-radius: 12px; /* Restore original border-radius */
+    margin-bottom: 2rem;
   }
-  
+
   .category-header h1 {
-    font-size: 2rem;
+    font-size: 2.5rem; /* Restore original font size */
   }
-  
+
+  .category-header p {
+    font-size: 1.1rem; /* Restore original font size */
+  }
+
+  .top-posts-row {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on tablets */
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .slide-section {
+    grid-template-columns: 2fr 1fr; /* Restore original layout */
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Show the main slider area on larger screens */
+  .slider-area {
+    display: block;
+  }
+
+  .slider-bottom-post {
+    flex-direction: row; /* Image and content side-by-side */
+    height: 150px; /* Fixed height for rows */
+    margin-top: 1rem;
+  }
+
+  .slider-bottom-post img {
+    width: 40%; /* Restore original image width */
+    height: 100%;
+  }
+
+  .slider-bottom-post .content {
+    padding: 1rem;
+  }
+
+  .slider-bottom-post .post-title {
+    font-size: 1.2rem;
+  }
+
+  .slider-bottom-post .post-excerpt {
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem; /* Restore original font size */
+    margin: 2rem 0;
+  }
+
+  .section-title span {
+    padding: 0 2rem;
+  }
+
+  .section-title span:before,
+  .section-title span:after {
+    width: 50px;
+  }
+
+  .section-title span:before {
+    left: -60px;
+  }
+
+  .section-title span:after {
+    right: -60px;
+  }
+
   .posts-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* At least 300px per column */
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .post-card {
+    border-radius: 10px; /* Restore original border-radius */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Restore original shadow */
+    flex-direction: column;
+  }
+
+  .post-card:hover {
+    transform: translateY(-10px); /* Restore original hover effect */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  }
+
+  .card-image-container {
+    height: 200px; /* Restore original image height */
+  }
+
+  .post-card:hover .post-image {
+    transform: scale(1.1); /* Restore original zoom */
+  }
+
+  .category-tag {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .post-title {
+    font-size: 1.2rem;
+  }
+
+  .post-excerpt {
+    font-size: 1rem;
+  }
+
+  .post-meta {
+    font-size: 0.85rem;
+  }
+}
+
+/* Large Desktop (e.g., 1024px and up) */
+@media (min-width: 1024px) {
+  .top-posts-row {
+    grid-template-columns: repeat(4, 1fr); /* Four columns on larger desktops */
   }
 }

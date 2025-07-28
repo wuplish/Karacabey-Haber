@@ -33,7 +33,7 @@ function AdminLogin({ onLogin }) {
       if (res.ok) {
         localStorage.setItem('adminCredentials', JSON.stringify({ username, password }));
         onLogin(true);
-        navigate('/admin/dashboard');
+        navigate('/karacabeyadminpanel/dashboard');
       } else {
         setError("Kullanıcı adı veya şifre hatalı");
       }

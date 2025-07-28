@@ -1,7 +1,17 @@
+:root {
+  --primary: #d9232e; /* Kırmızı tonu */
+  --primary-dark: #b01c25;
+  --dark: #333;
+  --gray: #666;
+  --light-gray: #f8f8f8;
+  --white: #ffffff;
+  --transition: all 0.3s ease;
+}
+
 .other-categories-container {
   max-width: 1200px;
   margin: 2rem auto;
-  padding: 0 1rem;
+  padding: 0 1rem; /* Yan boşlukları koru */
 }
 
 .page-title {
@@ -29,7 +39,7 @@
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 1.5rem; /* Izgara öğeleri arası boşluk */
 }
 
 .category-card {
@@ -100,17 +110,113 @@
   color: var(--primary-dark);
 }
 
+/* --- MOBİL UYUMLULUK KURALLARI --- */
+
+/* Tablet ve Küçük Masaüstü Cihazlar (768px'e kadar) */
 @media (max-width: 768px) {
-  .categories-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .other-categories-container {
+    margin: 1.5rem auto; /* Dikey boşluğu azalt */
+    padding: 0 0.8rem; /* Yan boşlukları biraz daha azalt */
+  }
+
+  .page-title {
+    font-size: 2rem; /* Başlık font boyutunu küçült */
+    margin-bottom: 1.5rem;
   }
   
-  .page-title {
-    font-size: 2rem;
+  .categories-grid {
+    grid-template-columns: 1fr; /* Tek sütunlu düzen */
+    gap: 1rem; /* Izgara öğeleri arası boşluğu azalt */
   }
   
   .category-card {
-    padding: 1.2rem;
+    padding: 1.2rem; /* Kartın iç boşluğunu azalt */
+  }
+
+  .category-title {
+    font-size: 1.2rem; /* Kategori başlık font boyutunu küçült */
+  }
+
+  .category-description {
+    font-size: 0.9rem; /* Açıklama font boyutunu küçült */
+  }
+
+  .read-more {
+    font-size: 0.85rem; /* "Daha Fazla Oku" font boyutunu küçült */
+  }
+}
+
+/* Çok Küçük Cihazlar (480px'e kadar) */
+@media (max-width: 480px) {
+  .other-categories-container {
+    margin: 1rem auto; /* Dikey boşluğu daha da azalt */
+    padding: 0 0.5rem; /* En dar ekranlar için kenar boşluğunu daha da azalt */
+  }
+
+  .page-title {
+    font-size: 1.8rem; /* Başlık font boyutunu daha da küçült */
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .page-title::after {
+    width: 80px; /* Başlık altındaki çizginin genişliğini azalt */
+  }
+  
+  .category-card {
+    padding: 1rem; /* Kartın iç boşluğunu daha da azalt */
+  }
+
+  .category-title {
+    font-size: 1.1rem; /* Kategori başlık font boyutunu daha da küçült */
+    padding-left: 8px;
+  }
+
+  .category-title::before {
+    top: 4px;
+    height: 65%;
+  }
+
+  .category-description {
+    font-size: 0.85rem; /* Açıklama font boyutunu daha da küçült */
+    margin-bottom: 1rem;
+  }
+
+  .read-more {
+    font-size: 0.8rem; /* "Daha Fazla Oku" font boyutunu daha da küçült */
+  }
+}
+
+/* Yatay (Landscape) modunda mobil cihazlar için ek düzenlemeler */
+@media (max-height: 480px) and (orientation: landscape) {
+  .other-categories-container {
+    margin: 0.5rem auto; /* Dikey boşluğu daha da azalt */
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Yatayda daha fazla sütun */
+    gap: 0.8rem;
+  }
+
+  .page-title {
+    font-size: 1.6rem; /* Yatay modda başlık fontunu küçült */
+    margin-bottom: 0.8rem;
+  }
+
+  .category-card {
+    padding: 0.8rem;
+  }
+
+  .category-title {
+    font-size: 1rem;
+  }
+
+  .category-description {
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .read-more {
+    font-size: 0.75rem;
   }
 }

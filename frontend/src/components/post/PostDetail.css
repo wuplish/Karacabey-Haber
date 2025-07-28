@@ -1,3 +1,9 @@
+/* Genel Ayarlamalar */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa; /* Hafif bir arka plan rengi */
+}
 
 .post-detail-container {
   max-width: 1000px;
@@ -16,11 +22,14 @@
   margin-bottom: 2rem;
 }
 
+/* Header ve Meta Bilgileri */
 .post-header-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+  gap: 1rem; /* Öğeler arası boşluk */
 }
 .subheadings {
   margin: 2rem 0;
@@ -43,11 +52,13 @@
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
+  white-space: nowrap; /* Kategori isminin tek satırda kalmasını sağlar */
 }
 
 .publish-date {
   color: #7f8c8d;
   font-size: 0.9rem;
+  white-space: nowrap; /* Tarihin tek satırda kalmasını sağlar */
 }
 
 .post-title {
@@ -57,6 +68,7 @@
   color: #2c3e50;
 }
 
+/* Öne Çıkan Görsel */
 .featured-image-container {
   margin: 2rem 0;
   border-radius: 8px;
@@ -80,6 +92,7 @@
   font-style: italic;
 }
 
+/* Yazı İçeriği */
 .post-content {
   font-size: 1.1rem;
   line-height: 1.8;
@@ -91,12 +104,29 @@
   text-align: justify;
 }
 
+/* Alt Başlıklar */
+.subheadings {
+  margin: 2rem 0;
+}
+
+.subheadings h3 {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.subheadings p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* Footer Meta Bilgileri */
 .post-footer-meta {
   margin-top: 3rem;
   padding-top: 1.5rem;
   border-top: 1px solid #eee;
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Mobil için varsayılan dikey düzen */
   gap: 1.5rem;
 }
 
@@ -113,7 +143,7 @@
 
 .tags-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Etiketlerin sığmadığında alt satıra geçmesini sağlar */
   gap: 0.5rem;
 }
 
@@ -130,6 +160,61 @@
   background: #e2e8f0;
 }
 
+/* Paylaşım Butonları (Güncellendi) */
+.share-buttons-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-width: fit-content;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  justify-content: flex-end; /* Sağ hizalama */
+  margin-top: -10px;
+  margin-bottom: 10px;
+  margin-left: auto; /* Sağ yaslama için */
+  flex-wrap: wrap; /* Küçük ekranlarda sığmazsa alt satıra geçsin */
+}
+
+.share-buttons-label {
+  margin-right: 8px;
+  font-weight: 500;
+  white-space: nowrap; /* "Paylaş:" yazısının tek satırda kalmasını sağlar */
+}
+
+.share-button-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  border: none;
+  padding: 6px 12px; /* Varsayılan padding */
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.share-button-item:hover {
+  transform: translateY(-2px);
+}
+
+.share-button-icon {
+  font-size: 18px; /* Varsayılan ikon boyutu */
+}
+
+/* Sosyal Medya Renkleri */
+.share-button-item.whatsapp { background-color: #25D366; }
+.share-button-item.facebook { background-color: #3b5998; }
+.share-button-item.twitter { background-color: #1DA1F2; } /* Twitter'ın güncel rengi */
+.share-button-item.linkedin { background-color: #0077B5; }
+.share-button-item.email { background-color: #D44638; }
+
+/* İlgili Haberler Bölümü */
 .related-posts {
   background: #fff;
   border-radius: 12px;
@@ -186,6 +271,7 @@
   line-height: 1.4;
 }
 
+/* Yükleyici (Loader) Stilleri */
 .loader-wrapper {
   display: flex;
   justify-content: center;
@@ -214,6 +300,8 @@
   background: #FF3D7F;
   animation-delay: -1s, 0s;
 }
+
+/* Hata Mesajı Stilleri */
 .error-container {
   text-align: center;
   padding: 2rem;
@@ -249,27 +337,145 @@
   background: #2980b9;
 }
 
+/* Anahtar Kare Animasyonları */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
+/* --- MOBİL UYUMLULUK KURALLARI --- */
+
+/* Tablet ve Küçük Masaüstü Cihazlar (768px'e kadar) */
 @media (max-width: 768px) {
+  .post-detail-container {
+    margin: 1rem auto; /* Dikey boşluğu azalt */
+    padding: 0 0.8rem; /* Kenar boşluklarını azalt */
+  }
+
   .post-article {
-    padding: 1.5rem;
+    padding: 1.5rem; /* İç boşluğu azalt */
   }
   
   .post-title {
-    font-size: 1.8rem;
+    font-size: 1.8rem; /* Başlık font boyutunu küçült */
+    margin-bottom: 1rem;
   }
   
   .post-header-meta {
-    flex-direction: column;
+    flex-direction: column; /* Başlık ve tarih/kategori alt alta gelsin */
     align-items: flex-start;
     gap: 0.5rem;
   }
   
+  .post-content {
+    font-size: 1rem; /* İçerik font boyutunu küçült */
+    line-height: 1.7;
+  }
+
+  .subheadings h3 {
+    font-size: 1.2rem; /* Alt başlık font boyutunu küçült */
+  }
+
+  .related-posts {
+    padding: 1.5rem; /* İlgili haberler bölümünün iç boşluğunu azalt */
+  }
+
+  .related-title {
+    font-size: 1.3rem; /* İlgili haberler başlığını küçült */
+  }
+
   .related-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Tek sütunlu düzen */
+  }
+
+  .related-image {
+    height: 200px; /* Görsel yüksekliğini artırabiliriz */
+  }
+
+  .related-card h4 {
+    font-size: 1rem; /* İlgili haber başlıklarını küçült */
+  }
+
+  /* Paylaşım Butonları Mobil Ayarlamaları */
+  .share-button-item {
+    padding: 5px 10px; /* Buton padding'ini küçült */
+    font-size: 0.9rem; /* Metin boyutunu küçült */
+  }
+  .share-button-icon {
+    font-size: 16px; /* İkon boyutunu küçült */
+  }
+  .share-buttons-label {
+    font-size: 0.9rem; /* "Paylaş:" yazısını küçült */
+  }
+}
+
+/* Çok Küçük Cihazlar (480px'e kadar) */
+@media (max-width: 480px) {
+  .post-detail-container {
+    padding: 0 0.5rem; /* En dar ekranlar için kenar boşluğunu daha da azalt */
+  }
+
+  .post-article {
+    padding: 1rem; /* En dar ekranlar için iç boşluğu daha da azalt */
+  }
+
+  .post-title {
+    font-size: 1.5rem; /* Başlık font boyutunu daha da küçült */
+  }
+
+  .category-badge,
+  .publish-date,
+  .view-count,
+  .tag {
+    font-size: 0.8rem; /* Küçük metinleri daha da küçült */
+  }
+
+  .post-content {
+    font-size: 0.95rem; /* İçerik font boyutunu daha da küçült */
+    line-height: 1.6;
+  }
+
+  .subheadings h3 {
+    font-size: 1.1rem;
+  }
+
+  .related-title {
+    font-size: 1.2rem;
+  }
+
+  .related-image {
+    height: 160px; /* Görsel yüksekliğini biraz daha azalt */
+  }
+
+  .retry-button {
+    padding: 0.6rem 1rem; /* Buton boyutunu küçült */
+    font-size: 0.9rem;
+  }
+
+  /* Paylaşım Butonları Çok Küçük Mobil Ayarlamaları */
+  .share-button-item {
+    padding: 4px 8px; /* Buton padding'ini daha da küçült */
+    font-size: 0.8rem; /* Metin boyutunu daha da küçült */
+  }
+  .share-button-icon {
+    font-size: 14px; /* İkon boyutunu daha da küçült */
+  }
+  .share-buttons-label {
+    font-size: 0.85rem; /* "Paylaş:" yazısını daha da küçült */
+  }
+}
+
+/* Landscape modunda (yatay) mobil cihazlar için ek düzenlemeler */
+@media (max-height: 480px) and (orientation: landscape) {
+  .post-detail-container {
+    margin: 0.5rem auto; /* Dikey boşluğu daha da azalt */
+  }
+
+  .post-article {
+    padding: 1rem 1.5rem; /* Yatayda daha fazla yatay boşluk */
+  }
+
+  .featured-image {
+    max-height: 250px; /* Yatay modda görsel yüksekliğini sınırlama */
   }
 }

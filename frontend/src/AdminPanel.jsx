@@ -8,11 +8,11 @@ function AdminPanel() {
 
   return (
     <Routes>
-      <Route path="/admin" element={
-        isAuthenticated ? <Navigate to="/admin/dashboard" /> : <AdminLogin onLogin={setIsAuthenticated} />
+      <Route path="/karacabeyadminpanel" element={
+        isAuthenticated ? <Navigate to="/karacabeyadminpanel/dashboard" /> : <AdminLogin onLogin={setIsAuthenticated} />
       } />
-      <Route path="/admin/dashboard" element={
-        isAuthenticated ? <AdminDashboard /> : <Navigate to="/admin" />
+      <Route path="/karacabeyadminpanel/dashboard" element={
+        isAuthenticated ? <AdminDashboard /> : <Navigate to="/karacabeyadminpanel" />
       } />
     </Routes>
   )

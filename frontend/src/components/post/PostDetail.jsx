@@ -31,12 +31,24 @@ const PostDetail = () => {
         setPost(postData);
 
         // İlgili haberler çekiliyor
-        const relatedRes = await fetch(`https://api.karacabeygazetesi.com/index.php?url=category&${encodeURIComponent(postData.category)}&limit=4`);
+        // Kategoriye göre ilgili haberleri çekmek için API'nizin bu endpoint'i desteklemesi gerekir.
+        // Şu anki kodunuzda `url=category&${encodeURIComponent(postData.category)}&limit=4`
+        // bu şekilde bir kategoriye göre filtreleme yapabilen bir API yok gibi görünüyor.
+        // Eğer bu endpoint'i `api/news/category.php` veya `api/news/posts.php` içinde
+        // kategoriye göre haberleri listeleyecek şekilde ayarlamadıysanız, bu kısım çalışmayabilir.
+        // Varsayımsal olarak, `category` endpoint'inin tüm kategorileri döndürdüğünü ve
+        // sizin buradan filtreleme yapmanız gerektiğini varsayıyorum.
+        // Daha doğru bir yaklaşım, backend'de kategoriye göre haberleri listeleyen bir endpoint oluşturmaktır.
+        const relatedRes = await fetch(`https://api.karacabeygazetesi.com/main.php?url=posts`); // Tüm postları çek
         if (!relatedRes.ok) throw new Error('İlgili haberler alınamadı');
-        const relatedData = await relatedRes.json();
+        const allPosts = await relatedRes.json();
 
-        // Şu anki post hariç 3 tane gösterelim
-        setRelatedPosts(relatedData.filter(p => p.id !== postData.id).slice(0, 3));
+        // Kategoriye göre filtrele ve şu anki post hariç 3 tane al
+        setRelatedPosts(
+          allPosts
+            .filter(p => p.category === postData.category && p.slug !== postData.slug)
+            .slice(0, 3)
+        );
 
       } catch (err) {
         setError(err.message.includes('Çok fazla istek')
@@ -51,6 +63,8 @@ const PostDetail = () => {
   }, [slug]);
 
   const formatContent = (content) => {
+    // İçeriğin null veya undefined olma durumunu kontrol et
+    if (!content) return null;
     return content.split('\n').map((para, i) => (
       <p key={i} className="content-para">
         {para.trim() || <br />}
@@ -77,17 +91,17 @@ const PostDetail = () => {
 
   // Paylaşım butonları için fonksiyonlar:
   const handleWhatsAppShare = () => {
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(post.title)}%20https://api.karacabeygazetesi.com/index.php?url=post/${slug}`;
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(post.title)}%20https://karacabeygazetesi.com/post/${slug}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleFacebookShare = () => {
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://api.karacabeygazetesi.com/index.php?url=post/${slug}`)}`;
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://karacabeygazetesi.com/post/${slug}`)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleTwitterShare = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://api.karacabeygazetesi.com/index.php?url=post/${slug}`)}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://karacabeygazetesi.com/post/${slug}`)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -95,16 +109,17 @@ const PostDetail = () => {
     <>
       <Helmet>
         <title>{post.title} - Karacabey Haber</title>
-        <meta name="description" content={post.content.slice(0, 160)} />
+        {/* post.content'in varlığını kontrol etmeden slice kullanmaktan kaçının */}
+        <meta name="description" content={post.content ? post.content.slice(0, 160) : ""} />
         <meta name="keywords" content={post.tags?.join(", ") || ""} />
         <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.content.slice(0, 160)} />
+        <meta property="og:description" content={post.content ? post.content.slice(0, 160) : ""} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={window.location.href} />
         {post.image && <meta property="og:image" content={post.image} />}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
-        <meta name="twitter:description" content={post.content.slice(0, 160)} />
+        <meta name="twitter:description" content={post.content ? post.content.slice(0, 160) : ""} />
         {post.image && <meta name="twitter:image" content={post.image} />}
       </Helmet>
 
@@ -184,7 +199,8 @@ const PostDetail = () => {
             <h3 className="related-title">İlgili Haberler</h3>
             <div className="related-grid">
               {relatedPosts.map(related => (
-                <Link to={`/post/${related.id}`} key={related.id} className="related-card">
+                // DÜZELTİLDİ: İlgili haber linki slug kullanmalı
+                <Link to={`/post/${related.slug}`} key={related.id} className="related-card">
                   {related.image && (
                     <img src={related.image} alt={related.title} className="related-image" />
                   )}
@@ -199,71 +215,40 @@ const PostDetail = () => {
   );
 };
 
-// ShareButtons komponenti güncellendi, handle fonksiyonları prop ile alıyor
+// ShareButtons komponenti güncellendi, CSS sınıflarını kullanıyor
 const ShareButtons = ({ handleWhatsAppShare, handleFacebookShare, handleTwitterShare }) => {
   return (
-    <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '6px 10px',
-        border: '1px solid #ddd',
-        borderRadius: '6px',
-        maxWidth: 'fit-content',
-        backgroundColor: '#fff',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-
-        justifyContent: 'flex-end', // sağa hizalama
-        marginTop: '-10px',          // yukarı kaldırma
-        marginBottom: '10px',        // altta biraz boşluk bırak (opsiyonel)
-        marginLeft: 'auto',          // sağa yaslama için (flex container varsa)
-    }}>
-      <span style={{ marginRight: '8px', fontWeight: '500' }}>Paylaş:</span>
+    <div className="share-buttons-container">
+      <span className="share-buttons-label">Paylaş:</span>
 
       <button
-        style={buttonStyle('#25D366')}
+        className="share-button-item whatsapp"
         onClick={handleWhatsAppShare}
         aria-label="WhatsApp'ta paylaş"
       >
-        <FaWhatsapp size={18} />
+        <FaWhatsapp className="share-button-icon" />
         WhatsApp
       </button>
 
       <button
-        style={buttonStyle('#3b5998')}
+        className="share-button-item facebook"
         onClick={handleFacebookShare}
         aria-label="Facebook'ta paylaş"
       >
-        <FaFacebookF size={18} />
+        <FaFacebookF className="share-button-icon" />
         Facebook
       </button>
 
       <button
-        style={buttonStyle('#1DA1F2')}
+        className="share-button-item twitter"
         onClick={handleTwitterShare}
         aria-label="Twitter'da paylaş"
       >
-        <FaTwitter size={18} />
+        <FaTwitter className="share-button-icon" />
         Twitter
       </button>
     </div>
   );
 };
-
-// Stil fonksiyonu
-const buttonStyle = (bgColor) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '6px',
-  backgroundColor: bgColor,
-  color: 'white',
-  border: 'none',
-  padding: '6px 12px',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  fontWeight: '500',
-  whiteSpace: 'nowrap',
-  flexShrink: 0,
-});
 
 export default PostDetail;
