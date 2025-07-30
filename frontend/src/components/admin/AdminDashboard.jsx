@@ -212,6 +212,7 @@ function AdminDashboard() {
           <button onClick={() => setActiveTab("socialmedia")} className={activeTab === "socialmedia" ? "active" : ""}>Sosyal Medya Ayarları</button>
           <button onClick={() => setActiveTab("footer")} className={activeTab === "footer" ? "active" : ""}>Footer Ayarları</button>
           <button onClick={() => setActiveTab("mobilappurl")} className={activeTab === "mobilappurl" ? "active" : ""}>Mobil APP URl Ayarları</button>
+          <button onClick={() => setActiveTab("slider")} className={activeTab === "slider" ? "active" : ""}>Slider Ayarları</button>
         </div>
         </div>
         <div className="dashboard-header">
@@ -307,11 +308,369 @@ function AdminDashboard() {
           <FooterSettings />
         ) : activeTab === "mobilappurl" ? (
           <MobilAppUrlSettings />
+        ) : activeTab == "slider" ? (
+          <SliderSettings />
         ) : null}
       </div>
     );
   }
-  function MobilAppUrlSettings() {
+
+// Ana Uygulama bileşeni, artık SliderSettings olarak adlandırıldı
+// Bu bir fonksiyonel React bileşenidir.
+const SliderSettings = () => {
+    // Slider verilerini tutan state
+    const [sliders, setSliders] = useState([]);
+    // Form verilerini tutan state (oluşturma ve düzenleme için)
+    const [formData, setFormData] = useState({
+        title: '',
+        image: '', // Görselin URL'si veya yolu
+        target_url: ''
+    });
+    // Düzenlenmekte olan slider'ı tutan state
+    const [selectedSlider, setSelectedSlider] = useState(null);
+    // Kullanıcıya gösterilecek mesajları tutan state (başarı/hata)
+    const [message, setMessage] = useState('');
+    // Yükleme durumunu gösteren state
+    const [loading, setLoading] = useState(false);
+    // Yüklenecek görsel dosyasını tutan state
+    const [imageFile, setImageFile] = useState(null);
+
+    // API'nizin temel URL'si. Kendi sunucu adresinize göre ayarlayın.
+    // Örneğin: 'http://api.karacabeygazetesi.com/main.php?url='
+    const API_BASE_URL = 'http://api.karacabeygazetesi.com/main.php?url='; 
+
+    // Bileşen yüklendiğinde sliderları getir
+    useEffect(() => {
+        fetchSliders();
+    }, []);
+
+    // Tüm özel sliderları API'den çeken fonksiyon
+    const fetchSliders = async () => {
+        setLoading(true); // Yükleme durumunu başlat
+        try {
+            const response = await fetch(`${API_BASE_URL}special-sliders`);
+            const data = await response.json();
+            if (response.ok) {
+                setSliders(data); // Sliderları state'e kaydet
+            } else {
+                setMessage(`Sliderlar getirilirken hata: ${data.error || 'Bilinmeyen hata'}`);
+            }
+        } catch (error) {
+            setMessage(`Sliderlar getirilirken ağ hatası: ${error.message}`);
+        } finally {
+            setLoading(false); // Yükleme durumunu bitir
+        }
+    };
+
+    // Form inputlarındaki değişiklikleri yöneten fonksiyon
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    // Dosya inputundaki değişiklikleri yöneten fonksiyon
+    const handleFileChange = (e) => {
+        setImageFile(e.target.files[0]); // Seçilen dosyayı state'e kaydet
+    };
+
+    // Görseli sunucuya yükleyen fonksiyon
+    const uploadImage = async () => {
+        // Eğer yeni bir dosya seçilmediyse, mevcut görsel yolunu döndür
+        if (!imageFile) return formData.image;
+
+        setLoading(true);
+        setMessage('Resim yükleniyor...');
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', imageFile); // Dosyayı FormData'ya ekle
+
+        try {
+            const response = await fetch(`${API_BASE_URL}upload`, {
+                method: 'POST',
+                body: uploadFormData, // FormData'yı doğrudan gönder
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setMessage('Resim başarıyla yüklendi!');
+                return data.file_path; // Sunucudan dönen dosya yolunu döndür (örn: 'uploads/image.jpg')
+            } else {
+                setMessage(`Resim yükleme hatası: ${data.error || 'Bilinmeyen hata'}`);
+                return null; // Hata durumunda null döndür
+            }
+        } catch (error) {
+            setMessage(`Resim yükleme ağ hatası: ${error.message}`);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Form gönderimini yöneten fonksiyon (oluşturma veya güncelleme)
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Varsayılan form gönderimini engelle
+        setLoading(true);
+        setMessage('');
+
+        // Görseli yükle
+        const uploadedImagePath = await uploadImage();
+        // Eğer yeni bir görsel seçildi ve yükleme başarısız olduysa işlemi durdur
+        if (imageFile && !uploadedImagePath) {
+            setLoading(false);
+            return;
+        }
+
+        // API'ye gönderilecek veriyi hazırla
+        const dataToSend = {
+            ...formData,
+            image: uploadedImagePath || formData.image // Yeni yüklenen yol varsa onu kullan, yoksa mevcut yolu koru
+        };
+
+        // Metodu ve URL'yi belirle (güncelleme veya oluşturma)
+        const method = selectedSlider ? 'PUT' : 'POST';
+        const url = selectedSlider
+            ? `${API_BASE_URL}special-sliders/${selectedSlider.id}`
+            : `${API_BASE_URL}special-sliders`;
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json', // JSON veri gönderildiği için başlık ayarla
+                },
+                body: JSON.stringify(dataToSend), // Veriyi JSON string'e dönüştür
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                setMessage(result.message || 'İşlem başarıyla tamamlandı!');
+                setFormData({ title: '', image: '', target_url: '' }); // Formu temizle
+                setSelectedSlider(null); // Seçili slider'ı sıfırla
+                setImageFile(null); // Görsel dosyasını sıfırla
+                fetchSliders(); // Slider listesini yenile
+            } else {
+                setMessage(`Hata: ${result.error || 'Bilinmeyen bir hata oluştu.'}`);
+            }
+        } catch (error) {
+            setMessage(`Ağ hatası: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Bir slider'ı düzenlemek için formu dolduran fonksiyon
+    const handleEdit = (slider) => {
+        setSelectedSlider(slider); // Düzenlenecek slider'ı seç
+        setFormData({
+            title: slider.title,
+            image: slider.image,
+            target_url: slider.target_url
+        });
+        setMessage(''); // Mesajı temizle
+    };
+
+    // Bir slider'ı silen fonksiyon
+    const handleDelete = async (id) => {
+        // Kullanıcıdan onay al
+        if (!window.confirm('Bu sliderı silmek istediğinizden emin misiniz?')) {
+            return;
+        }
+        setLoading(true);
+        setMessage('');
+        try {
+            const response = await fetch(`${API_BASE_URL}special-sliders/${id}`, {
+                method: 'DELETE',
+            });
+            const result = await response.json();
+            if (response.ok) {
+                setMessage(result.message || 'Slider başarıyla silindi!');
+                fetchSliders(); // Listeyi yenile
+            } else {
+                setMessage(`Hata: ${result.error || 'Bilinmeyen bir hata oluştu.'}`);
+            }
+        } catch (error) {
+            setMessage(`Ağ hatası: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-100 p-4 font-sans antialiased">
+            {/* Tailwind CSS CDN'i */}
+            <script src="https://cdn.tailwindcss.com"></script>
+            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+                <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Özel Slider Yönetimi</h1>
+
+                {/* Mesaj kutusu */}
+                {message && (
+                    <div className={`p-3 mb-4 rounded-md ${message.startsWith('Hata') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                        {message}
+                    </div>
+                )}
+
+                {/* Yükleniyor göstergesi */}
+                {loading && (
+                    <div className="flex items-center justify-center mb-4">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                        <span className="ml-3 text-gray-700">Yükleniyor...</span>
+                    </div>
+                )}
+
+                {/* Slider Oluştur/Güncelle Formu */}
+                <div className="mb-8 p-6 border border-gray-200 rounded-lg">
+                    <h2 className="text-2xl font-semibold text-gray-700 mb-4">{selectedSlider ? 'Sliderı Düzenle' : 'Yeni Slider Oluştur'}</h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Başlık</label>
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="imageFile" className="block text-sm font-medium text-gray-700">Görsel Yükle</label>
+                            <input
+                                type="file"
+                                id="imageFile"
+                                name="imageFile"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            />
+                            {/* Mevcut görseli göster */}
+                            {formData.image && (
+                                <p className="mt-2 text-sm text-gray-500">Mevcut Görsel: <a href={formData.image.startsWith('http') ? formData.image : `${API_BASE_URL}${formData.image}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{formData.image.split('/').pop()}</a></p>
+                            )}
+                        </div>
+                        <div>
+                            <label htmlFor="target_url" className="block text-sm font-medium text-gray-700">Hedef URL</label>
+                            <input
+                                type="url"
+                                id="target_url"
+                                name="target_url"
+                                value={formData.target_url}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                required
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-3">
+                            {/* Düzenleme modundaysa iptal butonu */}
+                            {selectedSlider && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedSlider(null);
+                                        setFormData({ title: '', image: '', target_url: '' });
+                                        setImageFile(null);
+                                        setMessage('');
+                                    }}
+                                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    İptal
+                                </button>
+                            )}
+                            <button
+                                type="submit"
+                                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                                {selectedSlider ? 'Sliderı Güncelle' : 'Slider Oluştur'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Mevcut Slider Listesi */}
+                <div className="p-6 border border-gray-200 rounded-lg">
+                    <h2 className="text-2xl font-semibold text-gray-700 mb-4">Mevcut Sliderlar</h2>
+                    {sliders.length === 0 && !loading ? (
+                        <p className="text-gray-500">Henüz hiç özel slider yok.</p>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            ID
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Başlık
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Görsel
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Hedef URL
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Yayın Tarihi
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            İşlemler
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {sliders.map((slider) => (
+                                        <tr key={slider.id}>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {slider.id}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {slider.title}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {slider.image ? (
+                                                    <a href={slider.image.startsWith('http') ? slider.image : `${API_BASE_URL}${slider.image}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                                        {/* Görsel boyutunu ve şeklini burada düzenledim */}
+                                                        <img 
+                                                            src={slider.image.startsWith('http') ? slider.image : `${API_BASE_URL}${slider.image}`} 
+                                                            alt={slider.title} 
+                                                            className="w-16 h-16 object-cover rounded-md" 
+                                                            onError={(e) => e.target.src = 'https://placehold.co/64x64/cccccc/000000?text=No+Image'} 
+                                                        />
+                                                    </a>
+                                                ) : 'Yok'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <a href={slider.target_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                                    {slider.target_url}
+                                                </a>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {new Date(slider.publish_date).toLocaleDateString('tr-TR', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <button
+                                                    onClick={() => handleEdit(slider)}
+                                                    className="text-indigo-600 hover:text-indigo-900 mr-3"
+                                                >
+                                                    Düzenle
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(slider.id)}
+                                                    className="text-red-600 hover:text-red-900"
+                                                >
+                                                    Sil
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+function MobilAppUrlSettings() {
     const [form, setForm] = useState({
       playstore: "",
       appstore: "",
@@ -864,32 +1223,38 @@ function AdminDashboard() {
       </div>
     );
   }
+
 function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadings, categories: propCategories }) { 
 
-  const [cat, setCategories] = useState([]); // State for fetched categories (names only)
+  const [cat, setCategories] = useState([]); // Fetch edilen kategorileri tutar (sadece isimler)
   const [form, setForm] = useState({
-    title: '', // Added title to form state for new posts
+    title: '', // Yeni gönderiler için başlık
     content: '',
-    image: '', // This will hold the path from upload, or existing path
+    image: '', // Yüklemeden gelen veya mevcut resim yolu
     category: '',
     tags: '',
     status: 'draft',
-    publish_date: ''
+    publish_date: '',
+    is_slider: 0 // is_slider için varsayılan değer 0
   });
   
-  const [file, setFile] = useState(null); // The actual File object to be uploaded
-  const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState(''); // URL for image preview (local or remote)
-  const [newSubheading, setNewSubheading] = useState({ title: '', content: '' });
-  const [showSubheadingForm, setShowSubheadingForm] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [file, setFile] = useState(null); // Yüklenecek gerçek dosya nesnesi
+  const [uploading, setUploading] = useState(false); // Yükleme durumu
+  const [preview, setPreview] = useState(''); // Resim önizlemesi için URL (yerel veya uzak)
+  const [newSubheading, setNewSubheading] = useState({ title: '', content: '' }); // Yeni alt başlık formu verisi
+  const [showSubheadingForm, setShowSubheadingForm] = useState(false); // Alt başlık ekleme formunun görünürlüğü
+  const [username, setUsername] = useState(""); // Yönetici kullanıcı adı
+  const [password, setPassword] = useState(""); // Yönetici şifresi
   const [message, setMessage] = useState(''); // Başarı/hata mesajları için
 
+  // API'nizin temel URL'si. Kendi sunucu adresinize göre ayarlayın.
+  const API_BASE_URL = 'https://api.karacabeygazetesi.com/main.php?url='; 
+
+  // Kategorileri API'den çeker
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("https://api.karacabeygazetesi.com/main.php?url=category");
+        const response = await axios.get(`${API_BASE_URL}category`);
         const namesOnly = response.data.map((item) => item.name);
         setCategories(namesOnly);
       } catch (error) {
@@ -897,8 +1262,9 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
       }
     };
     fetchCategories();
-  }, []);
+  }, [API_BASE_URL]); // API_BASE_URL değiştiğinde yeniden çalışır
 
+  // Yönetici kimlik bilgilerini localStorage'dan yükler
   useEffect(() => {
     const savedCredentials = localStorage.getItem('adminCredentials');
     if (savedCredentials) {
@@ -908,160 +1274,161 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
           setUsername(parsedCredentials.username);
           setPassword(parsedCredentials.password);
         } else {
-          console.warn("Geçersiz credential formatı");
+          console.warn("Geçersiz kimlik bilgisi formatı");
         }
       } catch (error) {
-        console.error("JSON parse hatası:", error);
+        console.error("JSON ayrıştırma hatası:", error);
         localStorage.removeItem('adminCredentials');
       }
     }
   }, []);
 
+  // Düzenleme moduna girildiğinde formu doldurur veya yeni gönderi için sıfırlar
   useEffect(() => {
     if (editPost) {
-      console.log("Edit Post mode. Initializing form with:", editPost);
+      console.log("Düzenleme modu. Form şu veriyle başlatılıyor:", editPost);
       setForm({
         ...editPost,
-        tags: editPost.tags?.join(',') || '',
-        publish_date: editPost.publish_date?.slice(0, 16) || '' // Format for datetime-local
+        tags: editPost.tags?.join(',') || '', // Etiketleri virgülle ayrılmış stringe dönüştür
+        publish_date: editPost.publish_date?.slice(0, 16) || '', // datetime-local formatına dönüştür
+        is_slider: editPost.is_slider || 0 // is_slider değerini al, yoksa 0
       });
-      // Set preview for existing image
+      // Mevcut resim için önizlemeyi ayarla
       if (editPost.image) {
-        // Assuming editPost.image is already a full URL or a relative path
-        // If it's a relative path like "uploads/filename.jpg", construct full URL for preview
-        setPreview(editPost.image.startsWith('http') ? editPost.image : `https://api.karacabeygazetesi.com/main.php?url=${editPost.image}`); 
-        console.log("Setting image preview for existing post:", editPost.image.startsWith('http') ? editPost.image : `https://api.karacabeygazetesi.com/main.php?url=${editPost.image}`);
+        setPreview(editPost.image.startsWith('http') ? editPost.image : `${API_BASE_URL}${editPost.image}`); 
       } else {
         setPreview('');
       }
-      setFile(null); // No new file selected yet
-      setSubheadings(editPost.subheadings || []); // Initialize subheadings
+      setFile(null); // Henüz yeni dosya seçilmedi
+      setSubheadings(editPost.subheadings || []); // Alt başlıkları başlat
     } else {
-      console.log("New Post mode. Resetting form.");
+      console.log("Yeni gönderi modu. Form sıfırlanıyor.");
       setForm({
         title: '', content: '', image: '', category: '',
-        tags: '', status: 'draft', publish_date: ''
+        tags: '', status: 'draft', publish_date: '',
+        is_slider: 0 // Yeni gönderi için varsayılan 0
       });
       setPreview('');
       setFile(null);
       setSubheadings([]);
     }
-  }, [editPost, setSubheadings]); // Added setSubheadings to dependency array
+  }, [editPost, setSubheadings, API_BASE_URL]); // Bağımlılık dizisine API_BASE_URL eklendi
 
+  // Form inputlarındaki değişiklikleri yönetir
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    // Checkbox yerine select olduğu için type kontrolü kaldırıldı, değer doğrudan number'a çevrildi
+    setForm({ ...form, [name]: name === 'is_slider' ? parseInt(value, 10) : value });
   };
 
+  // Alt başlık formu inputlarındaki değişiklikleri yönetir
   const handleSubheadingChange = (e) => {
     setNewSubheading({ ...newSubheading, [e.target.name]: e.target.value });
   };
 
+  // Yeni alt başlık ekler
   const addSubheading = () => {
     if (newSubheading.title.trim() && newSubheading.content.trim()) {
         setSubheadings([...subheadings, newSubheading]);
         setNewSubheading({ title: '', content: '' });
-        setShowSubheadingForm(false);
     } else {
-        alert("Alt başlık ve içerik boş bırakılamaz.");
+        alert("Alt başlık ve içerik boş bırakılamaz."); // Kullanıcıya uyarı ver
     }
   };
 
+  // Belirli bir alt başlığı kaldırır
   const removeSubheading = (index) => {
     const updated = [...subheadings];
     updated.splice(index, 1);
     setSubheadings(updated);
   };
 
+  // Dosya seçildiğinde tetiklenir
   const handleFile = (e) => {
     const selectedFile = e.target.files[0];
-    console.log("handleFile: Selected file:", selectedFile);
+    console.log("handleFile: Seçilen dosya:", selectedFile);
     if (selectedFile) {
       setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile)); // Create a local URL for instant preview
+      setPreview(URL.createObjectURL(selectedFile)); // Anında önizleme için yerel URL oluştur
     } else {
       setFile(null);
-      // If no file selected, revert preview to existing image if in edit mode
-      // Ensure existing image is also a full URL for preview
-      setPreview(editPost && editPost.image ? (editPost.image.startsWith('http') ? editPost.image : `https://api.karacabeygazetesi.com/main.php?url=${editPost.image}`) : '');
+      // Dosya seçilmezse, düzenleme modundaysa mevcut resme geri dön
+      setPreview(editPost && editPost.image ? (editPost.image.startsWith('http') ? editPost.image : `${API_BASE_URL}${editPost.image}`) : '');
     }
   };
 
+  // Resmi sunucuya yükler veya mevcut yolu döndürür
   const uploadImage = async () => {
     console.log("--- uploadImage fonksiyonu başladı ---");
-    console.log("Current 'file' state (dosya seçili mi?):", file);
+    console.log("Mevcut 'file' state (dosya seçili mi?):", file);
 
-    // If no new file is selected, return the existing image path or a default
+    // Yeni dosya seçilmediyse, mevcut resim yolunu veya varsayılanı döndür
     if (!file) {
-      const existingImagePath = form.image; // This comes from editPost or is empty for new
-      const defaultImagePath = "https://api.karacabeygazetesi.com/main.php?url=uploads/ifnoimage.png";
+      const existingImagePath = form.image; 
+      const defaultImagePath = `${API_BASE_URL}uploads/ifnoimage.png`; // Varsayılan resim
       console.log("Yeni dosya seçilmedi. Mevcut resim yolu ('form.image'):", existingImagePath);
       console.log("Varsayılan resim yolu:", defaultImagePath);
       return existingImagePath || defaultImagePath;
     }
 
-    // A new file is selected, proceed with upload
+    // Yeni bir dosya seçildiyse, yükleme işlemine devam et
     const data = new FormData();
-    data.append('image', file); // DÜZELTİLDİ: 'file' yerine 'image' kullanıldı
-    console.log("FormData oluşturuldu. 'image' eklendi.");
-    setUploading(true); // Indicate upload in progress
+    data.append('file', file); // PHP tarafında 'file' anahtarı bekleniyor
+    console.log("FormData oluşturuldu. 'file' eklendi.");
+    setUploading(true); // Yükleme durumunu başlat
 
     try {
       console.log("PHP /upload API'ye istek gönderiliyor...");
-      const res = await fetch('https://api.karacabeygazetesi.com/main.php?url=upload', {
+      const res = await fetch(`${API_BASE_URL}upload`, {
         method: 'POST',
-        body: data // FormData automatically sets Content-Type: multipart/form-data
+        body: data // FormData otomatik olarak Content-Type: multipart/form-data ayarlar
       });
 
       console.log("Fetch isteği tamamlandı. HTTP yanıt durumu:", res.status, res.statusText);
 
-      if (!res.ok) { // Check if HTTP status is 2xx
-        const errorData = await res.json(); // Attempt to parse error response
+      if (!res.ok) { // HTTP durumu 2xx değilse hata var demektir
+        const errorData = await res.json(); // Hata yanıtını ayrıştırmaya çalış
         console.error("Yükleme API hatası (HTTP hata kodu):", errorData);
-        throw new Error(errorData.detail || "Resim yüklenirken sunucu hatası (HTTP " + res.status + ").");
+        throw new Error(errorData.detail || `Resim yüklenirken sunucu hatası (HTTP ${res.status}).`);
       }
 
-      const jsonResponse = await res.json(); // Parse successful JSON response
+      const jsonResponse = await res.json(); // Başarılı JSON yanıtını ayrıştır
       console.log("PHP API'den gelen BAŞARILI JSON yanıtı:", jsonResponse);
 
-      // --- CRITICAL PART: Check the key from PHP response ---
-      // Your PHP code returns 'path'. So we must use jsonResponse.path
-      if (jsonResponse.path) {
-        console.log("Yüklenen resim yolu (jsonResponse.path):", jsonResponse.path);
-        return jsonResponse.path; // This is the path we need (e.g., "uploads/uniqueid.webp")
+      // PHP kodunuz 'file_path' anahtarını döndürüyor
+      if (jsonResponse.file_path) {
+        console.log("Yüklenen resim yolu (jsonResponse.file_path):", jsonResponse.file_path);
+        return jsonResponse.file_path; // İhtiyacımız olan yol (örn: "uploads/uniqueid.webp")
       } else {
-        console.error("PHP yanıtında 'path' anahtarı bulunamadı. Yanıt objesi:", jsonResponse);
+        console.error("PHP yanıtında 'file_path' anahtarı bulunamadı. Yanıt objesi:", jsonResponse);
         throw new Error("PHP'den beklenen dosya yolu alınamadı.");
       }
 
     } catch (error) {
       console.error("Resim yükleme sırasında genel hata (catch bloğu):", error);
-      // Fallback in case of any error during upload
-      return form.image || "https://api.karacabeygazetesi.com/main.php?url=uploads/ifnoimage.png";
+      // Yükleme sırasında herhangi bir hata durumunda geri dönüş
+      return form.image || `${API_BASE_URL}uploads/ifnoimage.png`;
     } finally {
-      setUploading(false); // End uploading state
+      setUploading(false); // Yükleme durumunu bitir
       console.log("--- uploadImage fonksiyonu bitti ---");
     }
   };
 
-  // Slug üretici fonksiyon
+  // Slug üretici fonksiyonu (URL dostu metin oluşturur)
   const generateSlug = (text) => {
     return text
       .toLowerCase()
       .trim()
       .replace(/[çğıöşü]/g, c => ({
-        ç: 'c',
-        ğ: 'g',
-        ı: 'i',
-        ö: 'o',
-        ş: 's',
-        ü: 'u'
+        ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u'
       }[c]))
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replace(/[^a-z0-9\s-]/g, '') // Harf, rakam, boşluk ve tire dışındaki karakterleri kaldır
+      .replace(/\s+/g, '-') // Birden fazla boşluğu tek tireye dönüştür
+      .replace(/-+/g, '-') // Birden fazla tireyi tek tireye dönüştür
+      .replace(/^-+|-+$/g, ''); // Başlangıç ve sondaki tireleri kaldır
   };
 
+  // Form gönderimini yönetir (oluşturma veya güncelleme)
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("--- handleSubmit fonksiyonu başladı ---");
@@ -1069,7 +1436,7 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
     try {
       // 1. Resmi yükle (veya mevcut yolu al)
       const imageUrl = await uploadImage();
-      console.log("uploadImage'dan dönen SON imageUrl:", imageUrl); // Critical check!
+      console.log("uploadImage'dan dönen SON imageUrl:", imageUrl); 
 
       // Eğer imageUrl hala boş/varsayılan ise ve kullanıcı resim seçtiyse uyarı verilebilir.
       if (!imageUrl || imageUrl.includes('ifnoimage.png')) {
@@ -1077,42 +1444,41 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
       }
 
       // 2. Haber payload'unu oluştur
-      let finalImageUrl = imageUrl; // imageUrl from uploadImage()
+      let finalImageUrl = imageUrl; 
 
-      // Check if imageUrl is a relative path and convert it to a full URL
-      // This handles both newly uploaded images and old images saved as relative paths
+      // Eğer resim yolu göreceli ise (http ile başlamıyorsa) tam URL'ye dönüştür
       if (finalImageUrl && !finalImageUrl.startsWith('http')) {
-          finalImageUrl = `https://api.karacabeygazetesi.com/main.php?url=${finalImageUrl}`;
+          finalImageUrl = `${API_BASE_URL}${finalImageUrl}`;
       }
 
       const payload = {
         ...form,
-        slug: generateSlug(form.title),
-        image: finalImageUrl, // Assign the potentially converted full URL
-        tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
-        subheadings: subheadings,
-        username,
-        password
+        slug: generateSlug(form.title), // Başlıktan slug oluştur
+        image: finalImageUrl, // Potansiyel olarak dönüştürülmüş tam URL'yi ata
+        tags: form.tags.split(',').map(t => t.trim()).filter(t => t), // Etiketleri diziye dönüştür
+        subheadings: subheadings, // Alt başlıkları ekle
+        username, // Yönetici kullanıcı adı
+        password // Yönetici şifresi
       };
-      console.log("Haber kaydı için hazırlanmış SON payload:", payload); // **YENİDEN KONTROL ET! image: undefined mi?**
+      console.log("Haber kaydı için hazırlanmış SON payload:", payload); 
 
       // 3. Haberi kaydet (PUT veya POST)
-      const method = editPost ? 'PUT' : 'POST';
+      const method = editPost ? 'PUT' : 'POST'; // Düzenleme ise PUT, yeni ise POST
       const url = editPost
-        ? `https://api.karacabeygazetesi.com/main.php?url=posts/${editPost.slug}`
-        : 'https://api.karacabeygazetesi.com/main.php?url=posts';
+        ? `${API_BASE_URL}posts/${editPost.slug}` // Düzenleme için slug kullan
+        : `${API_BASE_URL}posts`; // Yeni gönderi için genel posts endpoint'i
 
-      console.log(`Haber kaydediliyor: Method=${method}, URL=${url}`);
+      console.log(`Haber kaydediliyor: Metot=${method}, URL=${url}`);
 
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/json' }, // JSON veri gönderildiği için başlık ayarla
+        body: JSON.stringify(payload) // Veriyi JSON string'e dönüştür
       });
 
       console.log("Haber kaydetme yanıtı:", response);
 
-      if (!response.ok) {
+      if (!response.ok) { // HTTP durumu 2xx değilse hata var demektir
         const errorResult = await response.json();
         console.error("Haber kaydetme API hatası (HTTP hata kodu):", errorResult);
         throw new Error(errorResult.error || 'Haber kaydedilemedi.');
@@ -1120,15 +1486,15 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
 
       const successResult = await response.json();
       console.log("Haber başarıyla kaydedildi:", successResult);
-      alert('Haber başarıyla kaydedildi!');
-      onPostSaved(); // Haberler listesini yenile
-      setFile(null); // Reset file input after successful save
-      setPreview(''); // Clear preview
-      setEditPost(null); // Clear edit mode after save
+      alert('Haber başarıyla kaydedildi!'); // Kullanıcıya başarı mesajı göster
+      onPostSaved(); // Haberler listesini yenilemek için callback çağır
+      setFile(null); // Dosya inputunu sıfırla
+      setPreview(''); // Önizlemeyi temizle
+      setEditPost(null); // Düzenleme modunu kapat
 
     } catch (error) {
       console.error("handleSubmit'te haber kaydetme işlemi sırasında genel hata:", error);
-      alert('Haber kaydedilirken bir hata oluştu: ' + error.message);
+      alert('Haber kaydedilirken bir hata oluştu: ' + error.message); // Kullanıcıya hata mesajı göster
     } finally {
         console.log("--- handleSubmit fonksiyonu bitti ---");
     }
@@ -1165,7 +1531,7 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
           <input
             type="file"
             id="image"
-            name="image" // HTML name is not used by FormData directly, but good practice
+            name="image" 
             onChange={handleFile}
             accept="image/*"
           />
@@ -1226,6 +1592,21 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
           />
         </div>
 
+        {/* is_slider select butonu */}
+        <div className="form-group">
+          <label htmlFor="is_slider">Sliderda Göster:</label>
+          <select
+            id="is_slider"
+            name="is_slider"
+            value={form.is_slider} // is_slider değeri 0 veya 1 olacak
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value={0}>Hayır</option>
+            <option value={1}>Evet</option>
+          </select>
+        </div>
+
         {/* Alt Başlıklar Bölümü */}
         <div className="form-group subheadings-section">
           <label>Alt Başlıklar:</label>
@@ -1273,5 +1654,7 @@ function PostForm({ onPostSaved, editPost, setEditPost, subheadings, setSubheadi
     </div>
   );
 }
+
+
 
 export default AdminDashboard;
